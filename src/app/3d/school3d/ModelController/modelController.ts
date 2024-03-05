@@ -5,17 +5,20 @@ import {
   Scene,
   Vector2,
   WebGLRenderer,
-  Vector3
+  Vector3,
+  Box3,
+  BufferGeometry, MeshBasicMaterial, Mesh, SphereGeometry, LineBasicMaterial, Line
 } from 'three';
-import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls.js';
-import {MqttInterface} from '../mqttInterface';
-import {RoomDataHolder} from '../modelmenu/roomDataHolder';
-import {getColorOfRoomForFilter} from '../helperFunctions';
-import {InActiveWatcher} from '../InActiveWatcher';
-import {Loader} from './Loader';
-import {getSetupScene, setupCamera, setupController, setupRenderer} from './SceneSetup';
-import {BASE_COLOR_HEX, SELECTED_COLOR_HEX} from '../colors';
-import {ModelAction} from './ModelAction';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+import { MqttInterface } from '../mqttInterface';
+import { RoomDataHolder } from '../modelmenu/roomDataHolder';
+import { getColorOfRoomForFilter } from '../helperFunctions';
+import { InActiveWatcher } from '../InActiveWatcher';
+import { Loader } from './Loader';
+import { getSetupScene, setupCamera, setupController, setupRenderer } from './SceneSetup';
+import { BASE_COLOR_HEX, SELECTED_COLOR_HEX } from '../colors';
+import { ModelAction } from './ModelAction';
+import { FloorPoints, Pathfinder } from './pathfinder.service';
 
 export class ModelController {
   static instance: ModelController;
@@ -26,6 +29,10 @@ export class ModelController {
   static scene: Scene;
 
   static FLOORS = ['cellar', 'ground_floor', 'first_floor', 'second_floor', 'ceiling'];
+  floorMarkersPlaced: Set<string> = new Set();
+  centerX;
+  centerZ;
+  centerY;
 
   currentlyMoving: boolean;
   currentRoom = new RoomDataHolder('');
@@ -45,10 +52,129 @@ export class ModelController {
   objectsUp = [];
   observedRoom: Map<string, RoomDataHolder> = new Map<string, RoomDataHolder>();
   raycaster = new Raycaster();
+  pathLines: Line[] = [];
+
   roomObject = [];
   selectedFloor = '';
   title = 'clientAngular';
+  DOOR_COLOR = 0xFFA500; // Orange
 
+  pointsPerFloor = new Map();
+  pathfinder: Pathfinder;
+  startPoint: Vector3;
+
+  initializePointLists() {
+    const floorNames = ['cellar', 'ground_floor', 'first_floor', 'second_floor', 'ceiling'];
+
+    this.pointsPerFloor = new Map();
+
+    for (const floor of floorNames) {
+      this.pointsPerFloor.set(floor, {
+        middlePoints: [],     // 🔴 Mittelpunkt der Etage
+        classRoomPoints: [],  // 🟠 Punkte, die eine Klasse unter sich erkennen
+        stairsPoints: [],     // 🔵 Punkte auf Treppen
+        greenPoints: []       // 🟢 (für spätere Schnittpunkte)
+      });
+    }
+  }
+
+
+  isDoor(object: any) {
+    const allowedFloors = ['ceiling', 'ground_floor', 'first_floor', 'second_floor', 'cellar'];
+
+    if (!allowedFloors.includes(object.name)) return false;
+    if (!object.isMesh || !object.geometry || !object.geometry.attributes.position) return false;
+
+    const floor = object.name;
+    const positions = object.geometry.attributes.position;
+    const vertexCount = positions.count;
+    const doorData = this.pointsPerFloor.get(floor);
+    let centerY;
+
+    for (let i = 0; i < vertexCount; i += 3) {
+      if (i + 2 >= vertexCount) continue;
+
+      const v1 = new Vector3(positions.getX(i), positions.getY(i), positions.getZ(i));
+      const v2 = new Vector3(positions.getX(i + 1), positions.getY(i + 1), positions.getZ(i + 1));
+      const v3 = new Vector3(positions.getX(i + 2), positions.getY(i + 2), positions.getZ(i + 2));
+
+      const faceBox = new Box3().setFromPoints([v1, v2, v3]);
+      const size = new Vector3();
+      faceBox.getSize(size);
+
+      const dims = [size.x, size.y, size.z].sort((a, b) => a - b);
+      const width = dims[1];
+      const height = dims[2];
+
+      const isLikelyDoor = (
+        Math.abs(width - 126) < 1 &&
+        Math.abs(height - 203) < 1
+      );
+
+      if (isLikelyDoor) {
+        // Mittelpunkt berechnen
+        const centerDoor = new Vector3().addVectors(v1, v2).add(v3).divideScalar(3);
+
+        const edge1 = new Vector3().subVectors(v2, v1);
+        const edge2 = new Vector3().subVectors(v3, v1);
+        const normal = new Vector3().crossVectors(edge1, edge2).normalize();
+
+        const offset = normal.clone().multiplyScalar(100);
+        const offsetPoint = centerDoor.clone().add(offset);
+        centerY = offsetPoint.y
+
+        const raycaster = new Raycaster(offsetPoint, new Vector3(0, -1, 0));
+        raycaster.far = 500;
+        const intersects = raycaster.intersectObjects(this.objectArr, true);
+
+        if (intersects.length !== 0) {
+          for (const hit of intersects) {
+            const roomName = hit.object.name;
+            const floorCheck = this.getFloorOfRoom(roomName);
+
+            if (!allowedFloors.includes(roomName)) {
+              const alreadyForRoom = doorData.classRoomPoints.some(p =>
+                p.room === roomName
+              );
+
+              if (alreadyForRoom) {
+                break;
+              }
+              const offset = normal.clone().multiplyScalar(-400);
+              const offsetPoint = centerDoor.clone().add(offset);
+
+              doorData.classRoomPoints.push({
+                room: roomName,
+                position: offsetPoint
+              });
+
+              const nodeMarker = new Mesh(
+                new SphereGeometry(20, 16, 16),
+                new MeshBasicMaterial({ color: 0x00ff00 })
+              );
+              nodeMarker.position.copy(offsetPoint);
+              ModelController.scene.add(nodeMarker);
+
+              if (doorData.middlePoints.length === 0) {
+                const middlePoint = new Vector3(this.centerX, centerY, this.centerZ);
+
+                const redDot = new Mesh(
+                  new SphereGeometry(20, 16, 16),
+                  new MeshBasicMaterial({ color: 0xff0000 })
+                );
+                redDot.position.copy(middlePoint);
+                ModelController.scene.add(redDot);
+
+                doorData.middlePoints.push(middlePoint);
+
+              }
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
 
   getFloorOfRoom(floorName: string) {
     switch (floorName[0]) {
@@ -72,7 +198,7 @@ export class ModelController {
     const x = (event.x / w) * 2;
     const y = -(event.y / h) * 2;
 
-    // alert(`width: ${w} heigth: ${h}\nx:${event.x} / ${w} * 2 = ${x - 1} \ny:-${event.y} / ${h} ${y + 1}`, );
+    // alert(width: ${w} heigth: ${h}\nx:${event.x} / ${w} * 2 = ${x - 1} \ny:-${event.y} / ${h} ${y + 1}, );
 
     return {
       'x': x,
@@ -119,6 +245,11 @@ export class ModelController {
 
   constructor(mqttInterface: MqttInterface) {
     this.mqttInterface = mqttInterface;
+    const objectMap: Record<string, FloorPoints> = this.objectArr.reduce((acc, obj) => {
+      acc[obj.name] = obj; // Ensure obj has a 'name' property and matches FloorPoints structure
+      return acc;
+    }, {});
+    //this.pathfinder = new Pathfinder(ModelController.scene, objectMap);
 
     this.setUp();
     this.loadModel();
@@ -129,7 +260,7 @@ export class ModelController {
   }
 
   delay(ms: number) {
-    return new Promise( resolve => setTimeout(resolve, ms) );
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   moveSingleObject(direction, obj) {
@@ -266,16 +397,120 @@ export class ModelController {
     window.addEventListener('resize', this.onWindowResize, false);
   }
 
+  public collectStairPoints() {
+    const regex = /^Stairpoint_([a-z]+_[a-z]+)_[0-9]+/i;
+  
+    for (const obj of this.objectArr) {
+      const match = obj.name.match(regex);
+      if (!match) continue;
+  
+      const floorName = match[1]; // z. B. "ground_floor", "first_floor", etc.
+  
+      if (!this.pointsPerFloor.has(floorName)) {
+        console.warn(`❌ Unbekannter floorName: "${floorName}" für Objekt "${obj.name}"`);
+        continue;
+      }
+  
+      // 🔹 Mittelpunkt der Geometrie berechnen
+      const posAttr = obj.geometry.attributes.position;
+      const count = posAttr.count;
+      const center = new Vector3(0, 0, 0);
+  
+      for (let i = 0; i < count; i++) {
+        center.x += posAttr.getX(i);
+        center.y += posAttr.getY(i);
+        center.z += posAttr.getZ(i);
+      }
+      center.divideScalar(count);
+  
+      const stairList = this.pointsPerFloor.get(floorName).stairsPoints;
+      stairList.push(center);
+  
+      // 🔵 Optional: Marker zum Debuggen
+      const marker = new Mesh(
+        new SphereGeometry(20, 16, 16),
+        new MeshBasicMaterial({ color: 0x0000ff })
+      );
+      marker.position.copy(center);
+      ModelController.scene.add(marker);
+    }
+  
+    console.log("✅ Alle Stairpoints gesammelt:", this.pointsPerFloor);
+  }
+  
   public loadModel() {
-
+    //console.log('Debug - Starting model load');
     const loader = new Loader(this.modelName,
       ModelController.scene,
       this.objects,
       this.objectArr,
       ModelController.FLOORS,
-      () => this.isLoading = false,
-      this.floorObject);
+      () => {
+        this.isLoading = false;
+        //console.log('Debug - Model loaded, starting door detection');
+        //console.log('Debug - Total objects loaded:', this.objectArr.length);
+        this.initializePointLists()        
 
+        for (const object of this.objectArr) {
+          if (object.name === '1Aula' && object.geometry && object.geometry.attributes.position) {
+            //console.log('📌 Aula erkannt, berechne Mittelpunkt aus allen Punkten');
+
+            const pos = object.geometry.attributes.position;
+            const count = pos.count;
+
+            const total = new Vector3(0, 0, 0);
+
+            for (let i = 0; i < count; i++) {
+              total.x += pos.getX(i);
+              total.y += pos.getY(i);
+              total.z += pos.getZ(i);
+            }
+
+            const center = total.divideScalar(count);
+
+            this.centerX = center.x - 600;
+            this.centerZ = center.z;
+            this.centerY = center.y
+          }
+        }
+
+        for (const obj of this.objectArr) {
+          if (obj.name === "Startpoint" && obj.geometry?.attributes?.position) {
+            const pos = obj.geometry.attributes.position;
+            const count = pos.count;
+        
+            const center = new Vector3(0, 0, 0);
+            for (let i = 0; i < count; i++) {
+              center.x += pos.getX(i);
+              center.y += pos.getY(i);
+              center.z += pos.getZ(i);
+            }
+            center.divideScalar(count);
+        
+            this.startPoint = center;
+        
+            // Optionaler gelber Marker zum Debuggen
+            const marker = new Mesh(
+              new SphereGeometry(25, 16, 16),
+              new MeshBasicMaterial({ color: 0xffff00 })
+            );
+            marker.position.copy(center);
+            ModelController.scene.add(marker);
+
+            if (this.pointsPerFloor.has('ground_floor')) {
+              this.pointsPerFloor.get('ground_floor').classRoomPoints.push({
+                room: 'Startpoint',
+                position: center
+              });
+            }
+          }
+
+          this.isDoor(obj)
+        }
+        this.collectStairPoints();
+        this.pathfinder = new Pathfinder(ModelController.scene, this.pointsPerFloor);
+      },
+      this.floorObject);
     loader.loadAssets();
   }
 
@@ -327,6 +562,7 @@ export class ModelController {
 
     if (intersect.length !== 0) {
       const floorName = intersect[0].object.name;
+      //console.log(intersect);
 
       if (!ModelController.FLOORS.includes(floorName)) {
         this.openMenu();
@@ -423,6 +659,48 @@ export class ModelController {
   async checkRoomForWebcam(room: RoomDataHolder) {
   }
 
+  public getAllRoomNames(): string[] {
+    return this.roomObject.map(obj => obj.name);
+  }  
+
+  public calculatePath(start: Vector3, end: Vector3) {
+    const pathPoints = this.pathfinder.findPath(start, end);
+    console.log(pathPoints);
+    if ((pathPoints).length < 2) return;
+  
+    for (const line of this.pathLines) {
+      ModelController.scene.remove(line);
+      line.geometry.dispose();
+      (line.material as LineBasicMaterial).dispose();
+    }
+    this.pathLines = [];
+  
+    const geometry = new BufferGeometry().setFromPoints(pathPoints);
+    const material = new LineBasicMaterial({ color: 0xff0000 });
+    const line = new Line(geometry, material);
+    ModelController.scene.add(line);
+    this.pathLines.push(line);
+  }
+  
+  
+
+  public findPathToRoomFromFirstFloorCenter(roomName: string) {
+    //const start = this.pointsPerFloor.get('ground_floor').middlePoints[0];
+    const start = this.startPoint;
+    //const start = this.pathfinder['nodes'].find(n => n.type === 'start')?.position;
+    const floor = this.getFloorOfRoom(roomName);
+    const points = this.pointsPerFloor.get(floor)?.classRoomPoints ?? [];
+    let endRoom: any = null;
+    for (const entry of points) {
+      if (entry.room === roomName) {
+        endRoom = entry.position
+      }
+    }
+    if (!start || !endRoom) return;
+  
+    const end = new Vector3().copy(endRoom);
+
+    this.calculatePath(start, end);
+  }
+  
 }
-
-

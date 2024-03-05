@@ -1,0 +1,9 @@
+<div class="roomlist">
+    <h3>🏫 Räume</h3>
+    <ul>
+      <li *ngFor="let room of rooms" (click)="selectRoom(room)">
+        {{ room }}
+      </li>
+    </ul>
+  </div>
+  

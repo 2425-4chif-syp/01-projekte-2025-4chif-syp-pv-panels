@@ -121,6 +121,18 @@
           </td>
         </tr>
       </ng-container>
+
+      <tr>
+        <td>
+          <div class="itemName">Raumwahl:</div>
+        </td>
+        <td>
+          <select class="bigButton" (change)="onRoomSelect($event)">
+            <option value="" disabled selected>Raum wählen</option>
+            <option *ngFor="let room of getAllRoomNames()" [value]="room">{{ room }}</option>
+          </select>
+        </td>
+      </tr>      
     </table>
 
     <app-video-feed *ngIf="hasWebcam()"

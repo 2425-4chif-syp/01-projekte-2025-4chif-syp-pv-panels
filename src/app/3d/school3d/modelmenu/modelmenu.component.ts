@@ -6,44 +6,43 @@ import {RoomDataHolder} from './roomDataHolder';
 import {interval, Subscription} from 'rxjs';
 import {environment} from "../../../../environments/environment";
 
-
 @Component({
-    selector: 'app-modelmenu',
-    templateUrl: './modelmenu.component.html',
-    styleUrls: ['./modelmenu.component.scss'],
-    animations: [
-        trigger('slideInOut', [
-            state('open', style({
-                height: '100%',
-            })),
-            state('closed', style({
-                height: '0%',
-            })),
-            transition('open => closed', animate('400ms ease-in-out')),
-            transition('closed => open', animate('400ms ease-in-out'))
-        ])
-    ],
-    standalone: false
+  selector: 'app-modelmenu',
+  templateUrl: './modelmenu.component.html',
+  styleUrls: ['./modelmenu.component.scss'],
+  animations: [
+    trigger('slideInOut', [
+      state('open', style({
+        height: '100%',
+      })),
+      state('closed', style({
+        height: '0%',
+      })),
+      transition('open => closed', animate('400ms ease-in-out')),
+      transition('closed => open', animate('400ms ease-in-out'))
+    ])
+  ],
+  standalone: false
 })
 export class ModelmenuComponent {
 
   static currentFilter = 'basic';
-  @Input() menuOpened: boolean ;
+  @Input() menuOpened: boolean;
   @Input() currentRoom: RoomDataHolder;
   @Input() selectedFloor: string;
   @Input() applyFilter;
   @Input() floorSelect;
+
+  @Input() allRooms: string[] = []; // 🔄 Liste aller Räume (für neuen Tab)
+
   private curFilterSubs: Subscription;
   imagePrefix: string = environment.pathPrefix;
 
-
-  constructor() {
-  }
+  constructor() {}
 
   animationState() {
     return this.menuOpened ? 'open' : 'closed';
   }
-
 
   openMenuEvent() {
     this.menuOpened = true;
@@ -115,5 +114,22 @@ export class ModelmenuComponent {
   filterNotificationActive() {
     return this.getCurrentFilter() !== 'basic';
   }
-}
 
+  getSortedRooms(): string[] {
+    return this.allRooms.sort((a, b) => a.localeCompare(b));
+  }
+
+  selectRoomPath(roomName: string) {
+    console.log('🚀 Starte Pfadsuche zu Raum:', roomName);
+    ModelController.instance.findPathToRoomFromFirstFloorCenter(roomName);
+  }
+
+  getAllRoomNames(): string[] {
+    return ModelController.instance.getAllRoomNames(); // ruft es von ModelController ab
+  }  
+
+  onRoomSelect(event: Event) {
+    const selectedRoom = (event.target as HTMLSelectElement).value;
+    ModelController.instance.findPathToRoomFromFirstFloorCenter(selectedRoom);
+  }  
+}
