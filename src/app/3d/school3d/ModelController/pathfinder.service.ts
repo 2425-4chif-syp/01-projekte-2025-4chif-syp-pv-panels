@@ -20,6 +20,7 @@ export class Pathfinder {
     this.floorMap = floorMap;
     this.initGraph();
   }
+  // test
 
   private initGraph() {
     for (const [floor, points] of this.floorMap.entries()) {
