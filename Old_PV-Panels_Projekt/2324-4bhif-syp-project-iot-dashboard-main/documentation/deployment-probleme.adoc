@@ -1,0 +1,84 @@
+= Probleme Deployment
+
+== ssh-config am lokalen Rechner
+
+.~/.ssh/config
+[source]
+----
+Host leoenergy
+HostName vm23.htl-leonding.ac.at
+User solmqadmin
+LocalForward 127.0.0.1:8080 127.0.0.1:8080
+LocalForward 127.0.0.1:8086 127.0.0.1:8086
+LocalForward 127.0.0.1:3000 127.0.0.1:3000
+LocalForward 127.0.0.1:80 127.0.0.1:80
+----
+
+== docker-compose.yaml auf VM23
+
+.~/docker/docker-compose.yaml
+[source,yaml]
+----
+version: "3"
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password123
+      - DOCKER_INFLUXDB_INIT_ORG=Leoenergy
+      - DOCKER_INFLUXDB_INIT_BUCKET=db
+      - DOCKER_INFLUXDB_INIT_RETENTION=20w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=8e447b3e8bbce7d5ceb9321937661420d0503a03361157018e9ec99c9ea251b4
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+      - GF_SERVER_ROOT_URL=http://leoenergy.server/
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
+    user: "${UID}:${GID}"
+    depends_on:
+      - influxdb
+
+  leoenergy:
+    image: ghcr.io/balintb4/leoenergy:v9
+    container_name: leoenergy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - influxdb
+      - grafana
+
+  frontend:
+    image: ghcr.io/2324-4bhif-syp/2324-4bhif-syp-project-iot-dashboard/kiosk:latest
+    container_name: leoenergy-kiosk
+    ports:
+      - "80:80"
+    depends_on:
+      - influxdb
+      - grafana
+      - leoenergy
+----
+
+== Probleme: Hilfe erbeten
+
+* Quarkus (8080), Grafana (3000), InfluxDB (8086) über LocalForward erreichbar
+** Kiosk allerdings nicht -> wahrscheinlich durch andere Appliaktion am Port 80 besetzt oder blockiert
+** Wenn behoben: Einrichtung Reverse-Proxy (nginx) -> Bitte auch hier um Hilfe

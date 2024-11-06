@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+pushd backend/leoenergy
+    mvn clean package
+popd
+
+mkdir -p dist/leoenergy
+
+cp backend/leoenergy/target/*-runner.jar dist/leoenergy/leoenergy.jar

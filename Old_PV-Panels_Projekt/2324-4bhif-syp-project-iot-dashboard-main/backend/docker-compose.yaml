@@ -1,0 +1,43 @@
+version: "3"
+services:
+  influxdb:
+    image: influxdb:latest
+    container_name: influxdb
+    restart: unless-stopped
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=password123
+      - DOCKER_INFLUXDB_INIT_ORG=Leoenergy
+      - DOCKER_INFLUXDB_INIT_BUCKET=db
+      - DOCKER_INFLUXDB_INIT_RETENTION=20w
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=8e447b3e8bbce7d5ceb9321937661420d0503a03361157018e9ec99c9ea251b4
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./data/influxdb:/var/lib/influxdb
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - GF_SERVER_ROOT_URL=http://leoenergy.server/
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data/grafana:/var/lib/grafana
+    user: "${UID}:${GID}"
+    depends_on:
+      - influxdb
+
+  leoenergy:
+    image: ghcr.io/balintb4/leoenergy:v7
+    container_name: leoenergy
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      - influxdb
+      - grafana

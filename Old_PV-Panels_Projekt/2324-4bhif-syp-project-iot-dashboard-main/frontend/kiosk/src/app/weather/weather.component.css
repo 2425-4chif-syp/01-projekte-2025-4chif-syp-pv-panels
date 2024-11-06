@@ -1,0 +1,87 @@
+.weather-widget {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+  color: white;
+}
+
+.weather-widget h3 {
+  font-size: 1.7em;
+  color: #fff;
+  text-align: left;
+  margin-bottom: 15px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.hourly-forecast,
+.daily-forecast {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Einzelne Vorhersage-Elemente */
+.hourly-item,
+.daily-item {
+  flex: 1 1 100px;
+  margin: 10px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.hourly-item:hover,
+.daily-item:hover {
+  transform: scale(1.05);
+}
+
+/* Styling der Temperaturanzeige */
+.temperature {
+  font-size: 1.8em;
+  font-weight: bold;
+}
+
+.temperature-min {
+  font-size: 1.4em;
+  opacity: 0.8;
+}
+
+/* Styling der Wetterbeschreibung */
+.description {
+  font-size: 0.9em; /* Kleinere Schriftgröße */
+  color: #e0e0e0; /* Hellere Farbe */
+}
+
+/* Styling der Icons */
+.weather-widget i {
+  font-size: 50px;
+  color: #fff;
+  margin: 10px 0;
+}
+
+/* Fehlernachricht */
+.error-message {
+  color: #ffdddd;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+  .hourly-item,
+  .daily-item {
+    flex: 1 1 80px;
+  }
+
+  .weather-widget i {
+    font-size: 40px;
+  }
+}

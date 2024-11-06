@@ -1,0 +1,208 @@
+/* Layout für Einstellungen und Titel */
+.d-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Einstellungen auf der gleichen Höhe wie der Titel */
+.settings-section {
+  display: flex;
+  align-items: center;
+  margin-left: auto; /* Sorgt dafür, dass die Einstellungen ganz rechts stehen */
+}
+
+/* Dropdown-Stil */
+.settings-dropdown {
+  font-size: 1.1em;
+  color: #333;
+  cursor: pointer;
+}
+
+.settings-menu {
+  padding: 10px;
+  width: 250px; /* Festgelegte Breite für das Dropdown-Menü */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  background-color: #fff;
+}
+
+.settings-menu .dropdown-item {
+  padding: 10px;
+  font-size: 0.9em;
+}
+
+/* Zentrierung von Kiosk-Mode und Checkbox */
+.settings-menu .dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Intervall-Schieberegler unter dem Label */
+.form-range {
+  margin-top: 10px;
+  width: 100%;
+}
+
+/* Sidebar-Stile */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 300px;
+  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+  z-index: 1000;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-header img {
+  width: 120px;
+  transition: width 0.3s ease;
+}
+
+.sidebar-header img:hover {
+  width: 130px;
+}
+
+.sidebar-nav {
+  list-style: none;
+  padding: 0;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.sidebar-item {
+  width: 100%;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 15px 25px;
+  color: white;
+  text-decoration: none;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  font-size: 1em;
+  cursor: pointer;
+}
+
+.sidebar-link i {
+  margin-right: 15px;
+  font-size: 1.2em;
+  transition: transform 0.3s ease;
+}
+
+.sidebar-link:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(5px); /* Animation beim Hover */
+}
+
+.sidebar-link.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+  box-shadow: inset 5px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+.sidebar-link.active i {
+  transform: rotate(90deg); /* Animation für aktives Icon */
+}
+
+/* Hauptinhalt */
+.content {
+  margin-left: 300px;
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background-color: #f8f9fa;
+  overflow-y: auto;
+}
+
+.content-wrapper {
+  flex-grow: 1;
+}
+
+/* Anpassung des Graphen-Layouts */
+.graph-container {
+  margin-top: 20px;
+}
+
+.iframe-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('/assets/images/htl-logo.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 40%;
+  opacity: 0.08;
+  z-index: 1;
+  pointer-events: none;
+}
+.graph-item {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+.graph-item h3 {
+  padding: 15px;
+  margin: 0;
+  background-color: #fff;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.iframe-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  height: 0;
+  overflow: hidden;
+}
+
+.grafana-iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Responsive Anpassungen */
+@media (max-width: 768px) {
+  .d-flex {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .settings-section {
+    margin-top: 10px;
+  }
+
+  .sidebar {
+    width: 220px;
+  }
+
+  .content {
+    margin-left: 220px;
+  }
+
+  .graph-item {
+    margin-bottom: 20px;
+  }
+}

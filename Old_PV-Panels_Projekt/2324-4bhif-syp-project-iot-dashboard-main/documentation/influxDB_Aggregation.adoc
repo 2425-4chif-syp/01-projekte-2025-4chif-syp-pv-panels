@@ -1,0 +1,280 @@
+:toc:
+:sectnums:
+
+= InfluxDB Aggregation | Said Nurceski
+
+== Aufgabe
+* Aggregation für alle Devices mit Zähler und Power
+* Jede Stunde ist die Task geplant und die Daten werden in den jeweiligen Buckets gespeichert
+
+== Wichtig! Erstellen Sie folgende Buckets, bevor Sie die Aggregation laufen lassen.
+
+=== Buckets für die Aggregation
+
+* `Energie_Gesamt`: Hier werden Zähler und Power von Energie-Gesamt-HTL gespeichert
+* `PV_Energie`: Hier werden Zähler und Power von EMU PV-Energie gespeichert
+* `DME_Heat`: Hier werden Zähler und Power von DME Heat 38 64464038 gespeichert
+* `Zaehler_Serverraum`: Hier werden Zähler und Power von Zähler-Serverraum gespeichert
+
+
+.Aggregation für Energie Gesamt Zähler
+----
+option task = {name: "Energie_Gesamt_Leistung", every: 1h}
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "Energie-Gesamt-HTL")
+    |> filter(fn: (r) => r["unit"] == "Wh")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "Energie_Gesamt_Zaehler",
+                _field: "value",
+                unit: "Wh",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "Energie_Gesamt")
+----
+
+== Aggregation für Energie Gesamt Leistung
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, Energie-Gesamt-HTL und Wh
+** Weil es Wh ist, ist es der Zähler
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "Energie_Gesamt") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation für Energie Gesamt Power
+----
+option task = {
+  name: "Energie_Gesamt_Power",
+  every: 1h,
+}
+
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "Energie-Gesamt-HTL")
+    |> filter(fn: (r) => r["unit"] == "W")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(fn: (r) => ({_time: r._time, _value: r._value, _measurement: "Energie_Gesamt_Power", _field: "value", unit: "W", measurement_id: r.measurement_id}))
+    |> to(bucket: "Energie_Gesamt")
+----
+
+== Aggregation für Energie Gesamt Power
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, Energie-Gesamt-HTL und W
+** Weil es W ist, ist es die Leistung
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "Energie_Gesamt") ist der Bucket wo die Daten gespeichert werden
+* Ich hab es so gemacht, dass es in einem Bucket zwei verschiedene Values gibt, einmal für den Zähler und einmal für den aktuellen Verbrauch in W.
+
+.Aggregation für PV Energie Zähler
+----
+option task = {
+  name: "PV_Energie_Leistung",
+  every: 1h,
+}
+
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "EMU PV-Energie")
+    |> filter(fn: (r) => r["unit"] == "Wh")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "PV_Energie_Leistung",
+                _field: "value",
+                unit: "Wh",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "PV_Energie")
+----
+
+== Aggregation für PV Energie Zähler
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, EMU PV-Energie und Wh
+** Weil es Wh ist, ist es der Zähler
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "PV_Energie") ist der Bucket wo die Daten gespeichert werden
+
+
+.Aggregation für PV Energie Power
+----
+option task = {name: "PV_Energie_Power", every: 1h}
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "EMU PV-Energie")
+    |> filter(fn: (r) => r["unit"] == "W")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "PV_Energie_Power",
+                _field: "value",
+                unit: "W",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "PV_Energie")
+----
+
+== Aggregation für PV Energie Power
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, EMU PV-Energie und W
+** Weil es W ist, ist es die Leistung
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "PV_Energie") ist der Bucket wo die Daten gespeichert werden
+* Ich hab es so gemacht, dass es in einem Bucket zwei verschiedene Values gibt, einmal für den Zähler und einmal für den aktuellen Verbrauch in W.
+
+.Aggregation DME Heat Zähler
+----
+option task = {name: "DME_Heat_Leistung", every: 1h}
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "DME Heat 38 64464038")
+    |> filter(fn: (r) => r["unit"] == "Wh")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "DME_Heat_Leistung",
+                _field: "value",
+                unit: "Wh",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "DME_Heat")
+----
+
+== Aggregation DME Heat Zähler
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, DME Heat 38 64464038 und Wh
+** Weil es Wh ist, ist es der Zähler
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "DME_Heat") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation DME Heat Power
+----
+option task = {name: "DME_Heat_Power", every: 1h}
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "DME Heat 38 64464038")
+    |> filter(fn: (r) => r["unit"] == "W")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "DME_Heat_Power",
+                _field: "value",
+                unit: "W",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "DME_Heat")
+----
+
+== Aggregation DME Heat Power
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, DME Heat 38 64464038 und W
+** Weil es W ist, ist es die Leistung
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "DME_Heat") ist der Bucket wo die Daten gespeichert werden
+* Ich hab es so gemacht, dass es in einem Bucket zwei verschiedene Values gibt, einmal für den Zähler und einmal für den aktuellen Verbrauch in W.
+
+.Aggregation Zähler-Serverraum Zähler
+----
+option task = {
+  name: "Zaehler_Serverraum_Leistung",
+  every: 1h,
+}
+
+
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "Zähler-Serverraum")
+    |> filter(fn: (r) => r["unit"] == "Wh")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "Zaehler_Serverraum_Leistung",
+                _field: "value",
+                unit: "Wh",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "Zaehler_Serverraum")
+----
+
+== Aggregation Zähler-Serverraum Zähler
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, Zähler-Serverraum und Wh
+** Weil es Wh ist, ist es der Zähler
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "Zaehler_Serverraum") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation Zähler-Serverraum Power
+----
+option task = {
+  name: "Zaehler_Serverraum_Power",
+  every: 1h,
+}
+
+
+
+from(bucket: "db")
+    |> range(start: 2023-10-01T23:30:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Sensor_Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["device_name"] == "Zähler-Serverraum")
+    |> filter(fn: (r) => r["unit"] == "W")
+    |> aggregateWindow(every: 1h, fn: mean, createEmpty: false)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _value: r._value,
+                _measurement: "Zaehler_Serverraum_Power",
+                _field: "value",
+                unit: "W",
+                measurement_id: r.measurement_id,
+            }),
+    )
+    |> to(bucket: "Zaehler_Serverraum")
+----
+
+== Aggregation Zähler-Serverraum Power
+* Ich filter die Daten nach dem device_name und der unit in dem Fall, Zähler-Serverraum und W
+** Weil es W ist, ist es die Leistung
+* aggregateWindow: aggregation findet jede Stunde statt
+* to(bucket: "Zaehler_Serverraum") ist der Bucket wo die Daten gespeichert werden
+* Ich hab es so gemacht, dass es in einem Bucket zwei verschiedene Values gibt, einmal für den Zähler und einmal für den aktuellen Verbrauch in W.
+
