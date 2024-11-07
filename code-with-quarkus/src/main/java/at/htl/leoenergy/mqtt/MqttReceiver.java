@@ -1,4 +1,4 @@
-/*package at.htl.leoenergy.mqtt;
+package at.htl.leoenergy.mqtt;/*package at.htl.leoenergy.mqtt;
 
 import at.htl.leoenergy.entity.Co2Value;
 import at.htl.leoenergy.entity.SensorValue;
@@ -57,7 +57,7 @@ public class MqttReceiver {
 
     }
 
-}*/
+}*
 
 package at.htl.leoenergy.mqtt;
 
@@ -80,5 +80,64 @@ public class MqttReceiver {
     public void receiveCo2(String msg) {
         Log.infof("Received message on 'Co2' topic: %s", msg);
     }
+}*/
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.quarkus.logging.Log;
+import io.quarkus.scheduler.Scheduled;
+import io.smallrye.reactive.messaging.annotations.Channel;
+import io.smallrye.reactive.messaging.annotations.Emitter;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Singleton;
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.jboss.logging.Logger;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+@ApplicationScoped
+public class MqttReceiver {
+
+
+    // Map zur Speicherung des ersten empfangenen Wertes für jedes Topic
+//    private final Map<String, JsonNode> initialValues = new ConcurrentHashMap<>();
+//    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    /**
+     * Empfängt Nachrichten vom MQTT-Broker und loggt sie in die Konsole.
+     */
+//    @Incoming("mqtt-messages")
+//    public void receiveMqttMessage(String message, @Channel("mqtt-messages") Emitter<String> emitter) {
+//        Log.info("Try to receive message: " + message);
+//
+////        try {
+////            // JSON-Nachricht in ein JsonNode-Objekt parsen
+////            JsonNode jsonNode = objectMapper.readTree(message);
+////            String topic = jsonNode.get("topic").asText();
+////            JsonNode payload = jsonNode.get("payload");
+////
+////            // Logge die empfangene Nachricht in der Konsole
+////            LOG.infof("Topic: %s, Message: %s", topic, payload);
+////
+////            // Speichert den ersten Wert pro Topic, falls noch nicht vorhanden
+////            initialValues.putIfAbsent(topic, payload);
+////
+////            // Zeigt den initialen Wert in der Konsole an, falls es der erste Eintrag ist
+////            if (!initialValues.containsKey(topic)) {
+////                LOG.infof("Initialer Wert für Topic %s: %s", topic, payload);
+////            }
+////
+////        } catch (Exception e) {
+////            LOG.error("Fehler beim Verarbeiten der MQTT-Nachricht", e);
+////        }
+//    }
+
+    @Incoming("mqtt-messages")
+    //@Scheduled(every = "10s")
+    public void receiveMqttMessage(byte[] raw) {
+        Log.info("Try to receive message: " + new String(raw));
+    }
 }
+
 
