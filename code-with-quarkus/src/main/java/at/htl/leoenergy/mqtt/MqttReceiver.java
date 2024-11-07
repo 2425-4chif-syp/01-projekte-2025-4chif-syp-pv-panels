@@ -75,10 +75,10 @@ public class MqttReceiver {
         Log.infof("Received message on 'leoenergy' topic: %s", msg);
     }
 
-    @Incoming("Co2")
+    @Incoming("co2")
     @Blocking
-    public void receiveCo2(String msg) {
-        Log.infof("Received message on 'Co2' topic: %s", msg);
+    public void receiveco2(String msg) {
+        Log.infof("Received message on 'co2' topic: %s", msg);
     }
 }*/
 
