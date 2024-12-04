@@ -25,7 +25,7 @@ jobs:
         run: |
           mkdir -p Documentation/SystemArchitecture/diagrams  # Erstelle den Ordner für das Diagramm
           plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc  # Generiere das SVG-Diagramm
-          mv *.svg Documentation/SystemArchitecture/diagrams/  # Verschiebe das generierte SVG in den diagrams-Ordner
+          mv Documentation/SystemArchitecture/*.svg Documentation/SystemArchitecture/diagrams/
 
       - name: Commit and push generated SVG
         run: |
