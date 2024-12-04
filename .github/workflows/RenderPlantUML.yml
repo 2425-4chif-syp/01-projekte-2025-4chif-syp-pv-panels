@@ -25,7 +25,7 @@ jobs:
           plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc
           mv Documentation/SystemArchitecture/*.svg Documentation/SystemArchitecture/diagrams/
 
-      - name: Commit and Push Changes to Feature Branch
+      - name: Commit and Push Changes to Main Branch
         env:
           PUSH_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
         run: |
@@ -33,4 +33,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add Documentation/SystemArchitecture/diagrams/*.svg
           git commit -m "docs: Update PlantUML diagram" || echo "No changes to commit"
-          git push $PUSH_URL HEAD:feature
+          git push $PUSH_URL HEAD:main
