@@ -38,7 +38,7 @@ M --> B : MQTT
 B <--> D : REST
 A --> B : REST
 D --> G : Datenvisualisierung
-B --> G : API-Aufruf
+B --> G : API-AUFRUF
 
 ' Verbindung zwischen NGINX und Website
 F --> NGINX : Bereitstellung von Angular
