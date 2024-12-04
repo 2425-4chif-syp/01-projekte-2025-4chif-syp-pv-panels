@@ -1,0 +1,30 @@
+= Projektstatus und offene Fragen
+Author: [Sebastian Radic]
+Date: {4.12.2024}
+
+== Probleme
+1. **Programm funktioniert auf der VM nicht**
+- Das Quarkus-Programm funktioniert lokal in IntelliJ, jedoch nicht auf der VM. Problem mit MQTT wird in Punkt 2 genauer beschrieben.
+- **Frage**: Muss man beim Erstellen der `.jar` für Quarkus-Anwendungen auf besondere Dinge achten, wenn die Anwendung auf einer VM ausgeführt wird?
+
+2. **MQTT-Verbindung**
+- Das Programm kann sich in der VM nicht mit dem MQTT-Server verbinden, während es in IntelliJ problemlos funktioniert.
+- **Vermutung**: Eventuell liegt es an Firewall-Regeln, Netzwerkeinstellungen oder unterschiedlichen Konfigurationen zwischen lokaler Umgebung und VM.
+
+
+== Fragen
+1. **Backend-Aufgaben**
+- Was ist als nächstes im Backend zu tun?
+- Soll die Datenbankanbindung implementiert werden?
+
+2. **Integration von Frontend und Backend**
+- Wie wird das Frontend mit dem Backend verbunden? Werden APIs, REST oder GraphQL eingesetzt? Gibt es bereits Vorgaben oder Standards, die beachtet werden müssen?
+
+3. **Grafana-Integration**
+- Wann und wie soll Grafana ins Projekt eingebunden werden?
+- Welche Daten oder Metriken sollen im Dashboard visualisiert werden?
+
+4. **Konkrete Backend-Ziele**
+- Was sind die kurzfristigen und langfristigen Ziele im Backend?
+- Soll die aktuelle Funktionalität erweitert werden oder gibt es zusätzliche Anforderungen?
+
