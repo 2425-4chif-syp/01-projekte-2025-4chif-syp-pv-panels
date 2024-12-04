@@ -27,10 +27,13 @@ jobs:
           plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc  # Generiere das SVG-Diagramm
           mv Documentation/SystemArchitecture/*.svg Documentation/SystemArchitecture/diagrams/
 
-      - name: Commit and push generated SVG
+      - name: Debug GitHub Push
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
-          git add Documentation/SystemArchitecture/diagrams/*.svg  # Füge das SVG aus dem diagrams-Ordner hinzu
+          git remote -v  # Zeigt die Remote-URL an
+          git branch  # Zeigt den aktuellen Branch an
+          git status  # Zeigt den Status der Änderungen
+          git add Documentation/SystemArchitecture/diagrams/*.svg
           git commit -m "docs: Update PlantUML diagram"
           git push https://x-access-token:${{ secrets.MY_GITHUB_PUSH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
