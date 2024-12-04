@@ -1,23 +1,23 @@
 @startuml
 entity "Room" as Room {
-+ RoomID : Integer <<PK>
++ roomId : NUMBER
 --
-RoomLabel : VARCHAR(255)
-RoomName : VARCHAR(255)
-RoomType : VARCHAR(255)
-Floor : VARCHAR(50)
-Corridor : VARCHAR(50)
-NeighborsInside : Integer <<FK>
-NeighborsOutside : Integer <<FK>
+roomLabel : VARCHAR(255)
+roomName : VARCHAR(255)
+roomType : VARCHAR(255)
+floor : VARCHAR(50)
+corridor : VARCHAR(50)
+- neighborsInside : NUMBER
+- neighborsOutside : NUMBER
 }
 
 entity "Sensor" as Sensor {
-+ SensorID : Integer <<PK>
++ sensorId : NUMBER
 --
-Type : VARCHAR(50)
-Status : VARCHAR(50)
-Location : VARCHAR(255)
-RoomID : Integer <<FK>
+type : VARCHAR(50)
+status : VARCHAR(50)
+location : VARCHAR(255)
+- roomId : NUMBER
 }
 
 Room ||--o{ Sensor : "1 : N"
