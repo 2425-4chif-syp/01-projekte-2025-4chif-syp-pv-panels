@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="858px" preserveAspectRatio="none" style="width:876px;height:858px;" version="1.1" viewBox="0 0 876 858" width="876px" zoomAndPan="magnify"><defs><filter height="300%" id="fwuhbmwt5f9xa" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[cddc6333dd86b1849aefe74cad8919f8]
+cluster K--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="22,24,139,24,146,46.2969,258,46.2969,258,130,22,130,22,24" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="22" x2="146" y1="46.2969" y2="46.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="111" x="26" y="38.9951">Komponenten</text><!--MD5=[af4e165634b2a4ca3c4688fff127cc50]
+cluster S--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="73,195,132,195,139,217.2969,215,217.2969,215,301,73,301,73,195" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="73" x2="139" y1="217.2969" y2="217.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="53" x="77" y="209.9951">Server</text><!--MD5=[f6e6e24a8096a8e61f901e9be08ab5fd]
+cluster D--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="107,561,186,561,193,583.2969,250,583.2969,250,683,107,683,107,561" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="107" x2="193" y1="583.2969" y2="583.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="73" x="111" y="575.9951">Database</text><!--MD5=[a10bb3759edc5b15ee875ad0aa43aed6]
+cluster V--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="254,740,371,740,378,762.2969,381,762.2969,381,846,254,846,254,740" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="254" x2="378" y1="762.2969" y2="762.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="111" x="258" y="754.9951">Visualisierung</text><!--MD5=[7ab6094aba2dbfe683d313850b4878bd]
+cluster B--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="384,374,457,374,464,396.2969,625,396.2969,625,496,384,496,384,374" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="384" x2="464" y1="396.2969" y2="396.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="67" x="388" y="388.9951">Backend</text><!--MD5=[a2f5cd3507aca8bc071f9016fd610c57]
+cluster F--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="247,187,325,187,332,209.2969,536,209.2969,536,309,247,309,247,187" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="247" x2="332" y1="209.2969" y2="209.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="251" y="201.9951">Frontend</text><!--MD5=[59bada1ab718559697f4c296ee59eeee]
+cluster N--><polygon fill="#FFFFFF" filter="url(#fwuhbmwt5f9xa)" points="669,187,723,187,730,209.2969,854,209.2969,854,309,669,309,669,187" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="669" x2="730" y1="209.2969" y2="209.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="48" x="673" y="201.9951">NGINX</text><!--MD5=[626ad08abde0879284d52f51a0eb42aa]
+entity P--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="81" x="38.5" y="78"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="61" x="48.5" y="100.9951">PV-Panel</text><!--MD5=[0f187cbaedd9fd489a126ebaacd58bd2]
+entity SE--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="87" x="154.5" y="78"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="67" x="164.5" y="100.9951">Sensoren</text><!--MD5=[c72e14692f063a08d1023b5b76acc947]
+entity M--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="110" x="89" y="249"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="90" x="99" y="271.9951">MQTT-Server</text><!--MD5=[225a11a356cb2db3802a7b30c3a51941]
+entity I--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="76" x="131" y="623"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="56" x="141" y="645.9951">InfluxDB</text><!--MD5=[1f67e8801336723dc06e2b95a190f0a5]
+entity G--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="73" x="280.5" y="794"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="53" x="290.5" y="816.9951">Grafana</text><!--MD5=[653366b36524237ef48087d092b9cb5d]
+entity Q--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="174" x="427" y="436"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="154" x="437" y="458.9951">Quarkus (läuft auf JVM)</text><!--MD5=[770389ab9df153645bc6ef28055eb2b5]
+entity A--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="222" x="290" y="249"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="202" x="300" y="271.9951">Angular Website (Dashboard)</text><!--MD5=[52bb74e2ef528211db78d89d6acc3642]
+entity NGINX--><rect fill="#FEFECE" filter="url(#fwuhbmwt5f9xa)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="118" x="712" y="249"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="722" y="271.9951">Reverse Proxy</text><!--MD5=[309ec4a77b309b27fd9bbd43c8761787]
+link P to M--><path d="M85.59,114.13 C97.46,145.01 122.43,209.93 135.55,244.02 " fill="none" id="P-&gt;M" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="137.39,248.82,137.9127,238.985,135.6047,244.1496,130.4401,241.8415,137.39,248.82" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="104" y="159.0669">MQTT</text><!--MD5=[fb4f58247b0aafac85ebb24becad51fe]
+link SE to M--><path d="M192.53,114.13 C182.66,145.01 161.92,209.93 151.02,244.02 " fill="none" id="SE-&gt;M" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="149.49,248.82,156.0451,241.4694,151.0154,244.0584,148.4265,239.0287,149.49,248.82" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="183" y="159.0669">MQTT</text><!--MD5=[2aab75f9968f9f2e47421f30bf2dc86f]
+link M to I--><path d="M145.17,285.44 C149.26,346.34 162.92,549.49 167.49,617.55 " fill="none" id="M-&gt;I" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="167.83,622.59,171.2295,613.3464,167.5012,617.6008,163.2468,613.8725,167.83,622.59" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="161" y="458.5669">MQTT</text><!--MD5=[784d2ad83f22fda8f04cc798cbff9b34]
+link M to B--><path d="M166.89,285.07 C197.105,307.615 252.11,348.6475 300.1825,384.5075 C324.2188,402.4375 346.5219,419.0744 363.1266,431.4606 C371.4289,437.6537 378.3066,442.7842 383.2641,446.4823 C383.419,446.5979 383.5721,446.7121 383.7232,446.8248 " fill="none" id="M-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="383.7232,446.8248,378.901,438.2373,379.7155,443.8352,374.1176,444.6496,383.7232,446.8248" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="254" y="346.0669">MQTT</text><!--MD5=[635162b0568dccf9b81699e51957888e]
+link B to D--><path d="M383.9886,463.1299 C383.862,463.2597 383.7341,463.3908 383.605,463.5233 C383.0886,464.0531 382.5527,464.6038 381.9984,465.1743 C380.89,466.3154 379.7083,467.5358 378.4633,468.8268 C375.9733,471.4088 373.23,474.2731 370.3125,477.35 C358.6425,489.6575 344.185,505.365 332,520 C311,545.215 288.87,574.68 271.8088,598.1025 C263.2781,609.8138 256.0147,620.0144 250.7933,627.4178 C250.6301,627.6492 250.4689,627.8778 250.3098,628.1037 C250.2302,628.2166 250.1511,628.3288 250.0726,628.4403 " fill="none" id="B-D" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="250.0726,628.4403,258.5256,623.386,252.9519,624.3527,251.9853,618.779,250.0726,628.4403" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="383.9886,463.1299,374.8407,466.7789,380.4971,466.7089,380.5671,472.3653,383.9886,463.1299" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="333" y="533.0669">REST</text><!--MD5=[5e2eec62a50b26b6b0db6c12e4ee289c]
+link A to B--><path d="M400.17,285.07 C399.6225,296.3425 398.8494,312.2369 397.9948,329.7956 C397.5676,338.575 397.12,347.7705 396.67,357.0123 C396.445,361.6333 396.2195,366.2658 395.9956,370.8638 C395.9676,371.4385 395.9397,372.0127 395.9117,372.5863 C395.8978,372.873 395.8838,373.1597 395.8699,373.4461 " fill="none" id="A-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="395.8699,373.4461,400.3029,364.6513,396.1131,368.452,392.3123,364.2622,395.8699,373.4461" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="398" y="346.0669">REST</text><!--MD5=[a237a4036bc185c3ad6b67d996fe4e1c]
+link D to G--><path d="M234.2181,683.1237 C234.2089,683.2591 234.1999,683.3946 234.1911,683.5303 C234.1736,683.8016 234.1567,684.0735 234.1405,684.3459 C233.8821,688.7036 233.8096,693.1872 234.0033,697.6869 C234.3906,706.6863 235.8425,715.75 239,724 C249.24,750.77 271.95,774.5 290.23,790.38 " fill="none" id="D-&gt;G" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="294.3,793.85,290.0341,784.9729,290.4907,790.6113,284.8523,791.0679,294.3,793.85" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="125" x="240" y="720.0669">Datenvisualisierung</text><!--MD5=[a19b0615160701c0393b602d7d92b103]
+link B to G--><path d="M394.4265,496.0338 C394.4372,496.3375 394.4478,496.6426 394.4582,496.9491 C394.626,501.8527 394.7686,507.1032 394.8703,512.655 C395.0738,523.7585 395.1138,536.0672 394.865,549.2163 C393.87,601.8125 388.255,667.855 370,724 C362.08,748.34 346.18,772.97 333.85,789.78 " fill="none" id="B-&gt;G" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="330.8,793.88,339.389,789.0603,333.7908,789.8731,332.978,784.275,330.8,793.88" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="43" x="395" y="645.5669">Test11</text><!--MD5=[ff8d4e8c9d5521cf4b5fa3402d821c4f]
+link F to NGINX--><path d="M261.3093,186.9465 C261.383,186.8055 261.4571,186.6648 261.5318,186.5245 C261.6812,186.2438 261.8327,185.9645 261.9864,185.6865 C262.6011,184.5745 263.2503,183.4843 263.9356,182.4188 C266.6769,178.1566 269.9963,174.2888 274,171 C311.26,140.39 665.57,148.09 708,171 C736.5,186.38 754.2,220.9 763.33,244.07 " fill="none" id="F-&gt;NGINX" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="765.14,248.83,765.6527,238.9945,763.3499,244.1614,758.183,241.8586,765.14,248.83" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="168" x="399" y="159.0669">Bereitstellung von Angular</text><!--MD5=[2f19e1285890303ecad29d6b7900f680]
+link N to A--><path d="M668.8844,267 C668.78,267 668.6746,267 668.5683,267 C668.3556,267 668.1393,267 667.9193,267 C667.0394,267 666.101,267 665.1067,267 C663.1181,267 660.9057,267 658.4891,267 C648.8225,267 635.8888,267 620.945,267 C591.0575,267 553.13,267 517.22,267 " fill="none" id="N-&gt;A" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="512.07,267,521.07,271,517.07,267,521.07,263,512.07,267" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="128" x="530.32" y="260.0669">Hosting der Website</text><!--MD5=[70c86e5912c8ee179bfa65ab692845d9]
+link N to B--><path d="M668.9213,271.3904 C668.8159,271.4343 668.7096,271.4786 668.6023,271.5232 C668.3878,271.6125 668.1695,271.7033 667.9476,271.7956 C666.1721,272.5338 664.1601,273.3678 661.9341,274.2864 C653.03,277.9609 640.7013,282.9906 626.38,288.6738 C597.7375,300.04 561.125,314.02 528,325 C527.6,325.13 411.29,357.69 411,358 C407.4013,361.8888 404.4005,366.2589 401.905,370.9331 C401.593,371.5174 401.289,372.1064 400.9927,372.6998 C400.8445,372.9966 400.6983,373.2944 400.554,373.5932 " fill="none" id="N-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="400.554,373.5932,408.0697,367.2282,402.7282,369.0907,400.8657,363.7493,400.554,373.5932" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="198" x="497" y="346.0669">Reverse Proxy für API-Anfragen</text><!--MD5=[a9a94d70291bf396b121d502d677c297]
+@startuml
+package "Komponenten" as K {
+    rectangle "PV-Panel" as P
+    rectangle "Sensoren" as SE
+}
+
+package "Server" as S {
+    rectangle "MQTT-Server" as M
+}
+
+package "Database" as D {
+    rectangle "InfluxDB" as I
+}
+
+package "Visualisierung" as V {
+    rectangle "Grafana" as G
+}
+
+package "Backend" as B {
+    rectangle "Quarkus (läuft auf JVM)" as Q
+}
+
+package "Frontend" as F {
+    rectangle "Angular Website (Dashboard)" as A
+}
+
+package "NGINX" as N {
+    rectangle "Reverse Proxy" as NGINX
+}
+
+P - -> M : MQTT
+SE - -> M : MQTT
+M - -> I : MQTT
+M - -> B : MQTT
+B <- -> D : REST
+A - -> B : REST
+D - -> G : Datenvisualisierung
+B - -> G : Test11
+
+F - -> NGINX : Bereitstellung von Angular
+N - -> A : Hosting der Website
+N - -> B : Reverse Proxy für API-Anfragen
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 11.0.25+9
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>
