@@ -1,9 +1,3 @@
-= Systemarchitektur-Diagramm
-
-image::diag-plantuml-md5-7e0dbd2d0db093b68fe7ffa121b85c05.svg[SVG-Diagramm]
-
-[plantuml, format=svg]
-----
 @startuml
 ' Definition der Boxen
 package "Komponenten" as K {
@@ -51,4 +45,3 @@ N --> A : Hosting der Website
 N --> B : Reverse Proxy für API-Anfragen
 
 @enduml
-----

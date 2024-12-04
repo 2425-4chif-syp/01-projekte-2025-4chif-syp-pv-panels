@@ -1,0 +1,36 @@
+name: Render PlantUML Diagrams
+
+on:
+  push:
+    paths:
+      - 'Documentation/SystemArchitecture/SystemArchitecture.adoc'
+  pull_request:
+    paths:
+      - 'Documentation/SystemArchitecture/SystemArchitecture.adoc'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install PlantUML
+        run: |
+          sudo apt-get update
+          sudo apt-get install plantuml
+
+      - name: Render PlantUML diagrams to SVG
+        run: |
+          mkdir -p Documentation/SystemArchitecture/diagrams  # Erstelle den Ordner für das Diagramm
+          plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc  # Generiere das SVG-Diagramm
+          mv *.svg Documentation/SystemArchitecture/diagrams/  # Verschiebe das generierte SVG in den diagrams-Ordner
+
+      - name: Commit and push generated SVG
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Documentation/SystemArchitecture/diagrams/*.svg  # Füge das SVG aus dem diagrams-Ordner hinzu
+          git commit -m "docs: Update PlantUML diagram"
+          git push
