@@ -1,0 +1,39 @@
+= Part 1:
+
+== Documentation for Connecting a Quarkus Application to an MQTT Server
+_Sebastian Radic_
+
+== Introduction
+
+This document outlines how a Quarkus project was configured to establish a connection to an MQTT broker, receive messages from various topics, and optionally process them further.
+
+== Configuration
+
+The `application.properties` file contains essential settings:
+
+- **CORS Support:** Enabled to allow requests from different origins.
+- **Quarkus Build:** Configured to package the application as an "uber-jar."
+- **MQTT Broker Connection:**
+- Connections to multiple MQTT brokers, including configurations for host, port, username, password, topics, and QoS.
+- SSL is enabled for secure communication with one broker.
+- **InfluxDB Settings:**
+- Includes URL, token, organization, and bucket configuration for database integration.
+
+== MQTT Message Receiver
+
+The `MqttReceiver` class handles incoming MQTT messages:
+
+- **Message Handling:**
+- Messages are received from specific topics (e.g., `leoenergy`, `co2`).
+- Raw or structured messages are logged to the console.
+- **Method Binding:**
+- Methods are linked to topics defined in the configuration file.
+- Differentiation between blocking and non-blocking behavior is implemented.
+
+== Initialization Bean
+
+The `InitBean` class is used for application startup initialization:
+
+- **Startup Event:** The bean is activated during application startup.
+- **Logging:** Logs a message to confirm the application has successfully started.
+
