@@ -1,0 +1,67 @@
+= Part1: Troubleshooting MQTT Connection
+
+
+== Objective
+The goal was to deploy a Quarkus application on a virtual machine (VM) and troubleshoot an issue where the application failed to connect to the MQTT servers despite working in IntelliJ locally.
+
+== Steps Taken
+
+=== 1. Initial Setup
+1. The Quarkus application was developed and tested successfully in IntelliJ.
+2. A runnable JAR file (`leoenergy-1.0-SNAPSHOT-runner.jar`) was created using Maven:
+- Command: `./mvnw clean package`
+3. The JAR file was copied to the VM using SCP:
+- Command: `scp target/leoenergy-1.0-SNAPSHOT-runner.jar leoeadmin@vm29.htl-leonding.ac.at:/home/leoeadmin/`
+
+=== 2. Running the Application on the VM
+1. The application was started on the VM:
+- Command: `java -jar leoenergy-1.0-SNAPSHOT-runner.jar`
+2. Observed logs showed connection timeouts when trying to reach the MQTT servers:
+- `vm90.htl-leonding.ac.at:1883`
+- `mqtt.htl-leonding.ac.at:8883`
+
+=== 3. Troubleshooting
+To address the issue, the following troubleshooting steps were performed:
+
+==== A. Verifying Network Access
+1. Network connectivity to the MQTT servers was tested using `ping`:
+- `ping vm90.htl-leonding.ac.at`
+- `ping mqtt.htl-leonding.ac.at`
+2. Ports were checked using `telnet` and `nc`:
+- `telnet vm90.htl-leonding.ac.at 1883`
+- `telnet mqtt.htl-leonding.ac.at 8883`
+
+==== B. TLS Configuration
+1. The secure port `8883` required a TLS connection.
+2. The connection was tested using OpenSSL:
+- Command: `openssl s_client -connect mqtt.htl-leonding.ac.at:8883`
+
+==== C. Application Configuration
+1. The application’s `application.properties` file was reviewed to verify MQTT configurations (host, port, credentials).
+2. The active profile (`prod` vs. `dev`) was analyzed:
+- IntelliJ used `dev` profile with live coding enabled.
+- On the VM, the `prod` profile was active.
+
+==== D. Manual MQTT Tests
+1. MQTT connectivity was tested manually using `mosquitto-clients`:
+- Command: `mosquitto_sub -h mqtt.htl-leonding.ac.at -p 8883 -t "your/topic"`
+
+==== E. Reproducing Locally
+1. The JAR file was run locally outside IntelliJ to ensure it behaved identically:
+- Command: `java -jar target/leoenergy-1.0-SNAPSHOT-runner.jar`
+
+=== 4. Results
+After troubleshooting:
+1. The application successfully connected to the MQTT servers when running locally in IntelliJ.
+2. However, the output differed when running on the VM, potentially due to:
+- Differences in environment, such as network restrictions or profile settings.
+- Missing dependencies or certificates.
+
+== Next Steps
+1. Verify the VM’s network access to the MQTT servers and adjust firewall rules if necessary.
+2. Ensure TLS certificates for secure connections are configured correctly on the VM.
+3. Compare the `prod` and `dev` profile configurations for discrepancies.
+4. Continue debugging with enhanced logging and direct MQTT testing.
+
+== Author
+Sebastian Radic
