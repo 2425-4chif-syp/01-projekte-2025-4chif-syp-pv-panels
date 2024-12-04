@@ -1,5 +1,7 @@
 = Systemarchitektur-Diagramm
 
+image::diag-plantuml-md5-7e0dbd2d0db093b68fe7ffa121b85c05.svg[SVG-Diagramm]
+
 [plantuml, format=svg]
 ----
 @startuml
