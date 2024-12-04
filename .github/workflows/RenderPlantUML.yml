@@ -11,6 +11,8 @@ on:
 jobs:
   render:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Stellt sicher, dass GITHUB_TOKEN Schreibrechte hat
 
     steps:
       - name: Checkout repository
@@ -19,13 +21,18 @@ jobs:
       - name: Install PlantUML
         run: |
           sudo apt-get update
-          sudo apt-get install plantuml
+          sudo apt-get install -y plantuml
 
       - name: Render PlantUML diagrams to SVG
         run: |
           mkdir -p Documentation/SystemArchitecture/diagrams  # Erstelle den Ordner für das Diagramm
           plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc  # Generiere das SVG-Diagramm
           mv Documentation/SystemArchitecture/*.svg Documentation/SystemArchitecture/diagrams/
+
+      - name: Debug Remote Branches
+        run: |
+          git fetch --all
+          git branch -r  # Zeigt Remote-Branches an
 
       - name: Debug GitHub Push
         run: |
@@ -35,6 +42,19 @@ jobs:
           git branch  # Zeigt den aktuellen Branch an
           git status  # Zeigt den Status der Änderungen
           git add Documentation/SystemArchitecture/diagrams/*.svg
-          git commit -m "docs: Update PlantUML diagram"
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/2425-4chif-syp/01-projekte-2025-4chif-syp-pv-panels HEAD:feature
+          git commit -m "docs: Update PlantUML diagram" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:feature
 
+      - name: Test Token Permissions
+        run: |
+          curl -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}
+
+      # Optionale Alternative mit PAT
+      - name: Commit and push with PAT (if GITHUB_TOKEN fails)
+        if: failure()  # Führe dies aus, falls vorheriger Schritt fehlschlägt
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Documentation/SystemArchitecture/diagrams/*.svg
+          git commit -m "docs: Update PlantUML diagram" || echo "No changes to commit"
+          git push https://x-access-token:${{ secrets.MY_GITHUB_PUSH_TOKEN }}@github.com/${{ github.repository }} HEAD:feature
