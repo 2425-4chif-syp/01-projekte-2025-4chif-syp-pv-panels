@@ -33,4 +33,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add Documentation/SystemArchitecture/diagrams/*.svg  # Füge das SVG aus dem diagrams-Ordner hinzu
           git commit -m "docs: Update PlantUML diagram"
-          git push https://x-access-token:${{ secrets.MY_GITHUB_PUSH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:main
