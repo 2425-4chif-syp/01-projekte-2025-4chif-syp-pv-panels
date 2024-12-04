@@ -36,4 +36,5 @@ jobs:
           git status  # Zeigt den Status der Änderungen
           git add Documentation/SystemArchitecture/diagrams/*.svg
           git commit -m "docs: Update PlantUML diagram"
-          git push https://x-access-token:${{ secrets.MY_GITHUB_PUSH_TOKEN }}@github.com/${{ github.repository }} HEAD:main
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/2425-4chif-syp/01-projekte-2025-4chif-syp-pv-panels HEAD:feature
+
