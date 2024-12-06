@@ -1,0 +1,3 @@
+= Systemarchitektur-Diagramm
+
+image::diagrams/SystemArchitecture.svg[SVG-Diagramm]

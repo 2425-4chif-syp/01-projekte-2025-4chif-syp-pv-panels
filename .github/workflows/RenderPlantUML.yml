@@ -1,0 +1,36 @@
+name: Render PlantUML Diagrams
+
+on:
+  push:
+    paths:
+      - 'Documentation/SystemArchitecture/SystemArchitecture.adoc'
+  pull_request:
+    paths:
+      - 'Documentation/SystemArchitecture/SystemArchitecture.adoc'
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install PlantUML and Render Diagrams
+        run: |
+          sudo apt-get update && sudo apt-get install -y plantuml
+          mkdir -p Documentation/SystemArchitecture/diagrams
+          plantuml -tsvg Documentation/SystemArchitecture/SystemArchitecture.adoc
+          mv Documentation/SystemArchitecture/*.svg Documentation/SystemArchitecture/diagrams/
+
+      - name: Commit and Push Changes to Main Branch
+        env:
+          PUSH_URL: https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add Documentation/SystemArchitecture/diagrams/*.svg
+          git commit -m "docs: Update PlantUML diagram" || echo "No changes to commit"
+          git push $PUSH_URL HEAD:main
