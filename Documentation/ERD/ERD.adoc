@@ -1,0 +1,24 @@
+@startuml
+entity "Room" as Room {
++ roomId : NUMBER
+--
+roomLabel : VARCHAR(255)
+roomName : VARCHAR(255)
+roomType : VARCHAR(255)
+floor : VARCHAR(50)
+corridor : VARCHAR(50)
+- neighborsInside : NUMBER
+- neighborsOutside : NUMBER
+}
+
+entity "Sensor" as Sensor {
++ sensorId : NUMBER
+--
+type : VARCHAR(50)
+status : VARCHAR(50)
+location : VARCHAR(255)
+- roomId : NUMBER
+}
+
+Room ||--o{ Sensor : "1 : N"
+@enduml
