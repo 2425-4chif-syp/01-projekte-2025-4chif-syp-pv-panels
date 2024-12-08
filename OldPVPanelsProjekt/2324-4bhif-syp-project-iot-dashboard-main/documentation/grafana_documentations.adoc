@@ -1,0 +1,168 @@
+:toc:
+:sectnums:
+
+= Grafana | Said Nurceski
+
+== Download Grafana
+.Install the prerequisite packages:
+----
+sudo apt-get install -y apt-transport-https software-properties-common wget
+----
+
+.Import the GPG key:
+----
+sudo mkdir -p /etc/apt/keyrings/
+wget -q -O - https://apt.grafana.com/gpg.key | gpg --dearmor | sudo tee /etc/apt/keyrings/grafana.gpg > /dev/null
+----
+
+.To add a repository for stable releases, run the following command:
+----
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com stable main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+----
+
+.To add a repository for beta releases, run the following command:
+----
+echo "deb [signed-by=/etc/apt/keyrings/grafana.gpg] https://apt.grafana.com beta main" | sudo tee -a /etc/apt/sources.list.d/grafana.list
+----
+
+.Run the following command to update the list of available packages:
+----
+# Updates the list of available packages
+sudo apt-get update
+----
+
+.To install Grafana OSS, run the following command:
+----
+# Installs the latest OSS release:
+sudo apt-get install grafana
+----
+
+.To install Grafana Enterprise, run the following command:
+----
+# Installs the latest Enterprise release:
+sudo apt-get install grafana-enterprise
+----
+
+* for more information on downlaod visit https://grafana.com/docs/grafana/latest/setup-grafana/installation/debian/[Download Grafana]
+
+== Start Grafana
+
+.To start the service, run the following commands:
+----
+sudo systemctl daemon-reload
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+----
+
+.To verify that the service is running, run the following command:
+----
+sudo systemctl status grafana-server
+----
+
+.To restart the Grafana server, run the following commands:
+----
+sudo systemctl restart grafana-server
+----
+
+.To stop the Grafana server, run the following commands:
+----
+sudo systemctl stop grafana-server
+----
+
+.You can access the Grafana server at
+----
+localhost:3000
+----
+
+* for more information on how to start, restart and stop grafana visit https://grafana.com/docs/grafana/latest/setup-grafana/start-restart-grafana/[Start Grafana]
+
+== Connect InfluxDB with Grafana
+
+* Open the Menu and click on the Connection Field
+** Choose InfluxDB
+* IMPORTANT: Change Query language to Flux
+* Add the Http: localhost:8086
+* Click on basic auth and add the username and password
+* Organization is the Orginization name in InfluxDB (In my Case Leoenergy)
+** Token is the API Token you created in InfluxDB
+* Default Bucket
+** Bucket is the name of the bucket you created in InfluxDB (In my Case db)
+* Click on Save and Test
+
+== Now you can create your own Dashboard
+* Click on the Menu and choose Dashboards
+** Add a new Dashboard
+* Click on add Visualization
+** Choose the Data Source you want the Data to come from (in my Case InfluxDB)
+* After that insert the Queries from InfluxDB
+
+== How to get the Queries from InfluxDB
+* Go to InfluxDB
+----
+localhost:8086
+----
+
+* Click on Data Explorer
+** Click on the Bucket you created (in my Case db)
+* Click on the Measurement you want to get the Data from
+* Then click on Script Editor and copy that, then you get the Query
+
+== Embed Grafana to your Website
+* When you have a Visualization you want to embed to your Website, it wont work because allow_embedding and auth.anonymous default value is false
+* To change that follow the steps below
+
+.Step 1
+----
+sudo nano /etc/grafana/grafana.ini
+----
+
+* With this command you open the config file of Grafana
+
+.Step 2
+* Press CTRL + W and search for allow_embedding
+** It should look like this
+----
+;allow_embedding = false
+----
+
+* Now change the value to true and delete the Semicolon
+** It should look like this
+----
+allow_embedding = true
+----
+
+* Now press CTRL + W and search for Anonymous Auth
+** It should look like this
+----
+#################################### Anonymous Auth ######################
+[auth.anonymous]
+# enable anonymous access
+;enabled = false
+----
+
+* Now change the value to true and delete the Semicolon
+** It should look like this
+----
+#################################### Anonymous Auth ######################
+[auth.anonymous]
+# enable anonymous access
+enabled = true
+----
+
+* Now Save the Changes
+** Press CTRL + X
+
+* Now Restart Grafana
+----
+sudo systemctl restart grafana-server
+----
+
+* After that you can go to the settings and see if it worked and if the values are set to true
+* If Thats the case now you can embed your Visualization to your Website
+* Click on the Visualization you want to embed
+** Click on the Share Button
+* Now you can copy the Link and embed it to your Website
+** It looks something like this:
+----
+<iframe src="http://localhost:3000/d-solo/c8a2676e-4366-4718-be8c-bb3b11f26395/new-dashboard?orgId=1&from=1698793200000&to=1700953199000&panelId=4" width="450" height="200" frameborder="0"></iframe>
+----

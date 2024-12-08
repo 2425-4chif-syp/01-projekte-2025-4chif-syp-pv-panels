@@ -1,0 +1,47 @@
+<div class="weather-widget">
+  <!-- Aktuelle stündliche Vorhersage -->
+  <div *ngIf="hourlyData.length" class="section">
+    <h3>Heute</h3>
+    <div class="hourly-forecast">
+      <div *ngFor="let hour of hourlyData" class="hourly-item">
+        <p>
+          <strong>{{ hour.time | date: 'HH:mm' }}</strong> <!-- 24-Stunden-Format -->
+          <br />
+          <i [class]="getWeatherIcon(hour.weathercode)" aria-hidden="true"></i>
+          <br />
+          <span class="description">{{ getWeatherDescription(hour.weathercode) }}</span> <!-- Beschreibung hinzufügen -->
+          <br />
+          <span class="temperature">{{ hour.temperature }}°C</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tägliche Vorhersage -->
+  <div *ngIf="dailyData" class="section">
+    <h3>Täglich</h3>
+    <div class="daily-forecast">
+      <div *ngFor="let day of dailyData.time; let i = index" class="daily-item">
+        <p>
+          <strong>{{ day | date: 'EEEE' }}</strong>
+          <br />
+          <i [class]="getWeatherIcon(dailyData.weathercode[i])" aria-hidden="true"></i>
+          <br />
+          <span class="description">{{ getWeatherDescription(dailyData.weathercode[i]) }}</span> <!-- Beschreibung hinzufügen -->
+          <br />
+          <span class="temperature">{{ dailyData.temperature_2m_max[i] }}°C</span>
+          <br />
+          <span class="temperature-min">{{ dailyData.temperature_2m_min[i] }}°C</span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fehlerbehandlung -->
+  <div *ngIf="errorMessage" class="error-message">
+    <p>{{ errorMessage }}</p>
+  </div>
+  <div *ngIf="!weatherData && !errorMessage">
+    <p>Lade Wetterdaten...</p>
+  </div>
+</div>

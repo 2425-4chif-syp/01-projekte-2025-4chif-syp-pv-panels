@@ -1,0 +1,33 @@
+= Docker Container
+
+== Starten mit docker-compose
+
+Um unsere Applikation nutzen zu können, wird neben der Quarkus Application auch noch eine PostgreSQL-Datenbank,
+eine InfluxDB und Grafana verwendet. All diese Applikation laufen in Docker-Container und werden mit docker-compose
+gestartet.
+
+`docker-compose.yaml`
+[source,yaml]
+----
+include::../backend/leoenergy-relational/docker-compose.yaml[]
+----
+
+Dieses Skript wird am besten mit dem Shell-Script `dcup.sh` ausgeführt, da hier auch noch wichtige Rechte vergeben
+werden.
+
+[source,shell]
+----
+include::../backend/leoenergy-relational/dcup.sh[]
+----
+
+== PostgreSQL einrichten
+
+* keine Konfiguration notwendig
+
+== InfluxDB
+
+* http://localhost:8086
+
+== Grafana
+
+* http://localhost:3000

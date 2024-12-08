@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+
+class Device{
+    id: BigInteger
+    name: String
+}
+
+class SensorValue{
+    id: BigInteger
+    name: String
+    device: Device
+    value: BigDecimal
+    description: String
+    unit: String
+    timestamp: Timestamp
+ }
+
+Device "1"--"*" SensorValue
+@enduml

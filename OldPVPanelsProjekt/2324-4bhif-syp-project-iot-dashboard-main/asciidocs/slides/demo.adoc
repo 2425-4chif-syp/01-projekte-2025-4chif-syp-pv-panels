@@ -1,0 +1,59 @@
+:revealjs_theme: white
+:revealjs_history: true
+:imagesdir: images
+:revealjs_center: true
+:title-slide-transition: zoom
+:title-slide-transition-speed: fast
+:title-slide-background-image: htlleonding.jpg
+:title-slide-image: logo.png
+
+[.title]
+= Leoenergy
+:author:
+:date: 2024
+
+[.font-xx-large]
+== Team
+* Balint Balazs
+* Said Nurceski
+* Erik Seifried
+* Markus Breinesberger
+
+== Was ist Leoenergy?
+
+* Dashboard zur Überwachung des Energieverbrauchs an der HTL Leonding
+* Informationen zu Stromverbrauch und -erzeugung (wann, wie viel)
+* Echtzeitdaten und historische Analysen verfügbar
+
+== Wofür wird es gebraucht?
+
+* Energieverbrauch jederzeit im Blick behalten
+* Analyse von Verbrauchstrends und Ursachen
+
+== Architektur
+
+[.centered]
+image::architecture.png[Architecture Diagram, 600, center]
+
+== Sprint 12: Aufgaben
+
+* **Deployment:** Leoenergy auf VM23 korrekt bereitstellen
+
+
+== LIVE DEMO
+
+== Probleme Deployment: Bitte um Hilfe!
+
+=== Grundgedanken
+* Der Zugriff auf das Frontend mit SSL/HTTP2 wurde bereits mittels Certbox ermöglicht.
+* Grafana war vorher dank der Freigabe des Sysadmins direkt über den Port 3000 erreichbar (nur http).
+* Allerdings funktioniert die Einbettung von http-Links in einem https-Frontend seit dem Upgrade auf HTTPS nicht mehr.
+
+=== Lösung
+* Wir wollen aber den Zugriff über Port 443 (https) und der Route /grafana ermöglichen.
+* Hier traten einige Probleme bei der Konfiguration von Grafana (grafana.ini) auf.
+* Wenn der Zugriff über die Route /grafana funktioniert, wäre es schlau den Port 3000 für die Öffentlichkeit zu schließen.
+
+=== Lösung
+
+image::ProblemeNginxGrafana.png[]

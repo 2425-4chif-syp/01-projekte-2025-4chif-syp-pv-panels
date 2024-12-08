@@ -1,0 +1,11 @@
+= MQTT Server | Said Nurceski
+
+== Was brauchen wir vom MQTT Server
+* Device_ID
+* Timestamp
+* UnitStr
+* Values
+* DescriptionStr
+* Id
+* ManufacturerId
+* Name (Device Name)
