@@ -53,52 +53,7 @@ Test
 
 == Systemarchitektur
 
-[plantuml, format=svg]
-----
-@startuml
-package "Komponenten" as K {
-    rectangle "PV-Panel" as P
-    rectangle "Sensoren" as SE
-}
-
-package "Server" as S {
-    rectangle "MQTT-Server" as M
-}
-
-package "Database" as D {
-    rectangle "InfluxDB" as I
-}
-
-package "Visualisierung" as V {
-    rectangle "Grafana" as G
-}
-
-package "Backend" as B {
-    rectangle "Quarkus (läuft auf JVM)" as Q
-}
-
-package "Frontend" as F {
-    rectangle "Angular Website (Dashboard)" as A
-}
-
-package "NGINX" as N {
-    rectangle "Reverse Proxy" as NGINX
-}
-
-P - -> M : MQTT
-SE - -> M : MQTT
-M - -> I : MQTT
-M - -> B : MQTT
-B <- -> D : REST
-A - -> B : REST
-D - -> G : Datenvisualisierung
-B - -> G : API-AUFRUF
-
-F - -> NGINX : Bereitstellung von Angular
-N - -> A : Hosting der Website
-N - -> B : Reverse Proxy für API-Anfragen
-@enduml
-----
+image::SystemArchitecture.svg[]
 
 == ERD - Diagramm
 
