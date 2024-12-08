@@ -1,6 +1,4 @@
 = Leo Energy
-:author: Luis Schörgendorfer
-:email: l.schoergendorfer@HTBLALeonding.onmicrosoft.com
 :revnumber: 1.0
 :revdate: {docdate}
 :revremark: SLIDEDEMO @ HTL Leonding
@@ -45,11 +43,38 @@ endif::[]
 //image::img.png[]
 == Ziele
 
-Test
+Das bestehende Projekt der vorherigen Klasse wird übernommen und weiterentwickelt. Ziel ist es, die Funktionalität und Benutzerfreundlichkeit des Systems zu verbessern, um es effektiv im Schulbetrieb einzusetzen. Zusätzlich sollen moderne Technologien integriert werden, um das Projekt zukunftssicher und effizient zu gestalten.
+
 
 == Neuester Stand
 
-Test
+Sprint 01:
+
+[.highlight]
+=== Environment Setup
+* Setup Docker -- **in Progress**
+
+[.highlight]
+=== Documentation
+* Documentation -- **in Progress**
+
+[.highlight]
+=== Backend
+* Base Quarkus Application -- **Done**
+* Fix: Mqtt Connection Error -- **Done**
+
+[.highlight]
+=== Frontend
+* Frontend Sensors -- **in Progress**
+
+[.highlight]
+=== Database
+* Master Data Creation -- **to Verify**
+
+[.highlight]
+=== VM
+* VM Setup -- **to Verify**
+
 
 == Systemarchitektur
 
