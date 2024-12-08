@@ -53,7 +53,7 @@ Test
 
 == Systemarchitektur
 
-image::SystemArchitecture.svg[]
+image::SystemArchitecture.svg[width=80% ,height=80%]
 
 == ERD - Diagramm
 
