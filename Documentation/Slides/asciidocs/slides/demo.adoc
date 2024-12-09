@@ -43,7 +43,9 @@ endif::[]
 //image::img.png[]
 == Goals
 
-The existing project from the previous class is being adopted and further developed. The goal is to enhance the functionality and usability of the system to make it effective for school operations. Additionally, modern technologies will be integrated to ensure the project is future-proof and efficient.
+The existing project from the previous class is being adopted and further developed.
+The goal is to enhance the functionality and usability of the system to make it effective for school operations.
+Additionally, modern technologies will be integrated to ensure the project is future-proof and efficient.
 
 
 == Latest Status
@@ -110,4 +112,13 @@ Room ||--o{ Sensor : "1 : N"
 @enduml
 ----
 
+== Next Steps
+
+* Integrate database to backend
+* dockering the backend
+* Connecting frontend to backend
+* Implementing Grafana
+* Implementing new features
+* Learn working with Quarkus and VM
+* Implement new features and improve the old project
 
