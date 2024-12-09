@@ -29,21 +29,21 @@ package "Frontend" as F {
 
 package "NGINX" as N {
     rectangle "Reverse Proxy" as NGINX
+    rectangle "Hosting der Website" as hosting
 }
 
 ' Pfeile zwischen den Komponenten
 P --> M : MQTT
 SE --> M : MQTT
-M --> I : MQTT
+M --> I : Telegraf
 M --> B : MQTT
 B <--> D : REST
 A --> B : REST
-D --> G : Datenvisualisierung
-B --> G : API-AUFRUF
+D --> G : REST
+B --> G : REST
 
 ' Verbindung zwischen NGINX und Website
-F --> NGINX : Bereitstellung von Angular
-N --> A : Hosting der Website
-N --> B : Reverse Proxy für API-Anfragen
+F --> N : Bereitstellung von Angular Website
+NGINX --> B : REST
 
 @enduml

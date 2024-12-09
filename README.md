@@ -21,6 +21,8 @@ Die Quarkus App liest diese JSON-Dateien ein und schreibt diese in eine InfluxDB
 **System Architecture**  
 ![SVG  Diagram](Documentation/SystemArchitecture/diagrams/SystemArchitecture.svg)
 
+![SVG  Diagram](Documentation/SystemArchitecture/diagrams/SystemArchitectureGraphic.svg)
+
 **ERD**  
 ![SVG  Diagram](Documentation/ERD/ERD.svg)
 
