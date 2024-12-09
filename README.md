@@ -22,32 +22,7 @@ Die Quarkus App liest diese JSON-Dateien ein und schreibt diese in eine InfluxDB
 ![SVG  Diagram](Documentation/SystemArchitecture/diagrams/SystemArchitecture.svg)
 
 **ERD**  
-```plantuml
-@startuml
-entity "Room" as Room {
-+ roomId : NUMBER
---
-roomLabel : VARCHAR(255)
-roomName : VARCHAR(255)
-roomType : VARCHAR(255)
-floor : VARCHAR(50)
-corridor : VARCHAR(50)
-- neighborsInside : NUMBER
-- neighborsOutside : NUMBER
-}
-
-entity "Sensor" as Sensor {
-+ sensorId : NUMBER
---
-type : VARCHAR(50)
-status : VARCHAR(50)
-location : VARCHAR(255)
-- roomId : NUMBER
-}
-
-Room ||--o{ Sensor : "1 : N"
-@enduml
-```
+![SVG  Diagram](Documentation/ERD/ERD.svg)
 
 ## Sprint-Backlog
 [Sprint Backlog](https://vm81.htl-leonding.ac.at/agiles/99-404/100-1841)

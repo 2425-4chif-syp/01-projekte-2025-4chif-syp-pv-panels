@@ -1,3 +1,4 @@
+[plantuml, "SystemArchitecture", svg]
 
 @startuml
 ' Definition der Boxen

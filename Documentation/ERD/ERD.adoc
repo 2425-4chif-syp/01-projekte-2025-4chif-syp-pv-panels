@@ -1,3 +1,5 @@
+[plantuml, "ERD", svg]
+
 @startuml
 entity "Room" as Room {
 + roomId : NUMBER
