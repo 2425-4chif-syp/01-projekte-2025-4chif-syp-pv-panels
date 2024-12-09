@@ -124,6 +124,6 @@ Room ||--o{ Sensor : "1 : N"
 
 == Final outcome
 
-* At the end of the project, we will have a fully functional system that can be used in schools to monitor and manage energy consumption.
+At the end of the project, we will have a fully functional system that can be used in schools to monitor and manage energy consumption.
 Additionally, we will try to develop the project enough to deploy it on the school website.
 
