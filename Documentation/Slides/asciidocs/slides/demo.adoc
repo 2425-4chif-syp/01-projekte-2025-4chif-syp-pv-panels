@@ -41,12 +41,14 @@ endif::[]
 
 //[.stretch]
 //image::img.png[]
-== Ziele
+== Goals
 
-Das bestehende Projekt der vorherigen Klasse wird übernommen und weiterentwickelt. Ziel ist es, die Funktionalität und Benutzerfreundlichkeit des Systems zu verbessern, um es effektiv im Schulbetrieb einzusetzen. Zusätzlich sollen moderne Technologien integriert werden, um das Projekt zukunftssicher und effizient zu gestalten.
+The existing project from the previous class is being adopted and further developed.
+The goal is to enhance the functionality and usability of the system to make it effective for school operations.
+Additionally, modern technologies will be integrated to ensure the project is future-proof and efficient.
 
 
-== Neuester Stand
+== Latest Status
 
 Sprint 01:
 
@@ -76,11 +78,11 @@ Sprint 01:
 * VM Setup -- **to Verify**
 
 
-== Systemarchitektur
+== System Architecture
 
 image::SystemArchitecture.svg[width=40% ,height=40%]
 
-== ERD - Diagramm
+== ERD - Diagram
 
 [plantuml, format=svg]
 ----
@@ -110,4 +112,18 @@ Room ||--o{ Sensor : "1 : N"
 @enduml
 ----
 
+== Next Steps
+
+* Integrate database to backend
+* Dockering the backend
+* Connecting frontend to backend
+* Implementing Grafana
+* Implementing new features
+* Learn working with Quarkus and VM
+* Implement new features and improve the old project
+
+== Final outcome
+
+At the end of the project, we will have a fully functional system that can be used in schools to monitor and manage energy consumption.
+Additionally, we will try to develop the project enough to deploy it on the school website.
 
