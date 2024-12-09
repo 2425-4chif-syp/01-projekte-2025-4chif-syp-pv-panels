@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="795px" preserveAspectRatio="none" style="width:710px;height:795px;" version="1.1" viewBox="0 0 710 795" width="710px" zoomAndPan="magnify"><defs><filter height="300%" id="fdzlp9034nmpk" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[cddc6333dd86b1849aefe74cad8919f8]
+cluster K--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="26,40,143,40,150,62.2969,262,62.2969,262,127,26,127,26,40" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="26" x2="150" y1="62.2969" y2="62.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="111" x="30" y="54.9951">Komponenten</text><!--MD5=[af4e165634b2a4ca3c4688fff127cc50]
+cluster S--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="22,208,81,208,88,230.2969,164,230.2969,164,295,22,295,22,208" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="22" x2="88" y1="230.2969" y2="230.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="53" x="26" y="222.9951">Server</text><!--MD5=[f6e6e24a8096a8e61f901e9be08ab5fd]
+cluster D--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="140,536,219,536,226,558.2969,283,558.2969,283,639,140,639,140,536" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="140" x2="226" y1="558.2969" y2="558.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="73" x="144" y="550.9951">Database</text><!--MD5=[a10bb3759edc5b15ee875ad0aa43aed6]
+cluster V--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="251,696,368,696,375,718.2969,378,718.2969,378,783,251,783,251,696" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="251" x2="375" y1="718.2969" y2="718.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="111" x="255" y="710.9951">Visualisierung</text><!--MD5=[7ab6094aba2dbfe683d313850b4878bd]
+cluster B--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="337,368,410,368,417,390.2969,578,390.2969,578,471,337,471,337,368" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="337" x2="417" y1="390.2969" y2="390.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="67" x="341" y="382.9951">Backend</text><!--MD5=[a2f5cd3507aca8bc071f9016fd610c57]
+cluster F--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="399,32,477,32,484,54.2969,688,54.2969,688,135,399,135,399,32" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="399" x2="484" y1="54.2969" y2="54.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="72" x="403" y="46.9951">Frontend</text><!--MD5=[59bada1ab718559697f4c296ee59eeee]
+cluster N--><polygon fill="#FFFFFF" filter="url(#fdzlp9034nmpk)" points="196,200,250,200,257,222.2969,576,222.2969,576,303,196,303,196,200" style="stroke: #000000; stroke-width: 1.5;"/><line style="stroke: #000000; stroke-width: 1.5;" x1="196" x2="257" y1="222.2969" y2="222.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacingAndGlyphs" textLength="48" x="200" y="214.9951">NGINX</text><!--MD5=[626ad08abde0879284d52f51a0eb42aa]
+entity P--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="81" x="42.5" y="75"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="61" x="52.5" y="97.9951">PV-Panel</text><!--MD5=[0f187cbaedd9fd489a126ebaacd58bd2]
+entity SE--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="87" x="158.5" y="75"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="67" x="168.5" y="97.9951">Sensoren</text><!--MD5=[c72e14692f063a08d1023b5b76acc947]
+entity M--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="110" x="38" y="243"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="90" x="48" y="265.9951">MQTT-Server</text><!--MD5=[225a11a356cb2db3802a7b30c3a51941]
+entity I--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="76" x="164" y="579"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="56" x="174" y="601.9951">InfluxDB</text><!--MD5=[1f67e8801336723dc06e2b95a190f0a5]
+entity G--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="73" x="277.5" y="731"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="53" x="287.5" y="753.9951">Grafana</text><!--MD5=[653366b36524237ef48087d092b9cb5d]
+entity Q--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="174" x="380" y="411"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="154" x="390" y="433.9951">Quarkus (läuft auf JVM)</text><!--MD5=[770389ab9df153645bc6ef28055eb2b5]
+entity A--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="222" x="442" y="75"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="202" x="452" y="97.9951">Angular Website (Dashboard)</text><!--MD5=[52bb74e2ef528211db78d89d6acc3642]
+entity NGINX--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="118" x="434" y="243"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="98" x="444" y="265.9951">Reverse Proxy</text><!--MD5=[1da581a9c567b53f6432824bf8a5bf06]
+entity hosting--><rect fill="#FEFECE" filter="url(#fdzlp9034nmpk)" height="36.2969" style="stroke: #000000; stroke-width: 1.5;" width="160" x="239" y="243"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacingAndGlyphs" textLength="140" x="249" y="265.9951">Hosting der Website</text><!--MD5=[309ec4a77b309b27fd9bbd43c8761787]
+link P to M--><path d="M84.03,111.14 C85.85,141.33 89.63,203.98 91.65,237.57 " fill="none" id="P-&gt;M" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="91.96,242.7,95.4122,233.476,91.6597,237.709,87.4267,233.9565,91.96,242.7" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="89" y="172.0669">MQTT</text><!--MD5=[fb4f58247b0aafac85ebb24becad51fe]
+link SE to M--><path d="M190.75,111.14 C170.76,141.58 129.1,205.02 107.19,238.4 " fill="none" id="SE-&gt;M" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="104.36,242.7,112.6596,237.3974,107.117,238.5288,105.9856,232.9862,104.36,242.7" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="158" y="172.0669">MQTT</text><!--MD5=[2aab75f9968f9f2e47421f30bf2dc86f]
+link M to I--><path d="M98.56,279.02 C116.7,334.62 174.23,510.9 194.69,573.6 " fill="none" id="M-&gt;I" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="196.33,578.61,197.3583,568.815,194.7875,573.8539,189.7486,571.283,196.33,578.61" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="51" x="166" y="433.5669">Telegraf</text><!--MD5=[784d2ad83f22fda8f04cc798cbff9b34]
+link M to B--><path d="M119.02,279.14 C150.71,300.015 205.9475,336.4025 253.8763,367.975 C277.8406,383.7613 299.9778,398.3438 316.4308,409.1816 C324.6573,414.6005 331.4627,419.0832 336.3649,422.3121 C336.5181,422.4131 336.6695,422.5127 336.8189,422.6112 " fill="none" id="M-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="336.8189,422.6112,331.5031,414.3201,332.6433,419.8609,327.1026,421.0011,336.8189,422.6112" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="35" x="212" y="340.0669">MQTT</text><!--MD5=[635162b0568dccf9b81699e51957888e]
+link B to D--><path d="M336.827,435.9158 C336.7572,435.9691 336.687,436.0227 336.6164,436.0767 C332.1009,439.5309 326.1606,444.3344 319.8138,450.1688 C307.12,461.8375 292.8,477.63 285,495 C280.4525,505.1275 277.5375,516.3869 275.7269,527.6078 C275.2742,530.413 274.8906,549.5147 274.5677,552.2969 " fill="none" id="B-D" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="274.5677,535.998,279.5785,527.5191,275.1441,531.0314,271.6319,526.5969,274.5677,535.998" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="336.827,435.9158,327.2458,438.1962,332.8523,438.9492,332.0993,444.5557,336.827,435.9158" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="286" y="508.0669">REST</text><!--MD5=[5e2eec62a50b26b6b0db6c12e4ee289c]
+link A to B--><path d="M561.14,111.04 C579.43,152.07 618.38,257.54 568,319 C532.08,362.81 499.03,335.58 443,344 C425.55,346.62 377.34,340.45 364,352 C360.8125,354.7587 358.1183,357.9637 355.8446,361.4665 C354.7078,363.2179 353.6761,365.0437 352.7405,366.9253 C352.6235,367.1605 352.5081,367.3966 352.3941,367.6335 C352.3371,367.752 352.2805,367.8707 352.2243,367.9895 " fill="none" id="A-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="352.2243,367.9895,359.6892,361.565,354.3628,363.4699,352.4579,358.1434,352.2243,367.9895" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="593" y="265.5669">REST</text><!--MD5=[a237a4036bc185c3ad6b67d996fe4e1c]
+link D to G--><path d="M277.7486,639.3238 C277.7639,639.4594 277.7793,639.5951 277.7947,639.731 C278.289,644.079 278.8702,648.5714 279.5534,653.1059 C280.92,662.175 282.695,671.4125 285,680 C289.3,696.01 296.64,713.17 302.86,726.25 " fill="none" id="D-&gt;G" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="305.09,730.87,304.7812,721.026,302.9171,726.3669,297.5762,724.5027,305.09,730.87" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="286" y="676.0669">REST</text><!--MD5=[a19b0615160701c0393b602d7d92b103]
+link B to G--><path d="M341.9162,471.3595 C341.8272,472.5135 341.7366,473.6871 341.6442,474.8795 C341.4594,477.2644 341.2679,479.7249 341.0697,482.2561 C340.2772,492.3808 339.3794,503.6369 338.39,515.7125 C334.4325,564.015 329.01,625.43 323,680 C321.31,695.36 319.02,712.62 317.17,725.91 " fill="none" id="B-&gt;G" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="316.46,730.98,321.6791,722.6277,317.1591,726.0291,313.7577,721.5091,316.46,730.98" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="338" y="601.5669">REST</text><!--MD5=[08355dfb59990590ad645d55e68ad003]
+link F to N--><path d="M398.7924,96.9535 C394.158,98.6425 387.7634,101.0034 380.1344,103.8986 C364.8763,109.6891 344.68,117.6169 323.75,126.5813 C281.89,144.51 237.095,166.585 223,184 C220.3475,187.2775 218.0587,190.8756 216.0846,194.6687 C215.591,195.6169 215.1171,196.5774 214.6621,197.548 C214.4346,198.0334 214.2118,198.5213 213.9937,199.0115 C213.8846,199.2566 213.7767,199.5022 213.6699,199.7484 " fill="none" id="F-&gt;N" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="213.6699,199.7484,220.9204,193.0828,215.6592,195.1612,213.5808,189.9,213.6699,199.7484" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="222" x="254" y="172.0669">Bereitstellung von Angular Website</text><!--MD5=[c824d78b9c1b0bc22410bee183a53335]
+link NGINX to B--><path d="M471.09,279.23 C456.1,290.81 435.65,306.24 417,319 C394.1,334.67 380.34,329.57 364,352 C361.5175,355.4088 359.3577,359.1064 357.4787,362.973 C357.009,363.9397 356.5568,364.9169 356.1216,365.9028 C355.9039,366.3957 355.6905,366.8908 355.4813,367.3879 C355.4289,367.5121 355.3769,367.6365 355.3251,367.761 " fill="none" id="NGINX-&gt;B" style="stroke: #A80036; stroke-width: 1.0;"/><polygon fill="#A80036" points="355.3251,367.761,362.4754,360.988,357.2457,363.1446,355.0891,357.915,355.3251,367.761" style="stroke: #A80036; stroke-width: 1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacingAndGlyphs" textLength="32" x="402" y="340.0669">REST</text><!--MD5=[b0e511336d8f1126da410af2c7332768]
+@startuml
+package "Komponenten" as K {
+    rectangle "PV-Panel" as P
+    rectangle "Sensoren" as SE
+}
+
+package "Server" as S {
+    rectangle "MQTT-Server" as M
+}
+
+package "Database" as D {
+    rectangle "InfluxDB" as I
+}
+
+package "Visualisierung" as V {
+    rectangle "Grafana" as G
+}
+
+package "Backend" as B {
+    rectangle "Quarkus (läuft auf JVM)" as Q
+}
+
+package "Frontend" as F {
+    rectangle "Angular Website (Dashboard)" as A
+}
+
+package "NGINX" as N {
+    rectangle "Reverse Proxy" as NGINX
+    rectangle "Hosting der Website" as hosting
+}
+
+P - -> M : MQTT
+SE - -> M : MQTT
+M - -> I : Telegraf
+M - -> B : MQTT
+B <- -> D : REST
+A - -> B : REST
+D - -> G : REST
+B - -> G : REST
+
+F - -> N : Bereitstellung von Angular Website
+NGINX - -> B : REST
+
+@enduml
+
+PlantUML version 1.2020.02(Sun Mar 01 10:22:07 UTC 2020)
+(GPL source distribution)
+Java Runtime: OpenJDK Runtime Environment
+JVM: OpenJDK 64-Bit Server VM
+Java Version: 11.0.25+9
+Operating System: Linux
+Default Encoding: UTF-8
+Language: en
+Country: null
+--></g></svg>
