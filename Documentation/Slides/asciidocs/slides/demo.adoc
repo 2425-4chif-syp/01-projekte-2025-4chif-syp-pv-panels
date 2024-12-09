@@ -80,7 +80,7 @@ Sprint 01:
 
 == System Architecture
 
-image::SystemArchitecture.svg[width=40% ,height=40%]
+image::../../../SystemArchitecture/diagrams/SystemArchitecture.svg[width=40% ,height=40%]
 
 == ERD - Diagram
 
