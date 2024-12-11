@@ -1,6 +1,7 @@
-= Besprechungsprotokoll dd.mm.yyyy
-firstname lastname
-1.0, {docdate}: Some notes
+= Besprechungsprotokoll 09.12.2024
+Sebastian Radic, Luis Schörgendorfer, Tobias Kletsch
+1.0, 09.12.2024: Protokoll der Besprechung
+
 ifndef::imagesdir[:imagesdir: images]
 :icons: font
 //:sectnums:    // Nummerierung der Überschriften / section numbering
@@ -10,55 +11,38 @@ ifndef::imagesdir[:imagesdir: images]
 ifdef::backend-html5[]
 
 // https://fontawesome.com/v4.7.0/icons/
-icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
-icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
-icon:home[link=https://htl-leonding.github.io/]
-endif::backend-html5[]
 
 
 .Teilnehmer
 |===
 |anwesend |Verteiler
 
-|Vorname Nachname
-|
+|Sebastian Radic
+|Sebastian Radic
 
-|A. Anton (teilweise)
-|A. Anton
+|Luis Schörgendorfer
+|Luis Schörgendorfer
 
-|B. Berta
-|B. Berta
-
-|C. Cäsar
-|C. Cäsar
-
-|
-|D. Dora
+|Tobias Kletsch
+|Tobias Kletsch
 |===
 
 .Ort und Zeit
 [cols=2*]
 |===
 |Ort
-|Online-Unterricht (Discord)
+|Schule
 
 |von-bis
-|Mo. 20.4.2020, 2. und 3. EH
+|Mo. 09.12.2024, 5 Minuten
 |Dauer
-|70 min
+|5 Minuten
 |===
-
-
 
 == Besprochene Themen
 
-* Thema 1
-* Thema 2
-* Thema 3
-* Thema 4 +
-Ev. mit Erläuterungen
-* Thema 5
-
+* Das alte Projekt soll aufgesetzt werden.
+* Zeitrahmen: Bis nächste Woche.
 
 == Vereinbarungen und Entscheidungen
 
@@ -67,30 +51,18 @@ Ev. mit Erläuterungen
 |===
 |wer |macht was |bis wann
 
-| Hr. Dora
-a| Erstellung des UCD
-| 20.06.2020
+|Sebastian Radic
+|Projekt aufsetzen
+|16.12.2024
 
-|...
-a|
-.Ev. Bilder und Diagramme
-image:animal-pet-cute-kitten-45201.jpg[width=400px]
+|Luis Schörgendorfer
+|Weiter am frontend arbeiten
+|16.12.2024
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-|1.06.2020
-
-|Fr. Emil
-a|
-.Class Diagram
-[plantuml,CLD,png]
-----
-@startuml
-class City
-class Street
-City "1" <--right- "*" Street
-@enduml
-----
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-|3.06.2020
+|Tobias Kletsch
+|unklar (Datenbank)
+|16.12.2024
 |===
+
+.Ev. Bilder und Diagramme
+// (Falls erforderlich, hier Bilder oder Diagramme hinzufügen)
