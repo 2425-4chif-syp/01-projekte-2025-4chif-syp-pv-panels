@@ -14,40 +14,32 @@
 Auf einer VM (leoenergy genannt) werden von einem schuleigenen Server in einem 5-Minuten- Intervall per SFTP Datendateien im JSON-Format heruntergeladen.
 
 ## Anforderungen
-Die Quarkus App liest diese JSON-Dateien ein und schreibt diese in eine InfluxDB. Dabei ist auf korrektes Tagging zu achten. Es werden laufend neue JSON-Dateitypen hinzugefügt.
+
+- **Verarbeitung der Daten**:  
+  Die Quarkus-App muss JSON-Dateien, die vom MQTT-Server bereitgestellt werden, einlesen, verarbeiten und mit korrektem Tagging in die InfluxDB schreiben. Dabei ist sicherzustellen, dass die Datenstruktur flexibel bleibt, um neue JSON-Dateitypen einfach hinzufügen zu können.
+
+- **Visualisierung der Daten**:  
+  Grafana muss eingerichtet werden, um die in der InfluxDB gespeicherten Daten auf übersichtlichen Dashboards zu visualisieren. Dies erfordert die Konfiguration von Queries und Panels, die eine klare Darstellung der Sensor- und Energiedaten ermöglichen.
+
+- **Bereitstellung und Weiterleitung**:  
+  NGINX muss so konfiguriert werden, dass:
+  - Die Angular-Website als Benutzeroberfläche bereitgestellt wird.
+  - API-Anfragen des Frontends sicher an die Quarkus-App weitergeleitet werden, um eine zuverlässige Kommunikation zwischen Frontend und Backend sicherzustellen.
+
+Das System muss modular aufgebaut sein, um zukünftige Erweiterungen wie neue Sensordaten oder JSON-Typen einfach integrieren zu können.
+
+## Endergebnis
+Am Ende des Projekts wird ein vollständig funktionsfähiges System entstehen, das die Schule dabei unterstützt, den Energieverbrauch effizient zu überwachen und zu verwalten. Außerdem planen wir, das Projekt so weit zu entwickeln, dass es problemlos auf der Schulwebsite integriert und genutzt werden kann.
 
 ## Diagrams
 
 **System Architecture**  
 ![SVG  Diagram](Documentation/SystemArchitecture/diagrams/SystemArchitecture.svg)
 
+![SVG  Diagram](Documentation/SystemArchitecture/diagrams/SystemArchitectureGraphic.svg)
+
 **ERD**  
-```plantuml
-@startuml
-entity "Room" as Room {
-+ roomId : NUMBER
---
-roomLabel : VARCHAR(255)
-roomName : VARCHAR(255)
-roomType : VARCHAR(255)
-floor : VARCHAR(50)
-corridor : VARCHAR(50)
-- neighborsInside : NUMBER
-- neighborsOutside : NUMBER
-}
-
-entity "Sensor" as Sensor {
-+ sensorId : NUMBER
---
-type : VARCHAR(50)
-status : VARCHAR(50)
-location : VARCHAR(255)
-- roomId : NUMBER
-}
-
-Room ||--o{ Sensor : "1 : N"
-@enduml
-```
+![SVG  Diagram](Documentation/ERD/ERD.svg)
 
 ## Sprint-Backlog
 [Sprint Backlog](https://vm81.htl-leonding.ac.at/agiles/99-404/100-1841)
