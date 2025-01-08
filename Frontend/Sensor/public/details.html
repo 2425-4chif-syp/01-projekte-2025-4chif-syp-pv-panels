@@ -220,17 +220,13 @@
     </div>
 
     <script>
-        // Get location from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const sensorLocation = urlParams.get('location') || 'eg72';
         
-        // Update title with location
         document.getElementById('locationTitle').textContent = `Sensor Details - ${sensorLocation.toUpperCase()}`;
         
-        // Verbindung zum WebSocket-Server
         const ws = new WebSocket("ws://localhost:3000");
 
-        // Empfangene Nachrichten verarbeiten
         ws.onmessage = (event) => {
             console.log('WebSocket Nachricht empfangen:', event.data);
             
@@ -243,7 +239,6 @@
                 return;
             }
 
-            // Überspringe Server-Verbindungsnachrichten
             if (!data.topic) {
                 return;
             }
@@ -254,21 +249,18 @@
             console.log('Aktuelle Location:', sensorLocation);
             console.log('Empfangenes Topic:', topic);
 
-            // Format the location to match MQTT topic format
             let formattedLocation = sensorLocation.toLowerCase();
             let expectedTopic = '';
             
             if (formattedLocation.startsWith('eg')) {
                 expectedTopic = `eg/e${formattedLocation.substring(2)}`;
             } else if (formattedLocation.startsWith('ug')) {
-                // Remove any underscore for comparison
                 const roomNumber = formattedLocation.substring(2).replace('_', '');
                 expectedTopic = `ug/U${roomNumber}`;
             }
 
             console.log('Erwartetes Topic-Prefix:', expectedTopic);
 
-            // Check if the message is for our location
             if (!topic.toLowerCase().startsWith(expectedTopic.toLowerCase())) {
                 console.log('Topic passt nicht zur aktuellen Location');
                 return;
@@ -276,9 +268,7 @@
 
             console.log('Topic matched location, updating values...');
 
-            // Funktion zur Bestimmung der Farbe basierend auf dem Wert
             function getColorForValue(sensor, value) {
-                // Schwellenwerte aus dem localStorage laden
                 const thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || {
                     co2: { good: 800, bad: 1200 },
                     temperature: { good: 20, bad: 22 },
@@ -303,7 +293,6 @@
                 return '';
             }
 
-            // Funktion zum Aktualisieren der Sensor-Anzeige
             function updateSensor(sensorId, value) {
                 const dot = document.getElementById(`${sensorId}-dot`);
                 const tooltip = document.getElementById(`${sensorId}-tooltip`);
@@ -315,7 +304,6 @@
                     status.textContent = `Status: ${statusClass}`;
                     status.className = `sensor-status ${statusClass}`;
                     
-                    // Format value based on sensor type
                     let displayValue = value;
                     if (sensorId === 'temperature') displayValue = value.toFixed(1) + '°C';
                     else if (sensorId === 'humidity') displayValue = value.toFixed(1) + '%';
@@ -328,7 +316,6 @@
                 }
             }
 
-            // Werte aktualisieren
             if (topic.includes('/co2') || topic.includes('/CO2')) {
                 const value = typeof valueData === 'object' ? valueData.value : valueData;
                 updateSensor('co2', value);

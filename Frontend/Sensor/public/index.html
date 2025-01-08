@@ -15,7 +15,7 @@
             --text-color: #333333;
             --border-radius: 15px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --card-width: 250px; /* Feste Breite für die Karten */
+            --card-width: 250px;
         }
 
         body, html {
@@ -78,12 +78,12 @@
 
         .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr)); /* Feste Breite für Karten */
+            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr)); 
             gap: 2rem;
         }
 
         .room-card {
-            width: var(--card-width); /* Feste Breite */
+            width: var(--card-width);
             background: #f9f9f9;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
@@ -172,7 +172,7 @@
             }
 
             .room-card {
-                width: 100%; /* Volle Breite auf kleinen Bildschirmen */
+                width: 100%; 
             }
         }
 
@@ -303,7 +303,6 @@
 <body>
     <div class="header">
         <h1>HTL Leonding Sensor Dashboard</h1>
-        <p>Echtzeit-Überwachung der Raumklima-Sensoren</p>
     </div>
 
     <div class="main-content">
@@ -441,20 +440,17 @@
         </div>
     </div>
 
-    <script>
-        // Schwellenwerte im localStorage speichern
+    <script>n
         const defaultThresholds = {
             co2: { good: 800, bad: 1200 },
             temperature: { good: 20, bad: 22 },
             humidity: { good: 40, bad: 60 }
         };
 
-        // Beim Laden die gespeicherten Werte abrufen oder Standardwerte verwenden
         let thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || defaultThresholds;
 
         function openModal() {
             document.getElementById('settingsModal').style.display = 'flex';
-            // Aktuelle Werte in die Inputs setzen
             document.getElementById('co2Good').value = thresholds.co2.good;
             document.getElementById('co2Bad').value = thresholds.co2.bad;
             document.getElementById('tempGood').value = thresholds.temperature.good;
@@ -486,7 +482,6 @@
             closeModal();
         }
 
-        // Schließen des Modals wenn außerhalb geklickt wird
         window.onclick = function(event) {
             if (event.target == document.getElementById('settingsModal')) {
                 closeModal();
