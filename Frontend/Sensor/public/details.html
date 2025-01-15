@@ -36,6 +36,42 @@
             position: relative;
         }
 
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .htl-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .sensor-status-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .sensor-active {
+            animation: pulse 2s infinite;
+        }
+
         .back-button {
             display: inline-flex;
             align-items: center;
@@ -319,14 +355,32 @@
             if (topic.includes('/co2') || topic.includes('/CO2')) {
                 const value = typeof valueData === 'object' ? valueData.value : valueData;
                 updateSensor('co2', value);
+                updateSensorStatus('co2');
             }
             if (topic.includes('/humidity') || topic.includes('/HUM')) {
                 const value = typeof valueData === 'object' ? valueData.value : valueData;
                 updateSensor('humidity', value);
+                updateSensorStatus('humidity');
             }
             if (topic.includes('/temperature') || topic.includes('/TEMP')) {
                 const value = typeof valueData === 'object' ? valueData.value : valueData;
                 updateSensor('temperature', value);
+                updateSensorStatus('temperature');
+            }
+
+            function updateSensorStatus(sensorId) {
+                const statusIcon = document.getElementById(`${sensorId}-sensor-status`);
+                if (statusIcon) {
+                    statusIcon.src = 'icons/sensoron.png';
+                    statusIcon.classList.add('sensor-active');
+                    
+                    clearTimeout(window.sensorTimeouts?.[sensorId]);
+                    window.sensorTimeouts = window.sensorTimeouts || {};
+                    window.sensorTimeouts[sensorId] = setTimeout(() => {
+                        statusIcon.src = 'icons/sensoroff.png';
+                        statusIcon.classList.remove('sensor-active');
+                    }, 5000);
+                }
             }
         };
 

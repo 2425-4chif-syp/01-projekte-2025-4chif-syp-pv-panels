@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTL Leonding Sensor Dashboard</title>
+    <title>Sensor Dashboard</title>
     <style>
         :root {
             --primary-color: #FF7F6F;
@@ -15,7 +15,7 @@
             --text-color: #333333;
             --border-radius: 15px;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --card-width: 250px;
+            --card-width: 250px; /* Feste Breite für die Karten */
         }
 
         body, html {
@@ -29,22 +29,94 @@
 
         .header {
             background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
-            padding: 2rem;
+            padding: 1.5rem 3rem;
             color: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-content {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
             text-align: center;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .header h1 {
-            margin: 0;
+        .header-content h1 {
             font-size: 2.5rem;
-            font-weight: bold;
+            margin: 0;
         }
 
-        .header p {
-            margin: 0.5rem 0 0;
-            font-size: 1.1rem;
-            opacity: 0.9;
+        .htl-logo {
+            height: 55px;
+            width: auto;
+        }
+
+        .sensor-status-icon {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .room-content {
+            position: relative;
+            min-height: 150px;
+        }
+
+        .sensor-preview {
+            position: relative;
+            z-index: 2;
+        }
+
+        .threshold-button {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .threshold-button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .threshold-button img {
+            width: 20px;
+            height: 20px;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .sensor-active {
+            animation: pulse 2s infinite;
+            transform-origin: center center;
         }
 
         .main-content {
@@ -78,12 +150,12 @@
 
         .rooms-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr)); 
+            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr)); /* Feste Breite für Karten */
             gap: 2rem;
         }
 
         .room-card {
-            width: var(--card-width);
+            width: var(--card-width); /* Feste Breite */
             background: #f9f9f9;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
@@ -172,7 +244,7 @@
             }
 
             .room-card {
-                width: 100%; 
+                width: 100%; /* Volle Breite auf kleinen Bildschirmen */
             }
         }
 
@@ -302,7 +374,10 @@
 </head>
 <body>
     <div class="header">
-        <h1>HTL Leonding Sensor Dashboard</h1>
+        <img src="images/new_htl_logo_name.png" alt="HTL Leonding" class="htl-logo">
+        <div class="header-content">
+            <h1>Sensor Dashboard</h1>
+        </div>
     </div>
 
     <div class="main-content">
@@ -312,6 +387,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=eg72'">
                     <div class="room-header">Raum EG72</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-eg72">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -328,6 +404,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=ug86'">
                     <div class="room-header">Raum UG86</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug86">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -339,6 +416,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=ug90'">
                     <div class="room-header">Raum UG90</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug90">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -350,6 +428,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=ug82'">
                     <div class="room-header">Raum UG82</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug82">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -361,6 +440,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=ug82_'">
                     <div class="room-header">Raum UG82_</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug82_">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -372,6 +452,7 @@
                 <div class="room-card" onclick="window.location.href='details.html?location=ug08'">
                     <div class="room-header">Raum UG08</div>
                     <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug08">
                         <div class="sensor-preview">
                             <div class="sensor-preview-item"></div>
                             <div class="sensor-preview-item"></div>
@@ -384,6 +465,7 @@
     </div>
 
     <button class="settings-button" onclick="openModal()">
+        <img src="icons/filter.png" alt="Filter" style="width: 24px; height: 24px; margin-right: 8px;">
         Schwellenwerte bearbeiten
     </button>
 
@@ -440,7 +522,7 @@
         </div>
     </div>
 
-    <script>n
+    <script>
         const defaultThresholds = {
             co2: { good: 800, bad: 1200 },
             temperature: { good: 20, bad: 22 },
@@ -486,6 +568,97 @@
             if (event.target == document.getElementById('settingsModal')) {
                 closeModal();
             }
+        }
+
+        function createRoomCard(room) {
+            const card = document.createElement('div');
+            card.className = 'room-card';
+            card.onclick = () => window.location.href = `details.html?location=${room}`;
+
+            const statusIcon = document.createElement('img');
+            statusIcon.className = 'sensor-status-icon';
+            statusIcon.src = 'icons/sensoroff.png';
+            statusIcon.id = `sensor-status-${room}`;
+            
+            card.innerHTML = `
+                ${statusIcon.outerHTML}
+                <h3>Raum ${room.toUpperCase()}</h3>
+            `;
+            return card;
+        }
+
+        const ws = new WebSocket('ws://localhost:3000');
+
+        ws.onmessage = (event) => {
+            let data;
+            try {
+                data = JSON.parse(event.data);
+            } catch (e) {
+                console.error("Fehler beim Parsen der WebSocket-Nachricht:", e);
+                return;
+            }
+
+            if (!data.topic) return;
+
+            const topic = data.topic.toLowerCase();
+            
+            const rooms = ['eg72', 'ug86', 'ug90', 'ug82', 'ug82_', 'ug08'];
+            rooms.forEach(room => {
+                let formattedRoom = room.toLowerCase();
+                let expectedTopic = '';
+                
+                if (formattedRoom.startsWith('eg')) {
+                    expectedTopic = `eg/e${formattedRoom.substring(2)}`;
+                } else if (formattedRoom.startsWith('ug')) {
+                    const roomNumber = formattedRoom.substring(2).replace('_', '');
+                    expectedTopic = `ug/U${roomNumber}`;
+                }
+
+                if (topic.startsWith(expectedTopic.toLowerCase())) {
+                    const statusIcon = document.getElementById(`sensor-status-${room}`);
+                    if (statusIcon) {
+                        statusIcon.src = 'icons/sensoron.png';
+                        statusIcon.classList.add('sensor-active');
+                        
+                        clearTimeout(window.sensorTimeouts?.[room]);
+                        window.sensorTimeouts = window.sensorTimeouts || {};
+                        window.sensorTimeouts[room] = setTimeout(() => {
+                            statusIcon.src = 'icons/sensoroff.png';
+                            statusIcon.classList.remove('sensor-active');
+                        }, 300000); // 300000ms = 5 minutes
+                    }
+                }
+            });
+        };
+
+        function getColorForValue(sensor, value) {
+            const thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || {
+                co2: { good: 800, bad: 1200 },
+                temperature: { good: 20, bad: 22 },
+                humidity: { good: 40, bad: 60 }
+            };
+
+            let sensorThresholds;
+            if (sensor === 'temperature') {
+                sensorThresholds = thresholds.temperature;
+                if (value < sensorThresholds.good - 2 || value > sensorThresholds.bad) return 'kritisch';
+                else if (value < sensorThresholds.good || value > sensorThresholds.bad - 2) return 'akzeptabel';
+                else return 'optimal';
+            } 
+            else if (sensor === 'humidity') {
+                sensorThresholds = thresholds.humidity;
+                if (value < sensorThresholds.good - 10 || value > sensorThresholds.bad) return 'kritisch';
+                else if (value < sensorThresholds.good || value > sensorThresholds.bad - 10) return 'akzeptabel';
+                else return 'optimal';
+            } 
+            else if (sensor === 'co2') {
+                sensorThresholds = thresholds.co2;
+                if (value <= sensorThresholds.good) return 'optimal';
+                else if (value <= sensorThresholds.bad) return 'akzeptabel';
+                else return 'kritisch';
+            }
+            
+            return '';
         }
     </script>
 </body>
