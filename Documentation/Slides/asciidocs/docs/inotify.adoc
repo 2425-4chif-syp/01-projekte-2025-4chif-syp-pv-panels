@@ -1,0 +1,73 @@
+= Automatisiertes Deployment mit Inotify
+Sebastian Radic
+2024-12-02
+
+== Ziel
+Das Ziel ist es, Änderungen an der JAR-Datei einer Quarkus-Anwendung automatisch zu erkennen und diese Datei direkt auf eine VM zu deployen. Dies geschieht mit Hilfe von `inotifywait` (für Linux).
+
+== Voraussetzungen
+1. **Inotify-Tools (Linux)**:
+Installiere `inotify-tools`:
+```bash
+sudo apt install inotify-tools
+```
+3. **SSH-Zugang zur VM**:
+Stelle sicher, dass du per SSH auf die VM zugreifen kannst.
+
+== Schritte
+
+=== 1. Erstellung des Skripts
+Ein Shell-Skript wird erstellt, das Änderungen überwacht, die alte JAR-Datei auf der VM löscht, die neue Datei hochlädt und optional die Anwendung neu startet.
+
+==== Beispiel-Skript für Linux:
+```bash
+#!/bin/bash
+
+# Lokales Projektverzeichnis und JAR-Dateiname
+LOCAL_PROJECT_DIR="/path/to/your/project"
+JAR_FILE="target/leoenergy-1.0-SNAPSHOT-runner.jar"
+
+# Zielverzeichnis auf der VM
+VM_USER="leoeadmin"
+VM_HOST="vm29.htl-leonding.ac.at"
+VM_DEST_DIR="/home/leoeadmin"
+
+# Überwache Änderungen im Projektverzeichnis
+inotifywait -m -e modify,create --format "%w%f" "$LOCAL_PROJECT_DIR/target" | while read FILE
+do
+  if [[ "$FILE" == "$LOCAL_PROJECT_DIR/$JAR_FILE" ]]; then
+    echo "Detected change in $FILE. Deploying to VM..."
+
+    # Lösche die alte JAR auf der VM
+    ssh "$VM_USER@$VM_HOST" "rm -f $VM_DEST_DIR/leoenergy-1.0-SNAPSHOT-runner.jar"
+
+    # Kopiere die neue JAR auf die VM
+    scp "$LOCAL_PROJECT_DIR/$JAR_FILE" "$VM_USER@$VM_HOST:$VM_DEST_DIR/"
+
+    # Optional: Neustarten der Anwendung
+    ssh "$VM_USER@$VM_HOST" "java -jar $VM_DEST_DIR/leoenergy-1.0-SNAPSHOT-runner.jar &"
+
+    echo "Deployment complete!"
+  fi
+done
+```
+
+=== 2. Skript ausführbar machen
+Das Skript wird ausführbar gemacht:
+```bash
+chmod +x auto-deploy.sh
+```
+
+=== 3. Skript starten
+Das Skript wird gestartet, um Änderungen zu überwachen und automatische Deployments zu ermöglichen:
+```bash
+./auto-deploy.sh
+```
+
+== Funktionalität
+1. **Änderungen überwachen**:
+- `inotifywait` oder `fswatch` überwachen das Verzeichnis `target` und erkennen Änderungen an der JAR-Datei.
+2. **Automatischer Upload**:
+- Wenn eine Änderung erkannt wird, wird die alte JAR-Datei auf der VM gelöscht und die neue Version hochgeladen.
+3. **Optionaler Neustart**:
+- Die Anwendung auf der VM wird neu gestartet, um die Änderungen zu übernehmen.
