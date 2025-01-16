@@ -5,9 +5,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.20">
-<meta name="author" content="Thomas W. Stütz">
+<meta name="author" content="Sebastian Radic">
 <link rel="icon" type="image/png" href="themes/favicon.png">
-<title>Asciidoctor-Features</title>
+<title>Automatisiertes Deployment mit Inotify</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -561,229 +561,173 @@ pre.rouge .gs {
 </head>
 <body class="article toc2 toc-left">
 <div id="header">
-<h1>Asciidoctor-Features</h1>
+<h1>Automatisiertes Deployment mit Inotify</h1>
 <div class="details">
-<span id="author" class="author">Thomas W. Stütz</span><br>
-<span id="revnumber">version 1.0,</span>
-<span id="revdate">2025-01-16</span>
+<span id="author" class="author">Sebastian Radic</span><br>
+<span id="revdate">2024-12-02</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_include_source_code">1. Include Source Code</a></li>
-<li><a href="#_line_numbering_the_source_code">2. Line Numbering the source code</a></li>
-<li><a href="#_highlight_source_code">3. Highlight Source Code</a></li>
-<li><a href="#_line_numbering_highlighting">4. Line-Numbering + Highlighting</a></li>
-<li><a href="#_images">5. Images</a></li>
-<li><a href="#_diagrams">6. Diagrams</a></li>
-<li><a href="#_links">7. Links:</a></li>
+<li><a href="#_ziel">1. Ziel</a></li>
+<li><a href="#_voraussetzungen">2. Voraussetzungen</a></li>
+<li><a href="#_schritte">3. Schritte</a>
+<ul class="sectlevel2">
+<li><a href="#_1_erstellung_des_skripts">3.1. 1. Erstellung des Skripts</a></li>
+<li><a href="#_2_skript_ausführbar_machen">3.2. 2. Skript ausführbar machen</a></li>
+<li><a href="#_3_skript_starten">3.3. 3. Skript starten</a></li>
+</ul>
+</li>
+<li><a href="#_funktionalität">4. Funktionalität</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_include_source_code"><a class="anchor" href="#_include_source_code"></a>1. Include Source Code</h2>
+<h2 id="_ziel"><a class="anchor" href="#_ziel"></a>1. Ziel</h2>
 <div class="sectionbody">
-<details>
-<summary class="title">A collapsed list</summary>
-<div class="content">
+<div class="paragraph">
+<p>Das Ziel ist es, Änderungen an der JAR-Datei einer Quarkus-Anwendung automatisch zu erkennen und diese Datei direkt auf eine VM zu deployen. Dies geschieht mit Hilfe von <code>inotifywait</code> (für Linux).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_voraussetzungen"><a class="anchor" href="#_voraussetzungen"></a>2. Voraussetzungen</h2>
+<div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>a</p>
+<p><strong>Inotify-Tools (Linux)</strong>:
+Installiere <code>inotify-tools</code>:</p>
 </li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nb">sudo </span>apt <span class="nb">install </span>inotify-tools</code></pre>
+</div>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
 <li>
-<p>b</p>
-</li>
-<li>
-<p>c</p>
+<p><strong>SSH-Zugang zur VM</strong>:
+Stelle sicher, dass du per SSH auf die VM zugreifen kannst.</p>
 </li>
 </ol>
 </div>
 </div>
-</details>
-<div class="listingblock">
-<div class="title">Source Code File</div>
-<div class="content">
-<pre class="rouge highlight"><code data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">FileRenamer</span> <span class="o">{</span>
-<span class="o">...</span>
-    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">renameFiles</span><span class="o">()</span> <span class="o">{</span>
-        <span class="k">try</span> <span class="o">(</span><span class="nc">Stream</span><span class="o">&lt;</span><span class="nc">Path</span><span class="o">&gt;</span> <span class="n">walk</span> <span class="o">=</span> <span class="nc">Files</span><span class="o">.</span><span class="na">walk</span><span class="o">(</span><span class="nc">Paths</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="no">DIRECTORY</span> <span class="o">+</span> <span class="nc">File</span><span class="o">.</span><span class="na">separator</span> <span class="o">+</span> <span class="s">"styles"</span><span class="o">)))</span> <span class="o">{</span>
-            <span class="n">walk</span>
-                    <span class="o">.</span><span class="na">filter</span><span class="o">(</span><span class="nl">Files:</span><span class="o">:</span><span class="n">isRegularFile</span><span class="o">)</span>
-                    <span class="o">.</span><span class="na">forEach</span><span class="o">(</span><span class="n">file</span> <span class="o">-&gt;</span> <span class="o">{</span>
-                        <span class="nc">String</span> <span class="n">fileName</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="na">getFileName</span><span class="o">().</span><span class="na">toString</span><span class="o">();</span>
-                        <span class="nc">String</span> <span class="n">newFileName</span> <span class="o">=</span>
-                                <span class="n">fileName</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="mi">0</span><span class="o">,</span> <span class="n">fileName</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">4</span><span class="o">)</span>
-                                        <span class="o">+</span> <span class="s">".min"</span>
-                                        <span class="o">+</span> <span class="n">fileName</span><span class="o">.</span><span class="na">substring</span><span class="o">(</span><span class="n">fileName</span><span class="o">.</span><span class="na">length</span><span class="o">()</span> <span class="o">-</span> <span class="mi">4</span><span class="o">);</span>
-<span class="hll">                        <span class="c1">// tag::rename-file[]</span>
-</span>                        <span class="k">try</span> <span class="o">{</span>
-                            <span class="nc">Files</span><span class="o">.</span><span class="na">move</span><span class="o">(</span><span class="n">file</span><span class="o">,</span> <i class="conum" data-value="1"></i><b>(1)</b>
-                                    <span class="n">file</span><span class="o">.</span><span class="na">getParent</span><span class="o">().</span><span class="na">resolve</span><span class="o">(</span><span class="n">newFileName</span><span class="o">));</span> <i class="conum" data-value="2"></i><b>(2)</b>
-                        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-                            <span class="nc">System</span><span class="o">.</span><span class="na">err</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">e</span><span class="o">.</span><span class="na">getMessage</span><span class="o">());</span>
-                        <span class="o">}</span>
-<span class="hll">                        <span class="c1">// end::rename-file[]</span>
-</span>                    <span class="o">});</span>
-        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">IOException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
-            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
-        <span class="o">}</span>
-    <span class="o">}</span>
-<span class="o">...</span>
-<span class="o">}</span></code></pre>
 </div>
-</div>
+<div class="sect1">
+<h2 id="_schritte"><a class="anchor" href="#_schritte"></a>3. Schritte</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_1_erstellung_des_skripts"><a class="anchor" href="#_1_erstellung_des_skripts"></a>3.1. 1. Erstellung des Skripts</h3>
 <div class="paragraph">
-<p><code>[source, java]</code><br>
-<code>.Java code from project</code><br>
-<code>----</code><br>
-<code>include::src/main/java/at/htl/asciidoc/FileRenamer.java[tag=rename-file,indent=0]</code><br>
-<code>----</code></p>
+<p>Ein Shell-Skript wird erstellt, das Änderungen überwacht, die alte JAR-Datei auf der VM löscht, die neue Datei hochlädt und optional die Anwendung neu startet.</p>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_line_numbering_the_source_code"><a class="anchor" href="#_line_numbering_the_source_code"></a>2. Line Numbering the source code</h2>
-<div class="sectionbody">
+<div class="sect3">
+<h4 id="_beispiel_skript_für_linux"><a class="anchor" href="#_beispiel_skript_für_linux"></a>3.1.1. Beispiel-Skript für Linux:</h4>
 <div class="listingblock">
 <div class="content">
-<pre>[source,java,linenums]</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_highlight_source_code"><a class="anchor" href="#_highlight_source_code"></a>3. Highlight Source Code</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre>[source,java,highlight=4..5]</pre>
-</div>
-</div>
-<div class="paragraph">
-<p><a href="https://asciidoctor.org/docs/user-manual/#highlight-select-lines">Asciidoctor User Manual: Highlight Select Lines</a></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_line_numbering_highlighting"><a class="anchor" href="#_line_numbering_highlighting"></a>4. Line-Numbering + Highlighting</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre>[source,java,linenums,highlight=4..5]</pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_images"><a class="anchor" href="#_images"></a>5. Images</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>With the backend attribute, it is possible to control the output:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>In the pdf the image is full-size</p>
-</li>
-<li>
-<p>in the slides and html the image is 50% sized</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre>ifdef::backend-html5,backend-revealjs[image:animal-pet-cute-kitten-45201.jpg[width=50%]]
-ifdef::backend-pdf[image:animal-pet-cute-kitten-45201.jpg[]]</pre>
-</div>
-</div>
-<div class="paragraph">
-<div class="title">Cute kitten (credits to <a href="https://www.pexels.com/@pixabay">pixabay</a>)</div>
-<p><span class="image"><img src="images/animal-pet-cute-kitten-45201.jpg" alt="animal pet cute kitten 45201" width="50%"></span></p>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_diagrams"><a class="anchor" href="#_diagrams"></a>6. Diagrams</h2>
-<div class="sectionbody">
-<div class="listingblock">
-<div class="content">
-<pre>[plantuml,bsp,png]
+<pre class="rouge highlight"><code data-lang="bash"><span class="c">#!/bin/bash</span>
 
-@startuml
-class A
-class B
-A -left-&gt; B
-@enduml</pre>
+<span class="c"># Lokales Projektverzeichnis und JAR-Dateiname</span>
+<span class="nv">LOCAL_PROJECT_DIR</span><span class="o">=</span><span class="s2">"/path/to/your/project"</span>
+<span class="nv">JAR_FILE</span><span class="o">=</span><span class="s2">"target/leoenergy-1.0-SNAPSHOT-runner.jar"</span>
+
+<span class="c"># Zielverzeichnis auf der VM</span>
+<span class="nv">VM_USER</span><span class="o">=</span><span class="s2">"leoeadmin"</span>
+<span class="nv">VM_HOST</span><span class="o">=</span><span class="s2">"vm29.htl-leonding.ac.at"</span>
+<span class="nv">VM_DEST_DIR</span><span class="o">=</span><span class="s2">"/home/leoeadmin"</span>
+
+<span class="c"># Überwache Änderungen im Projektverzeichnis</span>
+inotifywait <span class="nt">-m</span> <span class="nt">-e</span> modify,create <span class="nt">--format</span> <span class="s2">"%w%f"</span> <span class="s2">"</span><span class="nv">$LOCAL_PROJECT_DIR</span><span class="s2">/target"</span> | <span class="k">while </span><span class="nb">read </span>FILE
+<span class="k">do
+  if</span> <span class="o">[[</span> <span class="s2">"</span><span class="nv">$FILE</span><span class="s2">"</span> <span class="o">==</span> <span class="s2">"</span><span class="nv">$LOCAL_PROJECT_DIR</span><span class="s2">/</span><span class="nv">$JAR_FILE</span><span class="s2">"</span> <span class="o">]]</span><span class="p">;</span> <span class="k">then
+    </span><span class="nb">echo</span> <span class="s2">"Detected change in </span><span class="nv">$FILE</span><span class="s2">. Deploying to VM..."</span>
+
+    <span class="c"># Lösche die alte JAR auf der VM</span>
+    ssh <span class="s2">"</span><span class="nv">$VM_USER</span><span class="s2">@</span><span class="nv">$VM_HOST</span><span class="s2">"</span> <span class="s2">"rm -f </span><span class="nv">$VM_DEST_DIR</span><span class="s2">/leoenergy-1.0-SNAPSHOT-runner.jar"</span>
+
+    <span class="c"># Kopiere die neue JAR auf die VM</span>
+    scp <span class="s2">"</span><span class="nv">$LOCAL_PROJECT_DIR</span><span class="s2">/</span><span class="nv">$JAR_FILE</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$VM_USER</span><span class="s2">@</span><span class="nv">$VM_HOST</span><span class="s2">:</span><span class="nv">$VM_DEST_DIR</span><span class="s2">/"</span>
+
+    <span class="c"># Optional: Neustarten der Anwendung</span>
+    ssh <span class="s2">"</span><span class="nv">$VM_USER</span><span class="s2">@</span><span class="nv">$VM_HOST</span><span class="s2">"</span> <span class="s2">"java -jar </span><span class="nv">$VM_DEST_DIR</span><span class="s2">/leoenergy-1.0-SNAPSHOT-runner.jar &amp;"</span>
+
+    <span class="nb">echo</span> <span class="s2">"Deployment complete!"</span>
+  <span class="k">fi
+done</span></code></pre>
 </div>
 </div>
-<div class="imageblock">
+</div>
+</div>
+<div class="sect2">
+<h3 id="_2_skript_ausführbar_machen"><a class="anchor" href="#_2_skript_ausführbar_machen"></a>3.2. 2. Skript ausführbar machen</h3>
+<div class="paragraph">
+<p>Das Skript wird ausführbar gemacht:</p>
+</div>
+<div class="listingblock">
 <div class="content">
-<img src="images/bsp.png" alt="bsp" width="130" height="61">
+<pre class="rouge highlight"><code data-lang="bash"><span class="nb">chmod</span> +x auto-deploy.sh</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_3_skript_starten"><a class="anchor" href="#_3_skript_starten"></a>3.3. 3. Skript starten</h3>
+<div class="paragraph">
+<p>Das Skript wird gestartet, um Änderungen zu überwachen und automatische Deployments zu ermöglichen:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">./auto-deploy.sh</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_links"><a class="anchor" href="#_links"></a>7. Links:</h2>
+<h2 id="_funktionalität"><a class="anchor" href="#_funktionalität"></a>4. Funktionalität</h2>
 <div class="sectionbody">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Änderungen überwachen</strong>:</p>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://mrhaki.blogspot.com/2019/12/awesome-asciidoctor-auto-number-callouts.html">Haki-Blog</a> &#8594; look at the "related posts" - links at the end of the post</p>
-</li>
-<li>
-<p><a href="https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/" class="bare">https://asciidoctor.org/docs/asciidoc-syntax-quick-reference/</a></p>
-</li>
-<li>
-<p><a href="https://asciidoctor.org/docs/asciidoc-writers-guide/" class="bare">https://asciidoctor.org/docs/asciidoc-writers-guide/</a></p>
-</li>
-<li>
-<p><a href="https://powerman.name/doc/asciidoc">Powerman Cheat Sheet</a></p>
-</li>
-<li>
-<p>Froscon 18: Documentation with any editor
-<a href="https://media.ccc.de/v/froscon2018-2192-documentation_with_any_editor">movie</a>,
-<a href="https://programm.froscon.de/2018/system/event_attachments/attachments/000/000/498/original/froscon13-documentationwithanyeditor.pdf">pdf</a></p>
-</li>
-<li>
-<p><a href="https://www.vogella.com/tutorials/AsciiDoc/article.html">Vogella</a></p>
-</li>
-<li>
-<p>Writing documentation with Asciidoctor
-<a href="https://www.google.com/url?sa=t&amp;rct=j&amp;q=&amp;esrc=s&amp;source=web&amp;cd=1&amp;ved=2ahUKEwj2v4nf4oroAhVkrHEKHbwPCWQQwqsBMAB6BAgKEAQ&amp;url=https%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DaAEXZaL9UUE&amp;usg=AOvVaw3wAmZiQkYusBQ8_BNRBLJi">movie</a>,
-<a href="https://www.eclipsecon.org/europe2015/sites/default/files/slides/2015-11-03_Writing_documentation_with_Asciidoctor.pdf">pdf</a></p>
-</li>
-<li>
-<p><a href="https://www.eclipsecon.org/europe2015/sites/default/files/slides/2015-11-03_Writing_documentation_with_Asciidoctor.pdf">Asciidoc Book Editor based on JavaFX 8</a></p>
-</li>
-<li>
-<p><a href="https://plugins.jetbrains.com/plugin/7391-asciidoc">Asciidoctor IntelliJ Plugin Project</a></p>
-</li>
-<li>
-<p>A very nice example of a reveal presentation:</p>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://github.com/bentolor/java9to13">github-repo</a>,
-<a href="https://bentolor.github.io/java9to13/#/">slides</a></p>
-</li>
-<li>
-<p>CyberlandConf 2020 <a href="https://github.com/CodeFX-org/slides/tree/master/java-after-eight">github-repo</a>,
-<a href="https://slides.codefx.org/java-after-eight/2020-03-17-cyberland/#/">slides</a></p>
+<p><code>inotifywait</code> oder <code>fswatch</code> überwachen das Verzeichnis <code>target</code> und erkennen Änderungen an der JAR-Datei.</p>
 </li>
 </ul>
 </div>
 </li>
+<li>
+<p><strong>Automatischer Upload</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Wenn eine Änderung erkannt wird, wird die alte JAR-Datei auf der VM gelöscht und die neue Version hochgeladen.</p>
+</li>
 </ul>
+</div>
+</li>
+<li>
+<p><strong>Optionaler Neustart</strong>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Die Anwendung auf der VM wird neu gestartet, um die Änderungen zu übernehmen.</p>
+</li>
+</ul>
+</div>
+</li>
+</ol>
 </div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Version 1.0<br>
 Last updated 2025-01-16 19:24:54 UTC
 </div>
 </div>
