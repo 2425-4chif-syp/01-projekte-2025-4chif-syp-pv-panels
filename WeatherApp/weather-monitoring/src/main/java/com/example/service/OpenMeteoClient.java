@@ -1,6 +1,7 @@
 package com.example.service;
 
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
@@ -8,6 +9,7 @@ import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 public interface OpenMeteoClient {
 
     @GET
+    @Path("/v1/archive")
     OpenMeteoResponse getHistoricalWeather(
             @QueryParam("latitude") double latitude,
             @QueryParam("longitude") double longitude,
@@ -20,7 +22,8 @@ public interface OpenMeteoClient {
         public Hourly hourly;
 
         public static class Hourly {
-            public double[] temperature_2m;
+            public String[] time; // Timestamps
+            public double[] temperature_2m; // Hourly temperatures
         }
     }
 }

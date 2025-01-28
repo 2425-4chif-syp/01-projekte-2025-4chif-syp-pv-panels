@@ -1,18 +1,22 @@
 package com.example.service;
 
 import com.example.model.WeatherData;
+import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.domain.WritePrecision;
-import com.influxdb.client.InfluxDBClient;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class WeatherService {
+
+    private static final Logger LOGGER = Logger.getLogger(WeatherService.class.getName());
 
     @Inject
     InfluxDBClient influxDBClient;
@@ -37,22 +41,31 @@ public class WeatherService {
     String hourly;
 
     public void fetchAndStoreWeatherData() {
-        // Fetch data from Open-Meteo API
-        OpenMeteoClient.OpenMeteoResponse response = openMeteoClient.getHistoricalWeather(latitude, longitude, startDate, endDate, hourly);
+        try {
+            // Fetch data from Open-Meteo API
+            OpenMeteoClient.OpenMeteoResponse response = openMeteoClient.getHistoricalWeather(
+                    latitude, longitude, startDate, endDate, hourly);
 
-        // Process each hourly temperature
-        if (response != null && response.hourly != null && response.hourly.temperature_2m != null) {
-            for (double temperature : response.hourly.temperature_2m) {
-                WeatherData data = new WeatherData();
-                data.setCity("Berlin"); // Static city name
-                data.setTemp(temperature);
-                data.setTime(Instant.now());
+            if (response != null && response.hourly != null) {
+                String[] times = response.hourly.time;
+                double[] temperatures = response.hourly.temperature_2m;
 
                 // Write data to InfluxDB
-                try (WriteApi writeApi = influxDBClient.getWriteApi()) {
-                    writeApi.writeMeasurement(WritePrecision.NS, data);
+                if (times != null && temperatures != null && times.length == temperatures.length) {
+                    try (WriteApi writeApi = influxDBClient.getWriteApi()) {
+                        for (int i = 0; i < times.length; i++) {
+                            WeatherData data = new WeatherData();
+                            data.setCity("Berlin");
+                            data.setTemp(temperatures[i]);
+                            data.setTime(Instant.parse(times[i])); // Parse ISO 8601 time
+
+                            writeApi.writeMeasurement(WritePrecision.NS, data);
+                        }
+                    }
                 }
             }
+        } catch (Exception e) {
+            LOGGER.severe("Error while fetching and storing weather data: " + e.getMessage());
         }
     }
 }
