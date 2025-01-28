@@ -1,15 +1,13 @@
 package com.example.service;
 
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.Path;
 import jakarta.ws.rs.QueryParam;
 import org.eclipse.microprofile.rest.client.inject.RegisterRestClient;
 
-@RegisterRestClient(baseUri = "${openmeteo.api.url}")
+@RegisterRestClient(configKey = "openmeteo.api") // Use configKey for dynamic configuration
 public interface OpenMeteoClient {
 
     @GET
-    @Path("/v1/archive")
     OpenMeteoResponse getHistoricalWeather(
             @QueryParam("latitude") double latitude,
             @QueryParam("longitude") double longitude,
@@ -23,7 +21,7 @@ public interface OpenMeteoClient {
 
         public static class Hourly {
             public String[] time; // Array of timestamps
-            public double[] temperature_2m; // Array of hourly temperatures
+            public double[] temperature_2m; // Array of temperatures
         }
     }
 }
