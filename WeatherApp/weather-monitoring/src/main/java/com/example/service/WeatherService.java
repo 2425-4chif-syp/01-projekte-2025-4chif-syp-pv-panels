@@ -4,13 +4,13 @@ import com.example.model.WeatherData;
 import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.WriteApi;
 import com.influxdb.client.domain.WritePrecision;
+import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.util.logging.Logger;
 
 @ApplicationScoped
@@ -40,6 +40,13 @@ public class WeatherService {
     @ConfigProperty(name = "openmeteo.api.hourly")
     String hourly;
 
+    @PostConstruct
+    void logConfiguration() {
+        LOGGER.info("Using Open-Meteo API URL: " + openMeteoClient.toString());
+        LOGGER.info("Latitude: " + latitude + ", Longitude: " + longitude);
+        LOGGER.info("Start Date: " + startDate + ", End Date: " + endDate);
+    }
+
     public void fetchAndStoreWeatherData() {
         try {
             // Fetch data from Open-Meteo API
@@ -50,18 +57,19 @@ public class WeatherService {
                 String[] times = response.hourly.time;
                 double[] temperatures = response.hourly.temperature_2m;
 
-                // Write data to InfluxDB
                 if (times != null && temperatures != null && times.length == temperatures.length) {
                     try (WriteApi writeApi = influxDBClient.getWriteApi()) {
                         for (int i = 0; i < times.length; i++) {
                             WeatherData data = new WeatherData();
-                            data.setCity("Berlin");
+                            data.setCity("Berlin"); // Static city name
                             data.setTemp(temperatures[i]);
-                            data.setTime(Instant.parse(times[i])); // Parse ISO 8601 time
+                            data.setTime(Instant.parse(times[i])); // Parse ISO 8601 timestamp
 
                             writeApi.writeMeasurement(WritePrecision.NS, data);
                         }
                     }
+                } else {
+                    LOGGER.warning("Mismatch in time and temperature arrays in OpenMeteo response.");
                 }
             }
         } catch (Exception e) {

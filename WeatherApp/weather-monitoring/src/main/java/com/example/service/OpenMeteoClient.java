@@ -22,8 +22,8 @@ public interface OpenMeteoClient {
         public Hourly hourly;
 
         public static class Hourly {
-            public String[] time; // Timestamps
-            public double[] temperature_2m; // Hourly temperatures
+            public String[] time; // Array of timestamps
+            public double[] temperature_2m; // Array of hourly temperatures
         }
     }
 }
