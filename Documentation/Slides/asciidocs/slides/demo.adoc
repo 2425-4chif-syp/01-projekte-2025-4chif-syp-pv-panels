@@ -1,0 +1,129 @@
+= Leo Energy
+:revnumber: 1.0
+:revdate: {docdate}
+:revremark: SLIDEDEMO @ HTL Leonding
+:encoding: utf-8
+:lang: de
+:doctype: article
+//:icons: font
+:customcss: css/presentation.css
+//:revealjs_customtheme: css/sky.css
+//:revealjs_customtheme: css/black.css
+:revealjs_width: 1408
+:revealjs_height: 792
+:source-highlighter: highlightjs
+//:revealjs_parallaxBackgroundImage: images/background-landscape-light-orange.jpg
+//:revealjs_parallaxBackgroundSize: 4936px 2092px
+//:highlightjs-theme: css/atom-one-light.css
+// we want local served font-awesome fonts
+:iconfont-remote!:
+:iconfont-name: fonts/fontawesome/css/all
+//:revealjs_parallaxBackgroundImage: background-landscape-light-orange.jpg
+//:revealjs_parallaxBackgroundSize: 4936px 2092px
+ifdef::env-ide[]
+:imagesdir: ../images
+endif::[]
+ifndef::env-ide[]
+:imagesdir: images
+endif::[]
+//:revealjs_theme: sky
+//:title-slide-background-image: img.png
+:title-slide-transition: zoom
+:title-slide-transition-speed: fast
+
+== Team
+
+* Sebastian Radic
+* Tobias Kletsch
+* Denis Bjelak
+* Danis Mezildzic
+* Luis Schörgendorfer
+
+//[.stretch]
+//image::img.png[]
+== Goals
+
+The existing project from the previous class is being adopted and further developed.
+The goal is to enhance the functionality and usability of the system to make it effective for school operations.
+Additionally, modern technologies will be integrated to ensure the project is future-proof and efficient.
+
+
+== Latest Status
+
+Sprint 01:
+
+[.highlight]
+=== Environment Setup
+* Setup Docker -- **in Progress**
+
+[.highlight]
+=== Documentation
+* Documentation -- **in Progress**
+
+[.highlight]
+=== Backend
+* Base Quarkus Application -- **Done**
+* Fix: Mqtt Connection Error -- **Done**
+
+[.highlight]
+=== Frontend
+* Frontend Sensors -- **in Progress**
+
+[.highlight]
+=== Database
+* Master Data Creation -- **to Verify**
+
+[.highlight]
+=== VM
+* VM Setup -- **to Verify**
+
+
+== System Architecture
+
+image::SystemArchitecture.svg[width=40% ,height=40%]
+
+== ERD - Diagram
+
+[plantuml, format=svg]
+----
+@startuml
+entity "Room" as Room {
+  + roomId : NUMBER
+  --
+  roomLabel : VARCHAR(255)
+  roomName : VARCHAR(255)
+  roomType : VARCHAR(255)
+  floor : VARCHAR(50)
+  corridor : VARCHAR(50)
+  neighborsInside : NUMBER
+  neighborsOutside : NUMBER
+}
+
+entity "Sensor" as Sensor {
+  + sensorId : NUMBER
+  --
+  type : VARCHAR(50)
+  status : VARCHAR(50)
+  location : VARCHAR(255)
+  roomId : NUMBER
+}
+
+Room ||--o{ Sensor : "1 : N"
+@enduml
+----
+
+== Next Steps
+
+* Integrate database to backend
+* Dockering the backend
+* Connecting frontend to backend
+* Implementing Grafana
+* Implementing new features
+* Learn working with Quarkus and VM
+* Implement new features and improve the old project
+
+== Final outcome
+
+At the end of the project, we will have a fully functional system that can be used in schools to monitor and manage energy consumption.
+Additionally, we will try to develop the project enough to deploy it on the school website.
+

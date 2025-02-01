@@ -1,0 +1,3 @@
+org/acme/GreetingResource.class
+at/htl/leoenergy/mqtt/InitBean.class
+at/htl/leoenergy/mqtt/MqttReceiver.class

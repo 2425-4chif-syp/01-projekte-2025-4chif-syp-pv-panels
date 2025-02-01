@@ -1,0 +1,27 @@
+= Nuris Speizialeinladung (und für alle anderen die in POSE geschlafen haben)
+
+damit kane Fragen auftauchen "Wöche HTML muass i do jetzt aufmochen?" oder "i hob kan NPM installiert"
+
+.Installation
+[source, bash]
+----
+# NVM installieren
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | sudo bash
+source ~/.bashrc
+# Schauen ob die NVM-Installation geklappt hat
+nvm --version
+# Node LTS installieren
+nvm install --lts
+# Schauen ob die Node-Installation geklappt hat
+----
+
+.Angular-App
+[source, bash]
+----
+# Im Ordner der Applikation
+npm install
+# App starten
+ng serve
+----
+
+Das war die ganze Magie dahinter. Fragen bitte an mailto:post@bka.gv.at[].

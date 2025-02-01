@@ -1,0 +1,190 @@
+= InfluxDB Task für die Umwandlung von W in Wh
+
+== WICHTIG !
+* Bucket: Wh-Energie Bucket erstellen bevor man die Tasks durchführt
+
+== Für die PV-Energie
+
+----
+option task = {name: "Pv-Energie-Wh-f", every: 1h}
+
+from(bucket: "db")
+    |> range(start: -3mo)
+    // Definiert den Zeitraum, hier die letzten 3 Monate
+    |> filter(
+        fn: (r) =>
+            r._measurement == "Sensor_Values" and r._field == "value" and r.device_name
+                ==
+                "PV-Energie" and r.valueType_id == "58",
+    )
+    // Füge die Bedingung für valueType_id hinzu
+    |> sort(columns: ["_time"], desc: false)
+    |> elapsed(unit: 1s)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: r._field,
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                duration_s: float(v: r.elapsed),
+                energy_ws: if r._value < 0 then 0.0 else r._value * float(v: r.elapsed),
+                    // Nur positive Energiezuwächse berücksichtigen
+
+            }),
+    )
+    |> cumulativeSum(columns: ["energy_ws"])
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: "energy_wh",
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                _value: r.energy_ws / 3600.0,
+            }),
+    )
+    |> yield(name: "energy")
+    |> to(bucket: "Wh-Energie")
+----
+
+== Für Energie-Gesamt
+
+----
+option task = {name: "Energie-HTL-Gesamt-WH", every: 1h}
+
+from(bucket: "db")
+    |> range(start: -3mo)
+    // Definiert den Zeitraum, hier die letzten 3 Monate
+    |> filter(
+        fn: (r) =>
+            r._measurement == "Sensor_Values" and r._field == "value" and r.device_name
+                ==
+                "Energie-Gesamt-HTL" and r.valueType_id == "11",
+    )
+    // Füge die Bedingung für valueType_id hinzu
+    |> sort(columns: ["_time"], desc: false)
+    |> elapsed(unit: 1s)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: r._field,
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                duration_s: float(v: r.elapsed),
+                energy_ws: if r._value < 0 then 0.0 else r._value * float(v: r.elapsed),
+            }),
+    )
+    |> cumulativeSum(columns: ["energy_ws"])
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: "energy_wh",
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                _value: r.energy_ws / 3600.0,
+            }),
+    )
+    |> yield(name: "energy")
+    |> to(bucket: "Wh-Energie")
+----
+
+
+== Für Verteilerschrank
+----
+option task = {name: "Verteilerschrank-Keller-Wh", every: 1h}
+
+from(bucket: "db")
+    |> range(start: -3mo)
+    // Definiert den Zeitraum, hier die letzten 3 Monate
+    |> filter(
+        fn: (r) =>
+            r._measurement == "Sensor_Values" and r._field == "value" and r.device_name
+                ==
+                "Energie-Gesamt-HTL" and r.valueType_id == "9",
+    )
+    // Füge die Bedingung für valueType_id hinzu
+    |> sort(columns: ["_time"], desc: false)
+    |> elapsed(unit: 1s)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: r._field,
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                duration_s: float(v: r.elapsed),
+                energy_ws: if r._value < 0 then 0.0 else r._value * float(v: r.elapsed),
+                    // Nur positive Energiezuwächse berücksichtigen
+
+            }),
+    )
+    |> cumulativeSum(columns: ["energy_ws"])
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: "energy_wh",
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                _value: r.energy_ws / 3600.0,
+            }),
+    )
+    |> yield(name: "energy")
+    |> to(bucket: "Wh-Energie")
+----
+
+
+== Für Zählerserverraum
+----
+option task = {name: "Zähler-ServerRaum-Wh", every: 1h}
+
+from(bucket: "db")
+    |> range(start: -3mo)
+    // Definiert den Zeitraum, hier die letzten 3 Monate
+    |> filter(
+        fn: (r) =>
+            r._measurement == "Sensor_Values" and r._field == "value" and r.device_name
+                ==
+                "Zähler-Serverraum" and r.valueType_id == "75",
+    )
+    // Füge die Bedingung für valueType_id hinzu
+    |> sort(columns: ["_time"], desc: false)
+    |> elapsed(unit: 1s)
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: r._field,
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                duration_s: float(v: r.elapsed),
+                energy_ws: if r._value < 0 then 0.0 else r._value * float(v: r.elapsed),
+                    // Nur positive Energiezuwächse berücksichtigen
+
+            }),
+    )
+    |> cumulativeSum(columns: ["energy_ws"])
+    |> map(
+        fn: (r) =>
+            ({
+                _time: r._time,
+                _measurement: r._measurement,
+                _field: "energy_wh",
+                device_name: r.device_name,
+                valueType_id: r.valueType_id,
+                _value: r.energy_ws / 3600.0,
+            }),
+    )
+    |> yield(name: "energy")
+    |> to(bucket: "Wh-Energie")
+----

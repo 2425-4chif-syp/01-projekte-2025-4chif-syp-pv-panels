@@ -1,0 +1,54 @@
+name: Docs
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - Documentation/Slides/asciidocs/**
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    name: Build & Publish 🚀
+    runs-on: ubuntu-latest
+    env:
+      INPUTPATH: Documentation/Slides/asciidocs
+      SLIDES: true
+      BRANCH: gh-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      # Überprüfe die Verzeichnisstruktur und die Datei
+      - name: Debug file existence and structure
+        run: |
+          echo "Checking directory structure..."
+          tree ${{ env.INPUTPATH }}/scripts || echo "No scripts folder found"
+          if [ -f ${{ env.INPUTPATH }}/scripts/docker-convert.sh ]; then
+            echo "docker-convert.sh found"
+          else
+            echo "docker-convert.sh not found!"
+            exit 1
+          fi
+
+      # Mach die Skripte ausführbar
+      - name: Make scripts executable
+        run: chmod +x ${{ env.INPUTPATH }}/scripts/docker-convert.sh
+
+      # Überprüfe Docker-Installation
+      - name: Verify Docker installation
+        run: docker --version
+
+      # Führe das Docker-Skript aus
+      - name: Run docker
+        run: |
+          sudo ${{ env.INPUTPATH }}/scripts/docker-convert.sh ${{ env.INPUTPATH }} ${{ env.SLIDES }}
+          tree
+
+      # Deploy zu GitHub Pages
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@releases/v4
+        with:
+          branch: ${{ env.BRANCH }}
+          folder: ${{ env.INPUTPATH }}

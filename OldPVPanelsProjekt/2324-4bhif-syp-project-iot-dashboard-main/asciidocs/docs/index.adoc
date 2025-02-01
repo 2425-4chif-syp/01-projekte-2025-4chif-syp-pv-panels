@@ -1,0 +1,46 @@
+= IoT Dashboard
+
+== Team
+.Team
+|===
+|Name
+
+| Said Nurceski
+
+| Balint Balazs
+
+| Erik Seifried
+
+| Markus Breinesberger
+
+|===
+
+== Ausgangssituation
+----
+Auf einer vm (leoenergy genannt) werden von einem schuleigenen Server in einem 5min -
+Intervall per sftp Datendateien im json-Format heruntergeladen
+----
+
+== Anforderungen
+----
+Die Quarkus App liest diese json-Dateien ein und schreibt diese in eine influxdb
+Dabei ist auf korrektes Tagging zu achten
+Es werden laufend neue json-Dateitypen hinzugefügt.
+----
+----
+Am Dashboard soll angezeigt werden, welche Dateien (Struktur des Namens) derzeit import
+importiert
+Wieviele verschiedene Dateiarten gibt es im Verzeichnis
+Wieviele verschieden Dateiarten werden derzeit importiert
+----
+
+== Diagrams
+
+.Class Diagram
+image::https://www.plantuml.com/plantuml/png/ZP2xgiCm38PtFONmU233MJs5agLpIdTZgwx0TeAjP2bvzoPk0irMJ-P3_qLgYvWiKmmGw24e0sRsJq77cQpma01iCALWHpDRUW6kZvt62_jh4lAKAqecaiPUCYSFoo7gAPKXtqsOVbHkmDKalITMD6yELTcHvMZ2FbXivd5hUJAO4ii924TQzuoZnjln1Lm0FX6e_bNJg3_rtHTQIcwzoni0[]
+
+.Usecase Diagram
+image::https://www.plantuml.com/plantuml/png/ROx1IWCn54Nt-OhBxFiF1H4HT2NzW6ToEmbcNafUqg68_wwDK6Onoznmpdb7Qr9RNxBBF3UqWfhcs11IfM-fg1FVIiLqCjO9Ol31tRz4vqoyiL1Pvnk-7T2DNeoOdkzRufNriqht4KngZDHX-2UUYbfVBgEnYtv9F--17ynvIxnKkKIieef556iYheaPZteRS2ph-zzZ-6-lTZ86z-DymE6mSz5s7y4nx4hSaHhwady1[]
+
+== Sprint-backlog
+https://vm81.htl-leonding.ac.at/agiles/99-387/current[Sprint Backlog]

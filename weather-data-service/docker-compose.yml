@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile.jvm
+    ports:
+      - "8181:8080"
+    environment:
+      - INFLUXDB_URL=http://influxdb:8282
+      - INFLUXDB_TOKEN=your-super-secret-admin-token
+      - INFLUXDB_ORG=weather_org
+      - INFLUXDB_BUCKET=weather_bucket
+    depends_on:
+      - influxdb
+
+  influxdb:
+    image: influxdb:2.7
+    ports:
+      - "8282:8282"
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminpassword
+      - DOCKER_INFLUXDB_INIT_ORG=weather_org
+      - DOCKER_INFLUXDB_INIT_BUCKET=weather_bucket
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=your-super-secret-admin-token
+      - INFLUXD_HTTP_BIND_ADDRESS=:8282
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE=/var/lib/influxdb2/admin-token
+      - INFLUXDB_HTTP_AUTH_ENABLED=true
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3333:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - influxdb
+
+volumes:
+  influxdb-data:
+  grafana-data: 

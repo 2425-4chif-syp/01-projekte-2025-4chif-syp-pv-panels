@@ -1,0 +1,110 @@
+:toc:
+:sectnums:
+
+= InfluxDB Aggregation | Said Nurceski
+
+== Aufgabe
+* Aggregation für alle Devices
+* Jede 5s ist die Task geplant und die Daten werden in den jeweiligen Buckets gespeichert
+
+== Wichtig! Erstellen Sie folgende Buckets, bevor Sie die Aggregation laufen lassen.
+
+=== Buckets für die Aggregation
+
+* `Consumption`: Der Verbrauch wird in diesem Bucket gespeichert
+* `Production`: Die Produktion wird in diesem Bucket gespeichert
+* `BatteryCapacity`: Die Batterie Kapazität wird in diesem Bucket gespeichert
+* `BatteryCapacityInPercentage`: Die Batterie Kapazität in Prozent wird in diesem Bucket gespeichert
+* `GridFeed`: Der GridFeed wird in diesem Bucket gespeichert
+
+== Aggregation für Consumption
+* Ich filter die Daten nach dem name und dem _field in dem Fall, Consumption_W und value
+* aggregateWindow: aggregation findet jede 5s statt
+* to(bucket: "Consumption") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation für Consumption
+----
+option task = {name: "Consumption_Task", every: 5s}
+
+from(bucket: "db")
+    |> range(start: 2024-02-26T00:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Mqtt-Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["name"] == "Consumption_W")
+    |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+    |> to(bucket: "Consumption")
+----
+
+== Aggregation für Production
+* Ich filter die Daten nach dem name und dem _field in dem Fall, Production_W und value
+* aggregateWindow: aggregation findet jede 5s statt
+* to(bucket: "Production") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation für Production
+----
+option task = {name: "Production_Task", every: 5s}
+
+from(bucket: "db")
+    |> range(start: 2024-02-26T00:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Mqtt-Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["name"] == "Production_W")
+    |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+    |> to(bucket: "Production")
+----
+
+== Aggregation für BatteryCapacity
+* Ich filter die Daten nach dem name und dem _field in dem Fall, batteryCapacityWh und value
+* aggregateWindow: aggregation findet jede 5s statt
+* to(bucket: "BatteryCapacity") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation für BatteryCapacity
+----
+option task = {name: "batteryCapacityWh_Task", every: 5s}
+
+from(bucket: "db")
+    |> range(start: 2024-02-26T00:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Mqtt-Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["name"] == "batteryCapacityWh")
+    |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+    |> to(bucket: "BatteryCapacity")
+
+----
+
+== Aggregation für BatteryCapacityInPercentage
+* Ich filter die Daten nach dem name und dem _field in dem Fall, batteryCapacityPercent und value
+* aggregateWindow: aggregation findet jede 5s statt
+* to(bucket: "BatteryCapacityPercentage") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation für BatteryCapacityInPercentage
+----
+option task = {name: "batteryCapacityPercent_Task", every: 5s}
+
+from(bucket: "db")
+    |> range(start: 2024-02-26T00:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Mqtt-Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["name"] == "batteryCapacityPercent")
+    |> aggregateWindow(every: 20s, fn: mean, createEmpty: false)
+    |> to(bucket: "BatteryCapacityPercentage")
+----
+
+== Aggregation für GridFeed
+* Ich filter die Daten nach dem name und dem _field in dem Fall, GridFeedIn und value
+* aggregateWindow: aggregation findet jede 5s statt
+* to(bucket: "GridFeed") ist der Bucket wo die Daten gespeichert werden
+
+.Aggregation GridFeed
+----
+option task = {name: "gridFeedIn_Task", every: 5s}
+
+from(bucket: "db")
+    |> range(start: 2024-02-26T00:00:00Z)
+    |> filter(fn: (r) => r["_measurement"] == "Mqtt-Values")
+    |> filter(fn: (r) => r["_field"] == "value")
+    |> filter(fn: (r) => r["name"] == "GridFeedIn")
+    |> aggregateWindow(every: 5s, fn: mean, createEmpty: false)
+    |> to(bucket: "GridFeed")
+
+----

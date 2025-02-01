@@ -1,0 +1,6 @@
+.idea/
+target/
+*.jar
+*.zip
+.DS_Store
+

@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+set -e
+
+pushd backend/leoenergy-mqtt-server-demo
+    mvn clean package
+popd
+
+mkdir -p dist/leoenergy-mqtt-server-demo
+
+cp backend/leoenergy-mqtt-server-demo/target/*-runner.jar dist/leoenergy-mqtt-server-demo/mqtt-server.jar
