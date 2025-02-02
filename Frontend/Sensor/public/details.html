@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Details</title>
+    <link rel="icon" type="image/x-icon" href="icons/sensoron.png">
+    <script src="js/websocket.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF7F6F;
+            --primary-hover: #FF9485;
+            --gradient-start: #FF7F6F;
+            --gradient-end: #FFA07A;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-radius: 15px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 1rem;
+            color: white;
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .htl-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .sensor-status-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .sensor-active {
+            animation: pulse 2s infinite;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: opacity 0.3s;
+        }
+
+        .back-button:hover {
+            opacity: 0.8;
+        }
+
+        .back-button::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        .location-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin: 2rem 0;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .sensor-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+            max-width: 1200px;
+        }
+
+        .sensor-item {
+            background: #f9f9f9;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            position: relative;
+            width: 200px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .sensor-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border: 2px solid var(--gradient-start);
+            background: linear-gradient(145deg, #f8f8f8, #f4f4f4);
+        }
+
+        .sensor-item img {
+            width: 48px;
+            height: 48px;
+            margin-bottom: 1rem;
+            transition: transform 0.3s ease;
+        }
+
+        .sensor-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .sensor-item .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin: 1rem auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .sensor-item:hover .dot {
+            transform: scale(1.2);
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .sensor-status {
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background-color: #e0e0e0;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        .sensor-status.optimal {
+            background-color: #4caf50;
+            color: white;
+        }
+
+        .sensor-status.akzeptabel {
+            background-color: #ff9800;
+            color: white;
+        }
+
+        .sensor-status.kritisch {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .sensor-value {
+            visibility: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            color: var(--text-color);
+            font-weight: 500;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            transform: translateY(-5px);
+        }
+
+        .sensor-item:hover .sensor-value {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .sensor-container {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+
+            .sensor-item {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <a href="index.html" class="back-button">Zurück zur Übersicht</a>
+    </div>
+    
+    <div class="location-title" id="locationTitle">Sensor Details</div>
+    
+    <div class="main-content">
+        <div class="sensor-container">
+            <div class="sensor-item" id="co2">
+                <img src="icons/co2.png" alt="CO₂ Icon">
+                <div class="sensor-status" id="co2-status">Status: --</div>
+                <div class="dot" id="co2-dot"></div>
+                <div class="sensor-value" id="co2-tooltip">CO₂: --</div>
+            </div>
+
+            <div class="sensor-item" id="humidity">
+                <img src="icons/humidity.png" alt="Feuchtigkeit Icon">
+                <div class="sensor-status" id="humidity-status">Status: --</div>
+                <div class="dot" id="humidity-dot"></div>
+                <div class="sensor-value" id="humidity-tooltip">Feuchtigkeit: --</div>
+            </div>
+
+            <div class="sensor-item" id="temperature">
+                <img src="icons/thermometer.png" alt="Temperatur Icon">
+                <div class="sensor-status" id="temperature-status">Status: --</div>
+                <div class="dot" id="temperature-dot"></div>
+                <div class="sensor-value" id="temperature-tooltip">Temperatur: --</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sensorLocation = urlParams.get('location') || 'eg72';
+        
+        document.getElementById('locationTitle').textContent = `Sensor Details - ${sensorLocation.toUpperCase()}`;
+        
+        function updateUI(data) {
+            const topic = data.topic;
+            const valueData = data.message;
+            
+            console.log('Aktuelle Location:', sensorLocation);
+            console.log('Empfangenes Topic:', topic);
+
+            let formattedLocation = sensorLocation.toLowerCase();
+            let expectedTopic = '';
+            
+            if (formattedLocation.startsWith('eg')) {
+                expectedTopic = `eg/e${formattedLocation.substring(2)}`;
+            } else if (formattedLocation.startsWith('ug')) {
+                const roomNumber = formattedLocation.substring(2).replace('_', '');
+                expectedTopic = `ug/U${roomNumber}`;
+            }
+
+            console.log('Erwartetes Topic-Prefix:', expectedTopic);
+
+            if (!topic.toLowerCase().startsWith(expectedTopic.toLowerCase())) {
+                console.log('Topic passt nicht zur aktuellen Location');
+                return;
+            }
+
+            console.log('Topic matched location, updating values...');
+
+            function getColorForValue(sensor, value) {
+                const thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || {
+                    co2: { good: 800, bad: 1200 },
+                    temperature: { good: 20, bad: 22 },
+                    humidity: { good: 40, bad: 60 }
+                };
+
+                let sensorThresholds;
+                if (sensor === 'temperature') {
+                    sensorThresholds = thresholds.temperature;
+                } else if (sensor === 'humidity') {
+                    sensorThresholds = thresholds.humidity;
+                } else if (sensor === 'co2') {
+                    sensorThresholds = thresholds.co2;
+                }
+
+                if (sensorThresholds) {
+                    if (value <= sensorThresholds.good) return 'optimal';
+                    else if (value <= sensorThresholds.bad) return 'akzeptabel';
+                    else return 'kritisch';
+                }
+                
+                return '';
+            }
+
+            function updateSensor(sensorId, value) {
+                const dot = document.getElementById(`${sensorId}-dot`);
+                const tooltip = document.getElementById(`${sensorId}-tooltip`);
+                const status = document.getElementById(`${sensorId}-status`);
+                console.log(`Updating ${sensorId} with value ${value}`);
+                if (dot && tooltip && status) {
+                    const statusClass = getColorForValue(sensorId, value);
+                    dot.style.backgroundColor = statusClass === 'optimal' ? 'green' : statusClass === 'akzeptabel' ? 'orange' : 'red';
+                    status.textContent = `Status: ${statusClass}`;
+                    status.className = `sensor-status ${statusClass}`;
+                    
+                    let displayValue = value;
+                    if (sensorId === 'temperature') displayValue = value.toFixed(1) + '°C';
+                    else if (sensorId === 'humidity') displayValue = value.toFixed(1) + '%';
+                    else if (sensorId === 'co2') displayValue = Math.round(value) + ' ppm';
+                    
+                    tooltip.textContent = `${sensorId}: ${displayValue}`;
+                    console.log(`Updated ${sensorId} - Status: ${statusClass}`);
+                } else {
+                    console.warn(`Elements for ${sensorId} not found`);
+                }
+            }
+
+            if (topic.includes('/co2') || topic.includes('/CO2')) {
+                const value = typeof valueData === 'object' ? valueData.value : valueData;
+                updateSensor('co2', value);
+                updateSensorStatus('co2');
+            }
+            if (topic.includes('/humidity') || topic.includes('/HUM')) {
+                const value = typeof valueData === 'object' ? valueData.value : valueData;
+                updateSensor('humidity', value);
+                updateSensorStatus('humidity');
+            }
+            if (topic.includes('/temperature') || topic.includes('/TEMP')) {
+                const value = typeof valueData === 'object' ? valueData.value : valueData;
+                updateSensor('temperature', value);
+                updateSensorStatus('temperature');
+            }
+
+            function updateSensorStatus(sensorId) {
+                const statusIcon = document.getElementById(`${sensorId}-sensor-status`);
+                if (statusIcon) {
+                    statusIcon.src = 'icons/sensoron.png';
+                    statusIcon.classList.add('sensor-active');
+                    
+                    clearTimeout(window.sensorTimeouts?.[sensorId]);
+                    window.sensorTimeouts = window.sensorTimeouts || {};
+                    window.sensorTimeouts[sensorId] = setTimeout(() => {
+                        statusIcon.src = 'icons/sensoroff.png';
+                        statusIcon.classList.remove('sensor-active');
+                    }, 5000);
+                }
+            }
+        }
+
+        // Registriere den Update-Callback beim WebSocket-Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            wsHandler.subscribe(updateUI);
+        });
+
+        // Aufräumen beim Verlassen der Seite
+        window.addEventListener('beforeunload', function() {
+            wsHandler.unsubscribe(updateUI);
+        });
+    </script>
+</body>
+</html>

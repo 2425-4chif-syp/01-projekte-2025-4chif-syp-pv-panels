@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sensor Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="icons/sensoron.png">
+    <script src="js/websocket.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF7F6F;
+            --primary-hover: #FF9485;
+            --gradient-start: #FF7F6F;
+            --gradient-end: #FFA07A;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-radius: 15px;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --card-width: 250px; /* Feste Breite für die Karten */
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 1.5rem 3rem;
+            color: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-content {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+        }
+
+        .header-content h1 {
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .htl-logo {
+            height: 55px;
+            width: auto;
+        }
+
+        .sensor-status-icon {
+            width: 60px;
+            height: 60px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            object-fit: contain;
+            z-index: 1;
+            transition: all 0.3s ease;
+        }
+
+        .room-content {
+            position: relative;
+            min-height: 150px;
+        }
+
+        .sensor-preview {
+            position: relative;
+            z-index: 2;
+        }
+
+        .threshold-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background-color: white;
+            color: var(--primary-color);
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .threshold-button:hover {
+            background-color: #f0f0f0;
+            transform: translateY(-2px);
+        }
+
+        .threshold-button img {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 1px; /* Slight adjustment to align with text */
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        .sensor-active {
+            animation: pulse 2s infinite;
+            transform-origin: center center;
+        }
+
+        .main-content {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .floor-section {
+            margin-bottom: 3rem;
+        }
+
+        .floor-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .floor-title::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--gradient-start), transparent);
+            margin-left: 1rem;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(var(--card-width), 1fr)); /* Feste Breite für Karten */
+            gap: 2rem;
+        }
+
+        .room-card {
+            width: var(--card-width); /* Feste Breite */
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .room-header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 1rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .room-content {
+            padding: 1.5rem;
+            min-height: 100px;
+            background: linear-gradient(135deg, #f7f7f7 0%, #f3f3f3 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 127, 111, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 160, 122, 0.05) 0%, transparent 50%);
+            opacity: 0.8;
+        }
+
+        .sensor-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sensor-preview-item {
+            background: rgba(240, 240, 240, 0.7);
+            border-radius: 8px;
+            height: 100%;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.03);
+            backdrop-filter: blur(5px);
+            transition: background-color 0.3s ease;
+        }
+
+        .room-card:hover .room-content {
+            background: linear-gradient(135deg, #f8f8f8 0%, #f4f4f4 100%);
+        }
+
+        .room-card:hover .sensor-preview-item {
+            background: rgba(245, 245, 245, 0.9);
+        }
+
+        .room-card:hover .room-header {
+            background: linear-gradient(135deg, var(--gradient-end), var(--gradient-start));
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .main-content {
+                padding: 0 1rem;
+            }
+
+            .rooms-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .room-card {
+                width: 100%; /* Volle Breite auf kleinen Bildschirmen */
+            }
+        }
+
+        .settings-button {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .settings-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .threshold-group {
+            margin-bottom: 2rem;
+        }
+
+        .threshold-group h3 {
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .threshold-group h3 img {
+            width: 24px;
+            height: 24px;
+        }
+
+        .threshold-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .input-group img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-button {
+            padding: 0.5rem 2rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .save-button {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+        }
+
+        .cancel-button {
+            background: #f0f0f0;
+            color: var(--text-color);
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="images/new_htl_logo_name.png" alt="HTL Leonding" class="htl-logo">
+        <div class="header-content">
+            <h1>Sensor Dashboard</h1>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <div class="floor-section">
+            <div class="floor-title">Erdgeschoss</div>
+            <div class="rooms-grid">
+                <div class="room-card" onclick="window.location.href='details.html?location=eg72'">
+                    <div class="room-header">Raum EG72</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-eg72">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="floor-section">
+            <div class="floor-title">Untergeschoss</div>
+            <div class="rooms-grid">
+                <div class="room-card" onclick="window.location.href='details.html?location=ug86'">
+                    <div class="room-header">Raum UG86</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug86">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-card" onclick="window.location.href='details.html?location=ug90'">
+                    <div class="room-header">Raum UG90</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug90">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-card" onclick="window.location.href='details.html?location=ug82'">
+                    <div class="room-header">Raum UG82</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug82">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-card" onclick="window.location.href='details.html?location=ug82_'">
+                    <div class="room-header">Raum UG82_</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug82_">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="room-card" onclick="window.location.href='details.html?location=ug08'">
+                    <div class="room-header">Raum UG08</div>
+                    <div class="room-content">
+                        <img src="icons/sensoroff.png" alt="Sensor Status" class="sensor-status-icon" id="sensor-status-ug08">
+                        <div class="sensor-preview">
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                            <div class="sensor-preview-item"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="settings-button" onclick="openModal()">
+        <img src="icons/filter.png" alt="Filter" style="width: 24px; height: 24px; margin-right: 8px; vertical-align: middle;">
+        Schwellenwerte bearbeiten
+    </button>
+
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-title">Schwellenwert-Einstellungen</div>
+            
+            <div class="threshold-group">
+                <h3><img src="icons/co2.png" alt="CO₂"> CO₂ (ppm)</h3>
+                <div class="threshold-inputs">
+                    <div class="input-group">
+                        <img src="icons/thumbsdown.png" alt="Gut">
+                        <input type="number" id="co2Good" value="800" placeholder="Gut bis">
+                    </div>
+                    <div class="input-group">
+                        <img src="icons/thumbsup.png" alt="Schlecht">
+                        <input type="number" id="co2Bad" value="1200" placeholder="Schlecht ab">
+                    </div>
+                </div>
+            </div>
+
+            <div class="threshold-group">
+                <h3><img src="icons/thermometer.png" alt="Temperatur"> Temperatur (°C)</h3>
+                <div class="threshold-inputs">
+                    <div class="input-group">
+                        <img src="icons/thumbsdown.png" alt="Gut">
+                        <input type="number" id="tempGood" value="20" placeholder="Gut bis">
+                    </div>
+                    <div class="input-group">
+                        <img src="icons/thumbsup.png" alt="Schlecht">
+                        <input type="number" id="tempBad" value="22" placeholder="Schlecht ab">
+                    </div>
+                </div>
+            </div>
+
+            <div class="threshold-group">
+                <h3><img src="icons/humidity.png" alt="Luftfeuchtigkeit"> Luftfeuchtigkeit (%)</h3>
+                <div class="threshold-inputs">
+                    <div class="input-group">
+                        <img src="icons/thumbsdown.png" alt="Gut">
+                        <input type="number" id="humidityGood" value="40" placeholder="Gut bis">
+                    </div>
+                    <div class="input-group">
+                        <img src="icons/thumbsup.png" alt="Schlecht">
+                        <input type="number" id="humidityBad" value="60" placeholder="Schlecht ab">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-buttons">
+                <button class="modal-button cancel-button" onclick="closeModal()">Abbrechen</button>
+                <button class="modal-button save-button" onclick="saveThresholds()">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const defaultThresholds = {
+            co2: { good: 800, bad: 1200 },
+            temperature: { good: 20, bad: 22 },
+            humidity: { good: 40, bad: 60 }
+        };
+
+        let thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || defaultThresholds;
+
+        function updateUI(data) {
+            if (!data || !data.topic) return;
+
+            const topic = data.topic.toLowerCase();
+            const value = data.message?.value;
+            if (value === undefined) return;
+
+            // Bestimme den Raumtyp und die Nummer aus dem Topic
+            const topicParts = topic.split('/');
+            if (topicParts.length < 2) return;
+
+            const floor = topicParts[0]; // 'eg' oder 'ug'
+            const room = topicParts[1]; // 'e72', 'u86', etc.
+            
+            // Konvertiere das Topic-Format in unser Room-ID-Format
+            let roomId = '';
+            if (floor === 'eg') {
+                roomId = 'eg' + room.substring(1); // 'eg72'
+            } else if (floor === 'ug') {
+                roomId = 'ug' + room.substring(1); // 'ug86'
+            }
+
+            // Finde den Sensor-Typ aus dem Topic
+            let sensorType = '';
+            if (topic.includes('/temp')) sensorType = 'temperature';
+            else if (topic.includes('/hum')) sensorType = 'humidity';
+            else if (topic.includes('/co2')) sensorType = 'co2';
+
+            if (!sensorType) return;
+
+            // Aktualisiere den Sensor-Status
+            const statusIcon = document.getElementById(`sensor-status-${roomId}`);
+            if (statusIcon) {
+                statusIcon.src = 'icons/sensoron.png';
+                statusIcon.classList.add('sensor-active');
+                
+                clearTimeout(window.sensorTimeouts?.[roomId]);
+                window.sensorTimeouts = window.sensorTimeouts || {};
+                window.sensorTimeouts[roomId] = setTimeout(() => {
+                    statusIcon.src = 'icons/sensoroff.png';
+                    statusIcon.classList.remove('sensor-active');
+                }, 300000);
+
+                // Aktualisiere die Sensor-Vorschau
+                const previewItems = document.querySelectorAll(`#sensor-status-${roomId} + .sensor-preview .sensor-preview-item`);
+                if (previewItems.length > 0) {
+                    const status = getColorForValue(sensorType, parseFloat(value));
+                    const previewIndex = {
+                        'temperature': 0,
+                        'humidity': 1,
+                        'co2': 2
+                    }[sensorType];
+
+                    if (previewIndex !== undefined && previewItems[previewIndex]) {
+                        previewItems[previewIndex].style.backgroundColor = {
+                            'optimal': '#4CAF50',
+                            'akzeptabel': '#FFA726',
+                            'kritisch': '#EF5350'
+                        }[status] || 'gray';
+                    }
+                }
+            }
+        }
+
+        function openModal() {
+            document.getElementById('settingsModal').style.display = 'flex';
+            document.getElementById('co2Good').value = thresholds.co2.good;
+            document.getElementById('co2Bad').value = thresholds.co2.bad;
+            document.getElementById('tempGood').value = thresholds.temperature.good;
+            document.getElementById('tempBad').value = thresholds.temperature.bad;
+            document.getElementById('humidityGood').value = thresholds.humidity.good;
+            document.getElementById('humidityBad').value = thresholds.humidity.bad;
+        }
+
+        function closeModal() {
+            document.getElementById('settingsModal').style.display = 'none';
+        }
+
+        function saveThresholds() {
+            thresholds = {
+                co2: {
+                    good: parseFloat(document.getElementById('co2Good').value),
+                    bad: parseFloat(document.getElementById('co2Bad').value)
+                },
+                temperature: {
+                    good: parseFloat(document.getElementById('tempGood').value),
+                    bad: parseFloat(document.getElementById('tempBad').value)
+                },
+                humidity: {
+                    good: parseFloat(document.getElementById('humidityGood').value),
+                    bad: parseFloat(document.getElementById('humidityBad').value)
+                }
+            };
+            localStorage.setItem('sensorThresholds', JSON.stringify(thresholds));
+            closeModal();
+        }
+
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('settingsModal')) {
+                closeModal();
+            }
+        }
+
+        function createRoomCard(room) {
+            const card = document.createElement('div');
+            card.className = 'room-card';
+            card.onclick = () => window.location.href = `details.html?location=${room}`;
+
+            const statusIcon = document.createElement('img');
+            statusIcon.className = 'sensor-status-icon';
+            statusIcon.src = 'icons/sensoroff.png';
+            statusIcon.id = `sensor-status-${room}`;
+            
+            card.innerHTML = `
+                ${statusIcon.outerHTML}
+                <h3>Raum ${room.toUpperCase()}</h3>
+            `;
+            return card;
+        }
+
+        function getColorForValue(sensor, value) {
+            return thresholds ? getColorBasedOnThresholds(sensor, value, thresholds) : '';
+        }
+
+        function getColorBasedOnThresholds(sensor, value, thresholds) {
+            let sensorThresholds;
+            if (sensor === 'temperature') {
+                sensorThresholds = thresholds.temperature;
+                if (value < sensorThresholds.good - 2 || value > sensorThresholds.bad) return 'kritisch';
+                else if (value < sensorThresholds.good || value > sensorThresholds.bad - 2) return 'akzeptabel';
+                else return 'optimal';
+            } 
+            else if (sensor === 'humidity') {
+                sensorThresholds = thresholds.humidity;
+                if (value < sensorThresholds.good - 10 || value > sensorThresholds.bad) return 'kritisch';
+                else if (value < sensorThresholds.good || value > sensorThresholds.bad - 10) return 'akzeptabel';
+                else return 'optimal';
+            } 
+            else if (sensor === 'co2') {
+                sensorThresholds = thresholds.co2;
+                if (value <= sensorThresholds.good) return 'optimal';
+                else if (value <= sensorThresholds.bad) return 'akzeptabel';
+                else return 'kritisch';
+            }
+            return '';
+        }
+
+        // Registriere den Update-Callback beim WebSocket-Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            wsHandler.subscribe(updateUI);
+        });
+
+        // Aufräumen beim Verlassen der Seite
+        window.addEventListener('beforeunload', function() {
+            wsHandler.unsubscribe(updateUI);
+        });
+    </script>
+</body>
+</html>
