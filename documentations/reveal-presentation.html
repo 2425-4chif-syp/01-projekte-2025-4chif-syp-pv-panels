@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <title>Projekt Präsentation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css">
+    <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      .reveal {
+        overflow-y: auto;
+      }
+      .reveal .slides section {
+        overflow-y: auto;
+        max-height: 100vh;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+         <section>
+             <h2>Aktueller Stand</h2>
+             <p>Wir werden demnächst das alte Projekt fortführen und inzwischen hat jeder Einzelaufgaben gemacht, um uns darauf vorzubereiten.</p>
+         </section>
+         <section>
+             <h2>Sebastian Radic hat gemacht:</h2>
+             <ul>
+                <li><strong>Qurakus MQTT Daten:</strong> Schwierigkeiten – Konnte noch kein Quarkus, hat ewigkeiten gedauert bis ich verstanden habe, wie manche Dinge funktionieren. Viel Arbeit in Recherche investiert.</li>
+                <li><strong>WeatherApp: mit Quarkus von einer API Wetter Daten sammeln und in InfluxDB speichern:</strong> Schwierigkeiten – Mangelndes Quarkus-Wissen, Probleme beim Verbinden der API und beim Speichern von Daten in Influx.</li>
+                <li><strong>Neue VM eingerichtet:</strong> Schwierigkeiten – Noch nie auf einer VM gearbeitet, hat etwas gedauert bis ich den Dreh raus hatte.</li>
+                <li><strong>Altes Projekt neu konfiguriert und auf VM aufgesetzt:</strong> Schwierigkeiten – Probleme mit der Konfiguration, habe so etwas noch nie gemacht und viele Stunden investiert, um die Konfiguration richtig umzusetzen.</li>
+             </ul>
+             <p>Hinweis: Detaillierte Informationen und Codeänderungen können den entsprechenden Ordnern entnommen werden.</p>
+         </section>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+    <script>
+      Reveal.initialize({
+        center: false
+      });
+    </script>
+  </body>
+</html> 
