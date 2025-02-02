@@ -6,7 +6,7 @@ roomLabel : VARCHAR(255)
 roomName : VARCHAR(255)
 roomType : VARCHAR(255)
 floor : VARCHAR(50)
-corridor : VARCHAR(50)
+corridor : NUMBER
 - neighborsInside : NUMBER
 - neighborsOutside : NUMBER
 }
