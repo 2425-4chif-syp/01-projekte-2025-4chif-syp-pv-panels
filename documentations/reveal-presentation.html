@@ -12,11 +12,10 @@
         margin: 0;
       }
       .reveal {
-        overflow-y: auto;
+        overflow-y: scroll !important;
       }
       .reveal .slides section {
         overflow-y: auto;
-        max-height: 100vh;
       }
     </style>
   </head>
@@ -42,7 +41,8 @@
     <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
     <script>
       Reveal.initialize({
-        center: false
+        center: false,
+        overflow: true
       });
     </script>
   </body>
