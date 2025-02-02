@@ -5,17 +5,89 @@
     <title>Projekt Präsentation</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/black.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-      html, body {
-        height: 100%;
+      :root {
+        --primary-color: #2989d8;
+        --text-color: #333;
+        --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      }
+
+      body {
         margin: 0;
+        font-family: 'Roboto', sans-serif;
+        background: var(--bg-gradient);
+        color: var(--text-color);
       }
+
       .reveal {
-        overflow-y: scroll !important;
+        background: transparent;
       }
+
+      .reveal .slides {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
       .reveal .slides section {
-        overflow-y: auto;
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin: 2rem auto;
+        width: 80%;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+
+      .reveal h2 {
+        color: var(--primary-color);
+        font-size: 2.5em;
+        margin-bottom: 1em;
+        border-bottom: 2px solid var(--primary-color);
+        padding-bottom: 0.5em;
+      }
+
+      .reveal ul {
+        text-align: left;
+        margin: 2em 0;
+      }
+
+      .reveal li {
+        margin-bottom: 1.5em;
+        line-height: 1.6;
+      }
+
+      .reveal strong {
+        color: var(--primary-color);
+      }
+
+      .reveal p {
+        font-size: 1.2em;
+        line-height: 1.6;
+      }
+
+      /* First slide special styling */
+      .reveal .slides section:first-child {
+        background: linear-gradient(135deg, #2989d8, #1e5799);
+        color: white;
+      }
+
+      .reveal .slides section:first-child h2 {
+        color: white;
+        border-bottom-color: rgba(255,255,255,0.3);
+      }
+
+      /* Navigation controls */
+      .reveal .controls {
+        color: var(--primary-color);
+      }
+
+      .reveal .controls .navigate-right,
+      .reveal .controls .navigate-left,
+      .reveal .controls .navigate-up,
+      .reveal .controls .navigate-down {
+        width: 35px !important;
+        height: 35px !important;
       }
     </style>
   </head>
@@ -29,12 +101,19 @@
          <section>
              <h2>Sebastian Radic hat gemacht:</h2>
              <ul>
-                <li><strong>Qurakus MQTT Daten:</strong> Schwierigkeiten – Konnte noch kein Quarkus, hat ewigkeiten gedauert bis ich verstanden habe, wie manche Dinge funktionieren. Viel Arbeit in Recherche investiert.</li>
-                <li><strong>WeatherApp: mit Quarkus von einer API Wetter Daten sammeln und in InfluxDB speichern:</strong> Schwierigkeiten – Mangelndes Quarkus-Wissen, Probleme beim Verbinden der API und beim Speichern von Daten in Influx.</li>
-                <li><strong>Neue VM eingerichtet:</strong> Schwierigkeiten – Noch nie auf einer VM gearbeitet, hat etwas gedauert bis ich den Dreh raus hatte.</li>
-                <li><strong>Altes Projekt neu konfiguriert und auf VM aufgesetzt:</strong> Schwierigkeiten – Probleme mit der Konfiguration, habe so etwas noch nie gemacht und viele Stunden investiert, um die Konfiguration richtig umzusetzen.</li>
+                <li><strong>Quarkus MQTT Daten:</strong> 
+                    Schwierigkeiten – Konnte noch kein Quarkus, hat ewigkeiten gedauert bis ich verstanden habe, 
+                    wie manche Dinge funktionieren. Viel Arbeit in Recherche investiert.</li>
+                <li><strong>WeatherApp mit Quarkus:</strong> 
+                    Von einer API Wetter Daten sammeln und in InfluxDB speichern. 
+                    Schwierigkeiten – Mangelndes Quarkus-Wissen, Probleme beim Verbinden der API und beim Speichern von Daten in Influx.</li>
+                <li><strong>Neue VM eingerichtet:</strong> 
+                    Schwierigkeiten – Noch nie auf einer VM gearbeitet, hat etwas gedauert bis ich den Dreh raus hatte.</li>
+                <li><strong>Altes Projekt neu konfiguriert:</strong> 
+                    Auf VM aufgesetzt. Schwierigkeiten – Probleme mit der Konfiguration, 
+                    habe so etwas noch nie gemacht und viele Stunden investiert, um die Konfiguration richtig umzusetzen.</li>
              </ul>
-             <p>Hinweis: Detaillierte Informationen und Codeänderungen können den entsprechenden Ordnern entnommen werden.</p>
+             <p></p>
          </section>
       </div>
     </div>
@@ -42,7 +121,12 @@
     <script>
       Reveal.initialize({
         center: false,
-        overflow: true
+        controls: true,
+        controlsLayout: 'edges',
+        transition: 'slide',
+        autoSlide: 0,
+        height: '100%',
+        margin: 0
       });
     </script>
   </body>
