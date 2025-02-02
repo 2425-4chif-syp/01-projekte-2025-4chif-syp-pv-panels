@@ -89,6 +89,55 @@
         width: 35px !important;
         height: 35px !important;
       }
+
+      .image-gallery {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .image-gallery img {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .image-gallery img:hover {
+        transform: scale(1.05);
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.9);
+      }
+
+      .modal-content {
+        margin: auto;
+        display: block;
+        max-width: 90%;
+        max-height: 90vh;
+        margin-top: 2%;
+      }
+
+      .close {
+        position: absolute;
+        right: 35px;
+        top: 15px;
+        color: #f1f1f1;
+        font-size: 40px;
+        font-weight: bold;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -109,13 +158,44 @@
                     Schwierigkeiten – Mangelndes Quarkus-Wissen, Probleme beim Verbinden der API und beim Speichern von Daten in Influx.</li>
                 <li><strong>Neue VM eingerichtet:</strong> 
                     Schwierigkeiten – Noch nie auf einer VM gearbeitet, hat etwas gedauert bis ich den Dreh raus hatte.</li>
-                <li><strong>Altes Projekt neu konfiguriert:</strong> 
-                    Auf VM aufgesetzt. Schwierigkeiten – Probleme mit der Konfiguration, 
+                <li><strong>Altes Projekt neu konfiguriert und auf VM aufgesetzt:</strong> 
+                    Schwierigkeiten – Probleme mit der Konfiguration, 
                     habe so etwas noch nie gemacht und viele Stunden investiert, um die Konfiguration richtig umzusetzen.</li>
              </ul>
-             <p></p>
+         </section>
+         <section>
+             <h2>YouTrack User Stories</h2>
+             <ul style="font-size: 0.9em;">
+                <li><strong>Wetterdaten abrufen und speichern:</strong><br>
+                    Als Admin möchte ich aktuelle Wetterdaten von einer externen API abrufen und in der InfluxDB speichern.</li>
+                <li><strong>Weather Data Visualization:</strong><br>
+                    Als Benutzer möchte ich die gespeicherten Wetterdaten in einer ansprechenden und dynamischen Dashboard-Ansicht in Grafana visualisieren können.</li>
+                <li><strong>Backend:</strong><br>
+                    Als Developer möchte ich ein robustes Backend, das zuverlässig unter allen Bedingungen funktioniert.</li>
+                <li><strong>VM Setup:</strong><br>
+                    Als Admin möchte ich eine skalierbare virtuelle Maschine, die mit den Systemanforderungen ohne Unterbrechungen wachsen kann.</li>
+                <li><strong>Environment Setup:</strong><br>
+                    Als Developer möchte ich konsistente Umgebungen, damit mein Code überall zuverlässig läuft.</li>
+                <li><strong>Documentation:</strong><br>
+                    Als Team möchten wir eine klare Dokumentation, auf die wir uns für genaue Informationen verlassen können.</li>
+             </ul>
+         </section>
+         <section>
+             <h2>YouTrack Screenshots</h2>
+             <div class="image-gallery">
+                <img class="gallery-img" src="images/youtrack/wetterdaten.png" alt="Wetterdaten User Story">
+                <img class="gallery-img" src="images/youtrack/weather-visualization.png" alt="Weather Visualization User Story">
+                <img class="gallery-img" src="images/youtrack/backend.png" alt="Backend User Story">
+                <img class="gallery-img" src="images/youtrack/vm.png" alt="VM Setup User Story">
+                <img class="gallery-img" src="images/youtrack/environment.png" alt="Environment Setup User Story">
+                <img class="gallery-img" src="images/youtrack/documentation.png" alt="Documentation User Story">
+             </div>
          </section>
       </div>
+    </div>
+    <div id="imageModal" class="modal">
+      <span class="close">&times;</span>
+      <img class="modal-content" id="modalImg">
     </div>
     <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
     <script>
@@ -128,6 +208,28 @@
         height: '100%',
         margin: 0
       });
+
+      // Image modal functionality
+      const modal = document.getElementById('imageModal');
+      const modalImg = document.getElementById('modalImg');
+      const closeBtn = document.getElementsByClassName('close')[0];
+
+      document.querySelectorAll('.gallery-img').forEach(img => {
+        img.onclick = function() {
+          modal.style.display = 'block';
+          modalImg.src = this.src;
+        }
+      });
+
+      closeBtn.onclick = function() {
+        modal.style.display = 'none';
+      }
+
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
     </script>
   </body>
 </html> 
