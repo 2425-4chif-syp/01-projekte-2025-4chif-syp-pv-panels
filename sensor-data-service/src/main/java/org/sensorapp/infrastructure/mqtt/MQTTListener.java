@@ -1,36 +1,41 @@
-package org.sensorapp.application;
+package org.sensorapp.infrastructure.mqtt;
 
-import org.eclipse.paho.client.mqttv3.*;
+import io.quarkus.arc.Unremovable;
+import jakarta.inject.Inject;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
+import org.eclipse.paho.client.mqttv3.*;
 import org.sensorapp.infrastructure.influxdb.InfluxDBService;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
+@Unremovable
 @ApplicationScoped
 public class MQTTListener {
 
     private static final Logger LOGGER = Logger.getLogger(MQTTListener.class.getName());
 
-    private static final String BROKER_URL = System.getenv("MQTT_BROKER_URL");
-    private static final String CLIENT_ID = System.getenv("MQTT_CLIENT_ID");
-    private static final String USERNAME = System.getenv("MQTT_USERNAME");
-    private static final String PASSWORD = System.getenv("MQTT_PASSWORD");
+    private static final String BROKER_URL = "ssl://mqtt.htl-leonding.ac.at:8883";
+    private static final String CLIENT_ID = "quarkus-sensor-client1";
+    private static final String USERNAME = "leo-student";
+    private static final String PASSWORD = "sTuD@w0rck";
 
-    private static final String[] TOPICS = {"ug/#"}; // Erfasse alle Stockwerke und Sensoren
+    // Abonniert alle Themen im Format 'floor/sensor/type' (Dynamisch für Stockwerke, Sensoren und Typen)
+    private static final String[] TOPICS = {"+/+/+"}; // Alle Stockwerke und Sensoren abonnieren
 
     private MqttClient client;
-    private final InfluxDBService influxDBService;
 
-    public MQTTListener(InfluxDBService influxDBService) {
-        this.influxDBService = influxDBService;
+    @Inject
+    InfluxDBService influxDBService;
+
+    public MQTTListener() {
+        System.out.println("🔍 MQTTListener Konstruktor wurde aufgerufen!");
     }
 
-    @PostConstruct
-    public void init() {
+    public void start() {
         LOGGER.info("🚀 MQTTListener wird gestartet...");
         new Thread(this::connectMQTT).start();
     }
@@ -51,6 +56,7 @@ public class MQTTListener {
                 client.connect(options);
                 LOGGER.info("✅ Erfolgreich mit MQTT verbunden.");
 
+                // Themen abonnieren
                 for (String topic : TOPICS) {
                     LOGGER.info("📡 Abonniere Topic: " + topic);
                     client.subscribe(topic, this::handleMessage);
@@ -70,33 +76,36 @@ public class MQTTListener {
         String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
         LOGGER.info("📩 MQTT Nachricht empfangen - Topic: " + topic + ", Payload: " + payload);
 
-        // Prüfen, ob das Topic richtig geparst wird
+        // Das Topic in Teile zerlegen (Stockwerk, Sensor ID und Sensortyp)
         String[] topicParts = topic.split("/");
         if (topicParts.length < 3) {
             LOGGER.warning("⚠️ Ungültiges Topic-Format: " + topic);
             return;
         }
 
-        String floor = topicParts[1]; // Beispiel: "U08"
-        String sensorType = topicParts[2]; // Beispiel: "CO2"
+        String floor = topicParts[0];  // Stockwerk (z.B. eg, ug)
+        String sensorId = topicParts[1]; // Sensor ID (z.B. U08, U90)
+        String sensorType = topicParts[2]; // Sensor-Typ (z.B. CO2, HUM, TEMP)
 
+        // Prüfen, ob für das Stockwerk Daten vorhanden sind
+        LOGGER.info("📡 Stockwerk: " + floor + ", Sensor: " + sensorId + ", Typ: " + sensorType);
+
+        // Erstelle eine Map für die Sensordaten
+        Map<String, Double> sensorData = new HashMap<>();
+
+        // Versuche den Wert als Double zu parsen und in die Map hinzuzufügen
         try {
             double sensorValue = Double.parseDouble(payload.trim());
-            LOGGER.info("✅ Sensorwert gespeichert: " + sensorValue);
-            influxDBService.writeSensorData(floor, sensorType, sensorValue);
+            sensorData.put(sensorType, sensorValue);  // Wert für den Sensor-Typ speichern
+
+            // Logge, was gespeichert wurde
+            LOGGER.info("✅ Sensorwert gespeichert: " + sensorValue + " für " + sensorType);
+
+            // Schreibe die Sensordaten in die InfluxDB (dynamisch)
+            influxDBService.writeSensorData(floor, sensorId, sensorData);
+
         } catch (NumberFormatException e) {
             LOGGER.warning("❌ Ungültiger Sensorwert: " + payload);
-        }
-    }
-    @PreDestroy
-    public void cleanup() {
-        if (client != null && client.isConnected()) {
-            try {
-                client.disconnect();
-                LOGGER.info("Disconnected from MQTT broker.");
-            } catch (MqttException e) {
-                LOGGER.warning("Error while disconnecting from MQTT: " + e.getMessage());
-            }
         }
     }
 }

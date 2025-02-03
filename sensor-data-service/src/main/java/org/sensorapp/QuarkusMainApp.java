@@ -6,7 +6,6 @@ import io.quarkus.runtime.annotations.QuarkusMain;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.spi.CDI;
 import org.jboss.logging.Logger;
-import org.sensorapp.service.SensorDataService;
 import org.sensorapp.infrastructure.mqtt.MQTTListener;
 
 @QuarkusMain
@@ -24,18 +23,12 @@ public class QuarkusMainApp {
         public int run(String... args) {
             LOGGER.info("✅ Quarkus Main-App gestartet!");
 
-            // Beans manuell abrufen und testen
-            SensorDataService sensorService = CDI.current().select(SensorDataService.class).get();
+            // Beans manuell abrufen
             MQTTListener mqttListener = CDI.current().select(MQTTListener.class).get();
-
-            if (sensorService != null) {
-                LOGGER.info("✅ SensorDataService erfolgreich geladen!");
-            } else {
-                LOGGER.error("❌ SensorDataService konnte NICHT geladen werden!");
-            }
 
             if (mqttListener != null) {
                 LOGGER.info("✅ MQTTListener erfolgreich geladen!");
+                mqttListener.start();
             } else {
                 LOGGER.error("❌ MQTTListener konnte NICHT geladen werden!");
             }
