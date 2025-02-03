@@ -1,0 +1,10 @@
+com/example/scheduler/WeatherScheduler.class
+com/example/GreetingResource.class
+com/example/service/WeatherService.class
+com/example/service/OpenMeteoClient$OpenMeteoResponse.class
+com/example/service/OpenMeteoClient$OpenMeteoResponse$Hourly.class
+com/example/service/OpenMeteoClient.class
+com/example/model/WeatherData.class
+com/example/MyLivenessCheck.class
+com/example/config/InfluxDBConfig.class
+com/example/health/InfluxDBHealthCheck.class

@@ -1,0 +1,83 @@
+### **Oktober 2024** *(Quarkus MQTT Backend)*  
+- **02.10.2024**: MQTT Backend – **2h**  
+- **13.10.2024**: MQTT Backend – **3h**  
+- **22.10.2024**: MQTT Backend – **2h**  
+- **31.10.2024**: MQTT Backend – **1h**  
+
+---
+
+### **November 2024** *(VM Setup & Projekte)*  
+- **06.11.2024**: VM-Installation – **1h**  
+- **14.11.2024**: VM-Konfiguration – **3h**  
+- **20.11.2024**: Dateien Draufspielen und testen – **5h**  
+- **27.11.2024**: Testen und Fehler Beheben – **2h**  
+
+
+---
+
+### **Dezember 2024** *(5. Klasse Projekt)*  
+- **04.12.2024**: Projekt draufspielen – **4h**  
+- **06.12.2024**: Nginx-Configuration – **3h**  
+- **11.12.2024**: Fehlerbehebung – **4h**  
+- **18.12.2024**: grafana.ini und docker configuration – **3h**  
+
+---
+
+### **Jänner 2025** *(Quarkus API + InfluxDB/Grafana)*  
+
+- **08.01.2025**: Wetter App beginnen – **2h**  
+- **08.01.2025**: API finden und einbauen – **4h**  
+- **15.01.2025**: Grafana config und docker einrichten – **3h**   
+- **22.01.2025**: Fehler Suchen – **4h**  
+
+# Besprechungsprotokoll
+
+---
+
+## **Oktober 2024**
+**Teilnehmer**:  
+- Professor Stütz  
+- Sebastian Radic  
+
+**Beschreibung**:  
+Ich habe ein Quarkus Backend gebaut, mit dem ich MQTT-Daten in meinem Backend ausgebe.  
+
+**Status**: Akzeptiert  
+
+---
+
+## **November 2024**
+**Teilnehmer**:  
+- Professor Stütz  
+- Sebastian Radic  
+
+**Beschreibung**:  
+Ich habe eine VM aufgesetzt und alle nötigen Sachen drauf installiert sowie Projekte darauf gespielt.  
+
+**Status**: Akzeptiert  
+
+---
+
+## **Dezember 2024**
+**Teilnehmer**:  
+- Professor Stütz  
+- Sebastian Radic  
+
+**Beschreibung**:  
+Ich habe ein Projekt von der 5. Klasse, welches ich weiterführen muss, neu konfiguriert mit Docker, Nginx und Certbot, damit es auf unserer virtuellen Maschine läuft.  
+
+**Status**: Akzeptiert  
+
+---
+
+## **Jänner 2025**
+**Teilnehmer**:  
+- Professor Stütz  
+- Sebastian Radic  
+
+**Beschreibung**:  
+Ich habe ein Quarkus-Projekt gemacht, welches mit InfluxDB und Grafana durch eine API Wetterdaten holt.  
+
+**Status**: In Bearbeitung  
+
+---  
