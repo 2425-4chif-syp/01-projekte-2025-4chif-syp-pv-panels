@@ -31,13 +31,14 @@ public class MQTTListener {
 
     @PostConstruct
     public void init() {
+        LOGGER.info("🚀 MQTTListener wird gestartet...");
         new Thread(this::connectMQTT).start();
     }
 
     private void connectMQTT() {
         while (true) {
             try {
-                LOGGER.info("Attempting to connect to MQTT broker: " + BROKER_URL);
+                LOGGER.info("🔌 Versuche Verbindung zum MQTT-Broker: " + BROKER_URL);
                 client = new MqttClient(BROKER_URL, CLIENT_ID);
 
                 MqttConnectOptions options = new MqttConnectOptions();
@@ -48,32 +49,31 @@ public class MQTTListener {
                 options.setAutomaticReconnect(true);
 
                 client.connect(options);
-                LOGGER.info("Connected to MQTT broker.");
+                LOGGER.info("✅ Erfolgreich mit MQTT verbunden.");
 
                 for (String topic : TOPICS) {
-                    LOGGER.info("Subscribing to: " + topic);
+                    LOGGER.info("📡 Abonniere Topic: " + topic);
                     client.subscribe(topic, this::handleMessage);
                 }
 
-                break; // Erfolgreich verbunden -> Exit-Schleife
+                break;
             } catch (MqttException e) {
-                LOGGER.warning("MQTT connection failed, retrying in 5 seconds: " + e.getMessage());
+                LOGGER.warning("❌ MQTT-Verbindung fehlgeschlagen, erneuter Versuch in 5 Sekunden: " + e.getMessage());
                 try {
                     Thread.sleep(5000);
-                } catch (InterruptedException ignored) {
-                }
+                } catch (InterruptedException ignored) {}
             }
         }
     }
 
     private void handleMessage(String topic, MqttMessage message) {
         String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
-        LOGGER.info("Received message - Topic: " + topic + ", Payload: " + payload);
+        LOGGER.info("📩 MQTT Nachricht empfangen - Topic: " + topic + ", Payload: " + payload);
 
-        // Parsen des Topics, um Stockwerk und Sensor-Typ zu extrahieren
+        // Prüfen, ob das Topic richtig geparst wird
         String[] topicParts = topic.split("/");
         if (topicParts.length < 3) {
-            LOGGER.warning("Invalid topic format, skipping: " + topic);
+            LOGGER.warning("⚠️ Ungültiges Topic-Format: " + topic);
             return;
         }
 
@@ -82,12 +82,12 @@ public class MQTTListener {
 
         try {
             double sensorValue = Double.parseDouble(payload.trim());
+            LOGGER.info("✅ Sensorwert gespeichert: " + sensorValue);
             influxDBService.writeSensorData(floor, sensorType, sensorValue);
         } catch (NumberFormatException e) {
-            LOGGER.warning("Invalid sensor value, skipping: " + payload);
+            LOGGER.warning("❌ Ungültiger Sensorwert: " + payload);
         }
     }
-
     @PreDestroy
     public void cleanup() {
         if (client != null && client.isConnected()) {
