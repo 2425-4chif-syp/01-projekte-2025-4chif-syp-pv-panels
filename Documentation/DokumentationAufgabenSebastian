@@ -40,7 +40,7 @@
 - Sebastian Radic  
 
 **Beschreibung**:  
-Ich habe ein Quarkus Backend gebaut, mit dem ich MQTT-Daten in meinem Backend ausgebe.  
+Ich muss ein Quarkus Backend bauen, mit dem ich MQTT-Daten in meinem Backend ausgebe.  
 
 **Status**: Akzeptiert  
 
@@ -52,7 +52,7 @@ Ich habe ein Quarkus Backend gebaut, mit dem ich MQTT-Daten in meinem Backend au
 - Sebastian Radic  
 
 **Beschreibung**:  
-Ich habe eine VM aufgesetzt und alle nötigen Sachen drauf installiert sowie Projekte darauf gespielt.  
+Ich muss eine VM aufsetzen und alle nötigen Sachen drauf installiert sowie Projekte darauf spielen.  
 
 **Status**: Akzeptiert  
 
@@ -64,7 +64,7 @@ Ich habe eine VM aufgesetzt und alle nötigen Sachen drauf installiert sowie Pro
 - Sebastian Radic  
 
 **Beschreibung**:  
-Ich habe ein Projekt von der 5. Klasse, welches ich weiterführen muss, neu konfiguriert mit Docker, Nginx und Certbot, damit es auf unserer virtuellen Maschine läuft.  
+Ich muss ein Projekt von der 5. Klasse, welches ich weiterführen muss, neu konfigurieren mit Docker, Nginx und Certbot, damit es auf unserer virtuellen Maschine läuft.  
 
 **Status**: Akzeptiert  
 
@@ -76,7 +76,7 @@ Ich habe ein Projekt von der 5. Klasse, welches ich weiterführen muss, neu konf
 - Sebastian Radic  
 
 **Beschreibung**:  
-Ich habe ein Quarkus-Projekt gemacht, welches mit InfluxDB und Grafana durch eine API Wetterdaten holt.  
+Ich muss ein Quarkus-Projekt machen, welches mit InfluxDB und Grafana durch eine API Wetterdaten anzeigt.  
 
 **Status**: In Bearbeitung  
 
