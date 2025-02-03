@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="de">
+
+<head>
+  <meta charset="utf-8">
+  <title>Projekt Präsentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #2989d8;
+      --text-color: #333;
+      --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background: var(--bg-gradient);
+      color: var(--text-color);
+    }
+
+    .reveal {
+      background: transparent;
+    }
+
+    .reveal .slides {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .reveal .slides section {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin: 2rem auto;
+      width: 80%;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .reveal h2 {
+      color: var(--primary-color);
+      font-size: 2.5em;
+      margin-bottom: 1em;
+      border-bottom: 2px solid var(--primary-color);
+      padding-bottom: 0.5em;
+    }
+
+    .reveal ul {
+      text-align: left;
+      margin: 2em 0;
+    }
+
+    .reveal li {
+      margin-bottom: 1.5em;
+      line-height: 1.6;
+    }
+
+    .reveal strong {
+      color: var(--primary-color);
+    }
+
+    .reveal p {
+      font-size: 1.2em;
+      line-height: 1.6;
+    }
+
+    /* First slide special styling */
+    .reveal .slides section:first-child {
+      background: linear-gradient(135deg, #2989d8, #1e5799);
+      color: white;
+    }
+
+    .reveal .slides section:first-child h2 {
+      color: white;
+      border-bottom-color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Navigation controls */
+    .reveal .controls {
+      color: var(--primary-color);
+    }
+
+    .reveal .controls .navigate-right,
+    .reveal .controls .navigate-left,
+    .reveal .controls .navigate-up,
+    .reveal .controls .navigate-down {
+      width: 35px !important;
+      height: 35px !important;
+    }
+
+    .image-gallery {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .image-gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .image-gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.9);
+    }
+
+    .modal-content {
+      margin: auto;
+      display: block;
+      max-width: 90%;
+      max-height: 90vh;
+      margin-top: 2%;
+    }
+
+    .close {
+      position: absolute;
+      right: 35px;
+      top: 15px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section>
+        <h2>Aktueller Stand</h2>
+        <p>Wir werden demnächst das alte Projekt fortführen und inzwischen hat jeder Einzelaufgaben gemacht, um uns
+          darauf vorzubereiten.</p>
+      </section>
+      <section>
+        <h2>Sebastian Radic hat gemacht:</h2>
+        <ul>
+          <li><strong>Quarkus MQTT Daten:</strong>
+            Schwierigkeiten – Konnte noch kein Quarkus, hat ewigkeiten gedauert bis ich verstanden habe,
+            wie manche Dinge funktionieren. Viel Arbeit in Recherche investiert.</li>
+          <li><strong>WeatherApp mit Quarkus:</strong>
+            Von einer API Wetter Daten sammeln und in InfluxDB speichern.
+            Schwierigkeiten – Mangelndes Quarkus-Wissen, Probleme beim Verbinden der API und beim Speichern von Daten in
+            Influx.</li>
+          <li><strong>Neue VM eingerichtet:</strong>
+            Schwierigkeiten – Noch nie auf einer VM gearbeitet, hat etwas gedauert bis ich den Dreh raus hatte.</li>
+          <li><strong>Altes Projekt neu konfiguriert und auf VM aufgesetzt:</strong>
+            Schwierigkeiten – Probleme mit der Konfiguration,
+            habe so etwas noch nie gemacht und viele Stunden investiert, um die Konfiguration richtig umzusetzen.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>YouTrack User Stories (Sebastian Radic)</h2>
+        <ul style="font-size: 0.9em;">
+          <li><strong>Wetterdaten abrufen und speichern:</strong><br>
+            Als Admin möchte ich aktuelle Wetterdaten von einer externen API abrufen und in der InfluxDB speichern.</li>
+          <li><strong>Weather Data Visualization:</strong><br>
+            Als Benutzer möchte ich die gespeicherten Wetterdaten in einer ansprechenden und dynamischen
+            Dashboard-Ansicht in Grafana visualisieren können.</li>
+          <li><strong>Backend:</strong><br>
+            Als Developer möchte ich ein robustes Backend, das zuverlässig unter allen Bedingungen funktioniert.</li>
+          <li><strong>VM Setup:</strong><br>
+            Als Admin möchte ich eine skalierbare virtuelle Maschine, die mit den Systemanforderungen ohne
+            Unterbrechungen wachsen kann.</li>
+          <li><strong>Environment Setup:</strong><br>
+            Als Developer möchte ich konsistente Umgebungen, damit mein Code überall zuverlässig läuft.</li>
+          <li><strong>Documentation:</strong><br>
+            Als Team möchten wir eine klare Dokumentation, auf die wir uns für genaue Informationen verlassen können.
+          </li>
+        </ul>
+      </section>
+      <section>
+        <h2>YouTrack Screenshots (Sebastian Radic)</h2>
+        <div class="image-gallery">
+          <img class="gallery-img" src="images/youtrack/wetterdaten.png" alt="Wetterdaten User Story">
+          <img class="gallery-img" src="images/youtrack/weather-visualization.png"
+            alt="Weather Visualization User Story">
+          <img class="gallery-img" src="images/youtrack/backend.png" alt="Backend User Story">
+          <img class="gallery-img" src="images/youtrack/vm.png" alt="VM Setup User Story">
+          <img class="gallery-img" src="images/youtrack/environment.png" alt="Environment Setup User Story">
+          <img class="gallery-img" src="images/youtrack/documentation.png" alt="Documentation User Story">
+        </div>
+      </section>
+      <section>
+        <h2>Luis Schörgendorfer hat gemacht:</h2>
+        <ul>
+          <li><strong>Frontend für Sensordaten:</strong> 
+              Implementierung einer Schnittstelle zur Anzeige von Sensordaten aus dem MQTT-Server im Frontend.</li>
+          <li><strong>Quarkus-Backend:</strong> 
+              Anpassung des Quarkus-Backends von Sebastian zur Integration mit dem Frontend, sodass Sensordaten übertragen und dargestellt werden können.<br>
+              Schwierigkeiten: Fehlende Vorerfahrung mit Quarkus, musste mich im Internet schlau machen.</li>
+          <li><strong>Lokaler Server für das Frontend:</strong> 
+              Einrichtung eines lokalen Servers zur Bereitstellung des Frontends und zur Visualisierung der Sensordaten.</li>
+          <li><strong>GitHub Slides:</strong> 
+              Erstellung von Präsentationsfolien zur Dokumentation und Übersicht des Repositorys.</li>
+        </ul>      
+      </section>
+      <section>
+        <h2>YouTrack User Stories (Luis Schörgendorfer)</h2>
+        <ul style="font-size: 0.9em;">
+          <li><strong>Schwellenwerte für alle Kategorien verwalten:</strong>
+            Als User möchte ich mindestens vier Schwellenwerte für alle Kategorien definieren und bearbeiten können, um die Flexibilität der Konfiguration zu erhöhen.</li>
+          <li><strong>Sensorstatus als Gesamtübersicht anzeigen:</strong>
+            Als User möchte ich eine Übersicht aller Sensoren mit Icons sehen, um den aktuellen Zustand jedes Raums schnell erfassen zu können.</li>
+          <li><strong>Sensor-Daten speichern und verwalten:</strong>
+            Als Entwickler möchte ich eine relationale Datenbank für Sensordaten erstellen und ein ER-Diagramm entwerfen, um eine strukturierte und performante Speicherung zu ermöglichen.
+          </li>
+          <li><strong>Frontend und Backend unabhängig von lokalem Betrieb betreiben</strong>
+            Als Entwickler möchte ich das Frontend und Backend so einrichten, dass sie nicht nur lokal, sondern auch auf einem Server laufen können, um eine zuverlässige Nutzung sicherzustellen.</li>
+          <li><strong>Sensoren mit Rauminformationen versehen:</strong>
+            Als User möchte ich Sensoren eine Raum-ID zuweisen und ihre genaue Standortbeschreibung hinterlegen, um eine klare Zuordnung zu ermöglichen.</li>
+          </ul>
+      </section>
+      <section>
+        <h2>YouTrack Screenshots (Luis Schörgendorfer)</h2>
+        <div class="image-gallery">
+          <img class="gallery-img" src="images/youtrack/UserStory_LuisSchörgendorfer1.png">
+          <img class="gallery-img" src="images/youtrack/UserStory_LuisSchörgendorfer2.png">
+          <img class="gallery-img" src="images/youtrack/UserStory_LuisSchörgendorfer3.png">
+          <img class="gallery-img" src="images/youtrack/UserStory_LuisSchörgendorfer4.png">
+          <img class="gallery-img" src="images/youtrack/UserStory_LuisSchörgendorfer5.png">
+        </div>
+      </section>
+      <section>
+        <h2>Denis Bjelak hat gemacht:</h2>
+        <ul>
+            <li><strong>ERD-Diagramm für Raum- und Sensordaten:</strong>
+                Erstellung und Verbesserung des ERD's, um die Struktur der Raum- und Sensordaten zu optimieren.</li>
+            <li><strong>Raum-Daten in Excel erfassen:</strong>
+              Raum-Daten in Excel eingetragen, damit sie weiterverarbeitet werden können</li>
+            <li><strong>Raum-Daten in PostgreSQL importieren:</strong>
+                Import der erfassten Raum-Daten aus Excel in eine PostgreSQL-Datenbank.</li>
+            <li><strong>Zugriff auf die PostgreSQL-Datenbank ermöglichen:</strong>
+                Implementierung einer Lösung, um den Zugriff auf die PostgreSQL-Datenbank für Mitglieder bereitzustellen.</li>
+        </ul>      
+    </section>
+    <section>
+      <h2>YouTrack User Stories (Denis Bjelak)</h2>
+      <ul style="font-size: 0.9em;">
+          <li><strong>ERD-Diagramm für Raum- und Sensordaten:</strong>
+              Als Datenbankanalyst möchte ich ein ERD-Diagramm erstellen und verbessern, indem ich korrekte Datentypen verwende und ein besser strukturiertes Schema entwickle, damit die Datenbank leichter zu warten ist.</li>
+          <li><strong>Raum-Daten (Excel) in PostgreSQL importieren:</strong>
+              Als Datenanalyst möchte ich selbst geschriebene Raum-Daten aus Excel in die PostgreSQL-Datenbank importieren, damit die Daten gespeichert und visualisiert werden.</li>
+          <li><strong>Raum-Daten aktualisieren und erneut importieren:</strong>
+              Als Datenanalyst möchte ich die Raum-Daten in der Excel-Datei aktualisieren und erneut in die PostgreSQL-Datenbank importieren.</li>
+          <li><strong>Zugriff auf die PostgreSQL-Datenbank ermöglichen:</strong>
+              Als Datenanalyst möchte ich eine Lösung implementieren, die meinen Mitgliedern den Zugriff auf die PostgreSQL-Datenbank ermöglicht, damit sie die Raum-Daten verwalten können.</li>
+      </ul>
+  </section>
+  <section>
+    <h2>YouTrack Screenshots (Denis Bjelak)</h2>
+    <div class="image-gallery">
+      <img class="gallery-img" src="images/youtrack/denis_userstory1.png">
+      <img class="gallery-img" src="images/youtrack/denis_userstory2.png">
+      <img class="gallery-img" src="images/youtrack/denis_userstory3.png">
+      <img class="gallery-img" src="images/youtrack/denis_userstory4.png">
+    </div>
+  </section>
+      <section>
+        <h2>Danis Mezildzic hat gemacht:</h2>
+        <ul>
+          <li><strong>Prototyp zur Visualisierung der Räume:</strong>
+            Erste Umsetzung eines einzelnen Raums mit Sensor, um das Konzept zu testen.</li>
+          <li><strong>Räume in einem Grid positioniert:</strong>
+            Die Räume basierend auf einer CSV-Liste angeordnet, jedoch noch ohne Gänge.</li>
+          <li><strong>Integration mit dem Backend:</strong>
+            Warten auf die Fertigstellung des Backends, um die CSV durch eine Datenbank zu ersetzen und die Gänge im
+            Frontend hinzuzufügen.</li>
+          <li><strong>Lokale Entwicklung:</strong>
+            Alle Änderungen wurden nur lokal im eigenen Ordner vorgenommen, ohne Commits ins Repository.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>YouTrack User Stories (Danis Mezildzic)</h2>
+        <ul style="font-size: 0.9em;">
+          <li><strong>PostgreSQL-Datenbankintegration:</strong>
+            Die bestehende CSV-Datenhaltung wird durch eine PostgreSQL-Datenbank ersetzt und in das Quarkus-Backend
+            integriert.</li>
+          <li><strong>Integration der Hallways ins Frontend:</strong>
+            Die Räume werden basierend auf den Hallway-Daten korrekt platziert und die Visualisierung entsprechend
+            angepasst.</li>
+          <li><strong>Navigation zwischen Stockwerken mit dem Scrollrad:</strong>
+            Das Scrollrad ermöglicht den Wechsel zwischen den Etagen, wobei die aktuelle Etage visuell dargestellt wird.
+          </li>
+          <li><strong>Sensor-Daten in Räumen anzeigen:</strong>
+            Sensoren werden innerhalb der Räume platziert, und ein Klick auf einen Sensor zeigt die zugehörigen Daten
+            an.</li>
+        </ul>
+      </section>  
+      <section>  
+        <h2>YouTrack Screenshots (Danis Mezildzic)</h2>
+        <div class="image-gallery">
+          <img class="gallery-img" src="images/youtrack/danis_userstory1.png">
+          <img class="gallery-img" src="images/youtrack/danis_userstory2.png">
+          <img class="gallery-img" src="images/youtrack/danis_userstory3.png">
+          <img class="gallery-img" src="images/youtrack/danis_userstory4.png">
+        </div>
+      </section>
+      <section>
+        <h2>Tobias Kletsch hat gemacht:</h2>
+        <ul>
+          <li><strong>Store MQTT Sensor Data:</strong>
+            Implementierung der Speicherung von MQTT-Sensordaten in InfluxDB über ein Quarkus-Backend.
+          </li>
+          <li><strong>Docker-Setup für Datenbank-Services:</strong>
+            Erstellung eines Docker-Setups für die Containerisierung von InfluxDB, PostgreSQL und Grafana.
+          </li>
+          <li><strong>Visualize MQTT Sensor Data:</strong>
+            Anbindung von Grafana an InfluxDB zur Visualisierung der Sensordaten mit konfigurierbaren Dashboards.
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>YouTrack User Stories (Tobias Kletsch)</h2>
+        <ul style="font-size: 0.9em;">
+          <li><strong>Store MQTT Sensor Data:</strong>
+            Als Systemadministrator möchte ich Sensordaten von einem MQTT-Broker über ein Quarkus-Backend in InfluxDB speichern, um eine zuverlässige Datenerfassung für zukünftige Analysen sicherzustellen.</li>
+          <li><strong>Visualize MQTT Sensor Data:</strong>
+            Als Systemadministrator möchte ich MQTT-Sensordaten in Grafana visualisieren, um eine einfache Überwachung und Analyse der Daten zu ermöglichen.</li>
+        </ul>
+      </section>
+      <section>
+        <h2>YouTrack Screenshots (Tobas Kletsch)</h2>
+        <div class="image-gallery">
+          <img class="gallery-img" src="images/youtrack/UserStory_TobiasKletsch1.png">
+          <img class="gallery-img" src="images/youtrack/UserStory_TobiasKletsch2.png">
+        </div>
+      </section>
+      <section>
+        <h2>Contributions</h2>
+        <div style="text-align: center;">
+          <img src="images/gh-insights.png" alt="GitHub Contributions"
+            style="max-width: 90%; height: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"
+            class="gallery-img">
+        </div>
+      </section>
+    </div>
+  </div>
+  <div id="imageModal" class="modal">
+    <span class="close">&times;</span>
+    <img class="modal-content" id="modalImg">
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      center: false,
+      controls: true,
+      controlsLayout: 'edges',
+      transition: 'slide',
+      autoSlide: 0,
+      height: '100%',
+      margin: 0
+    });
+
+    // Image modal functionality
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    const closeBtn = document.getElementsByClassName('close')[0];
+
+    document.querySelectorAll('.gallery-img').forEach(img => {
+      img.onclick = function () {
+        modal.style.display = 'block';
+        modalImg.src = this.src;
+      }
+    });
+
+    closeBtn.onclick = function () {
+      modal.style.display = 'none';
+    }
+
+    window.onclick = function (event) {
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+
+</html>

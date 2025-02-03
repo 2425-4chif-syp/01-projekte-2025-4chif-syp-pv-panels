@@ -1,0 +1,154 @@
+# VM Setup und Deployment Guide
+Sebastian Radic
+:toc:
+:icons: font
+
+## Einleitung
+
+Dieses Dokument beschreibt, wie man das Leoenergy-Projekt auf einer neuen VM aufsetzt. Als jemand, der dies zum ersten Mal gemacht hat, teile ich hier meine Erfahrungen und eine vereinfachte Anleitung.
+
+## Voraussetzungen
+
+* Eine VM mit Ubuntu 24.04
+* Docker Engine mit Docker Compose
+* Nginx als Reverse Proxy
+* Die Projektdateien von unserem Repository
+
+TIP: Stelle sicher, dass die VM genügend Ressourcen hat (mindestens 2GB RAM und 20GB Speicher empfohlen).
+
+## Schritt-für-Schritt Anleitung
+
+### 1. Grundinstallation
+
+[source,bash]
+----
+# System aktualisieren
+sudo apt update
+sudo apt upgrade
+
+# Docker installieren
+sudo apt install docker.io docker-compose
+
+# Nginx installieren
+sudo apt install nginx
+----
+
+### 2. HTTPS Konfiguration
+
+[source,bash]
+----
+# Certbot für SSL installieren
+sudo apt install certbot python3-certbot-nginx
+
+# SSL-Zertifikat generieren
+sudo certbot --nginx -d deine_domain
+----
+
+IMPORTANT: Ersetze 'deine_domain' mit deiner tatsächlichen Domain.
+
+### 3. Grafana Konfiguration
+
+Erstelle eine `grafana.ini` Datei mit folgenden wichtigen Einstellungen:
+
+[source,ini]
+----
+[server]
+http_port = 3000
+domain = deine_domain
+root_url = https://deine_domain/grafana/
+serve_from_sub_path = true
+
+[security]
+admin_user = dein_admin_username
+admin_password = dein_admin_password
+
+[auth]
+disable_login_form = false
+
+[auth.anonymous]
+enabled = true
+----
+
+### 4. Nginx Konfiguration
+
+Bearbeite `/etc/nginx/sites-available/default`:
+
+[source,nginx]
+----
+location / {
+    proxy_pass http://localhost:8000;
+    proxy_set_header Accept-Encoding "";
+}
+
+location /grafana/ {
+    proxy_pass http://localhost:3000/;
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    
+    # WebSocket Support
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+}
+----
+
+### 5. Deployment
+
+1. Kopiere alle Projektdateien auf die VM
+2. Führe das Start-Skript aus: `./start.sh`
+3. Überprüfe, ob alle Container laufen: `docker ps`
+
+## Häufige Probleme und Lösungen
+
+=== SSL-Zertifikat Probleme
+* Stelle sicher, dass Port 80 und 443 erreichbar sind
+* Überprüfe die Domain-Einstellungen
+* Certbot Logs checken: `sudo certbot certificates`
+
+=== Docker Probleme
+* Container Logs prüfen: `docker logs container_name`
+* Netzwerk-Einstellungen überprüfen: `docker network ls`
+* Bei Speicherplatzproblemen: `docker system prune`
+
+=== Grafana Zugriffsprobleme
+* Überprüfe die root_url in grafana.ini
+* Stelle sicher, dass der Proxy-Pass korrekt ist
+* Logs prüfen: `docker logs grafana`
+
+## Meine Erfahrungen
+
+Als jemand, der zum ersten Mal eine solche Deployment-Konfiguration durchgeführt hat, waren dies meine größten Herausforderungen:
+
+1. *Verständnis der Nginx-Konfiguration*: Die Proxy-Einstellungen und SSL-Integration waren anfangs verwirrend.
+2. *Docker-Compose Setup*: Das Zusammenspiel der verschiedenen Container und deren Netzwerkkonfiguration brauchte einige Versuche.
+3. *Grafana Subdirectory*: Die korrekte Konfiguration von Grafana in einem Subdirectory (/grafana/) war nicht trivial.
+
+TIP: Mache regelmäßige Backups deiner Konfigurationsdateien und dokumentiere alle Änderungen!
+
+## Maintenance
+
+=== Updates durchführen
+[source,bash]
+----
+# Container und Images aktualisieren
+./clean-docker.sh
+
+# System-Updates
+sudo apt update && sudo apt upgrade
+----
+
+=== Monitoring
+* Regelmäßig die Logs überprüfen
+* Speicherplatz im Auge behalten
+* SSL-Zertifikate werden automatisch erneuert, aber überprüfe den Status
+
+## Fazit
+
+Die Installation und Konfiguration mag anfangs überwältigend erscheinen, aber mit dieser Anleitung und etwas Geduld ist es machbar. Die wichtigsten Punkte sind:
+
+* Genaues Befolgen der Reihenfolge
+* Überprüfen der Logs bei Problemen
+* Backup der Konfigurationsdateien
+* Testen der Einstellungen vor dem Produktiveinsatz 

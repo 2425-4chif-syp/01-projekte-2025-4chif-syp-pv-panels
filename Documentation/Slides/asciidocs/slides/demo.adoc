@@ -50,33 +50,47 @@ Additionally, modern technologies will be integrated to ensure the project is fu
 
 == Latest Status
 
-Sprint 01:
+Sprint 01 - finished
+
+Sprint 02:
 
 [.highlight]
 === Environment Setup
-* Setup Docker -- **in Progress**
-
-[.highlight]
-=== Documentation
-* Documentation -- **in Progress**
+* Docker Setup for Data -- **Done**
 
 [.highlight]
 === Backend
-* Base Quarkus Application -- **Done**
-* Fix: Mqtt Connection Error -- **Done**
+* Influx DB and Grafana -- **Not estimated**
+* API Anbindung -- **to verify**
+* Rest client -- **to verify**
+* Data Conversion -- **Done**
+* Influx connection to backend -- **Done**
+* Develop REST API for Data Retrieval -- **Not estimated**
+* Store MQTT-Daten into InfluxDB -- **In progress**
 
 [.highlight]
 === Frontend
-* Frontend Sensors -- **in Progress**
+* Grafana Dashboards -- **In progress**
+* Grafana Influx connection -- **In progress**
+* Display overall sensor status -- **Not estimated**
+* Integrate Hallways into the Frontend -- **Not estimated**
+* Navigate Between Floors Using the Scroll Wheel -- **Not estimated**
+* Display Sensor Data in Rooms -- **Not estimated**
 
 [.highlight]
 === Database
-* Master Data Creation -- **to Verify**
+* Manage thresholds for all categories -- **Not estimated**
+* Store and manage sensor data -- **Not estimated**
+* Error Handling for MQTT and Database Failures -- **Not estimated**
+* Assign room information to sensors -- **Not estimated**
+* Import Excel Data into PostgreSQL Database -- **Done**
+* Update Room Data and Import into PostgreSQL Database -- **Done**
+* Implement PostgreSQL Database Integration -- **In progress**
+* Improve ERD Diagram for Room and Sensor Data Structure -- **Done**
 
 [.highlight]
 === VM
-* VM Setup -- **to Verify**
-
+* Run frontend and backend independently of local operation -- **Not estimated**
 
 == System Architecture
 
@@ -114,13 +128,20 @@ Room ||--o{ Sensor : "1 : N"
 
 == Next Steps
 
-* Integrate database to backend
-* Dockering the backend
-* Connecting frontend to backend
-* Implementing Grafana
-* Implementing new features
-* Learn working with Quarkus and VM
-* Implement new features and improve the old project
+* Integrate InfluxDB with Backend  
+* Finalize API connection for sensor data  
+* Store and manage MQTT sensor data  
+* Improve error handling for MQTT and database failures  
+* Dockering the backend and data storage  
+* Connect Grafana to InfluxDB for visualization  
+* Develop and refine Grafana Dashboards  
+* Assign room and location information to sensors  
+* Import and update room data in PostgreSQL  
+* Implement PostgreSQL database integration  
+* Enhance frontend with sensor status display  
+* Implement hallways visualization and navigation  
+* Make frontend and backend independent of local operation  
+* Continue learning Quarkus and VM management  
 
 == Final outcome
 
