@@ -1,4 +1,4 @@
-package org.weatherapp;
+package org.sensorapp;
 
 import io.quarkus.test.junit.QuarkusTest;
 import org.junit.jupiter.api.Test;
