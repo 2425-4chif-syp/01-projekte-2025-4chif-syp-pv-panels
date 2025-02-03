@@ -1,4 +1,4 @@
-package org.weatherapp;
+package org.sensorapp;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
