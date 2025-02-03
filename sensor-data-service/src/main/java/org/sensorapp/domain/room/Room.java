@@ -1,4 +1,4 @@
-package org.weatherapp.domain.room;
+package org.sensorapp.domain.room;
 
 import jakarta.persistence.*;
 import lombok.*;

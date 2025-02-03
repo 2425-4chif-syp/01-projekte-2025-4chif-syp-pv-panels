@@ -1,57 +1,102 @@
-package org.weatherapp.application;
+package org.sensorapp.application;
 
 import org.eclipse.paho.client.mqttv3.*;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.annotation.PostConstruct;
-import org.weatherapp.infrastructure.influxdb.InfluxDBService;
+import jakarta.annotation.PreDestroy;
+import org.sensorapp.infrastructure.influxdb.InfluxDBService;
 
 import javax.net.ssl.SSLSocketFactory;
+import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
 
 @ApplicationScoped
 public class MQTTListener {
 
-    private static final String BROKER_URL = "ssl://mqtt.htl-leonding.ac.at:8883";
-    private static final String CLIENT_ID = "quarkus-weather-client";
-    private static final String USERNAME = "leo-student";
-    private static final String PASSWORD = "sTuD@w0rck";
-    private static final String[] TOPICS = {"ug/U90/#", "ug/U08/#"}; // Abonniere alle Unter-Topics
+    private static final Logger LOGGER = Logger.getLogger(MQTTListener.class.getName());
+
+    private static final String BROKER_URL = System.getenv("MQTT_BROKER_URL");
+    private static final String CLIENT_ID = System.getenv("MQTT_CLIENT_ID");
+    private static final String USERNAME = System.getenv("MQTT_USERNAME");
+    private static final String PASSWORD = System.getenv("MQTT_PASSWORD");
+
+    private static final String[] TOPICS = {"ug/#"}; // Erfasse alle Stockwerke und Sensoren
 
     private MqttClient client;
-    private static final InfluxDBService influxDBService = new InfluxDBService();
+    private final InfluxDBService influxDBService;
 
+    public MQTTListener(InfluxDBService influxDBService) {
+        this.influxDBService = influxDBService;
+    }
 
     @PostConstruct
     public void init() {
-        System.out.println("MQTT listener started");
+        new Thread(this::connectMQTT).start();
+    }
+
+    private void connectMQTT() {
+        while (true) {
+            try {
+                LOGGER.info("Attempting to connect to MQTT broker: " + BROKER_URL);
+                client = new MqttClient(BROKER_URL, CLIENT_ID);
+
+                MqttConnectOptions options = new MqttConnectOptions();
+                options.setUserName(USERNAME);
+                options.setPassword(PASSWORD.toCharArray());
+                options.setSocketFactory(SSLSocketFactory.getDefault());
+                options.setCleanSession(true);
+                options.setAutomaticReconnect(true);
+
+                client.connect(options);
+                LOGGER.info("Connected to MQTT broker.");
+
+                for (String topic : TOPICS) {
+                    LOGGER.info("Subscribing to: " + topic);
+                    client.subscribe(topic, this::handleMessage);
+                }
+
+                break; // Erfolgreich verbunden -> Exit-Schleife
+            } catch (MqttException e) {
+                LOGGER.warning("MQTT connection failed, retrying in 5 seconds: " + e.getMessage());
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException ignored) {
+                }
+            }
+        }
+    }
+
+    private void handleMessage(String topic, MqttMessage message) {
+        String payload = new String(message.getPayload(), StandardCharsets.UTF_8);
+        LOGGER.info("Received message - Topic: " + topic + ", Payload: " + payload);
+
+        // Parsen des Topics, um Stockwerk und Sensor-Typ zu extrahieren
+        String[] topicParts = topic.split("/");
+        if (topicParts.length < 3) {
+            LOGGER.warning("Invalid topic format, skipping: " + topic);
+            return;
+        }
+
+        String floor = topicParts[1]; // Beispiel: "U08"
+        String sensorType = topicParts[2]; // Beispiel: "CO2"
 
         try {
-            MqttClient client = new MqttClient(BROKER_URL, CLIENT_ID);
+            double sensorValue = Double.parseDouble(payload.trim());
+            influxDBService.writeSensorData(floor, sensorType, sensorValue);
+        } catch (NumberFormatException e) {
+            LOGGER.warning("Invalid sensor value, skipping: " + payload);
+        }
+    }
 
-            MqttConnectOptions options = new MqttConnectOptions();
-            options.setUserName(USERNAME);
-            options.setPassword(PASSWORD.toCharArray());
-            options.setSocketFactory(SSLSocketFactory.getDefault());
-            options.setCleanSession(true);
-
-            client.connect(options);
-            System.out.println("Connected to MQTT broker.");
-
-            // Abonniere die relevanten Topics
-            for (String topic : TOPICS) {
-                System.out.println("Subscribing to: " + topic);
-                client.subscribe(topic, (receivedTopic, message) -> {
-                    String payload = new String(message.getPayload());
-                    System.out.println("Received message:");
-                    System.out.println("  Topic: " + receivedTopic);
-                    System.out.println("  Payload: " + payload);
-
-                    // Speichere die Daten in InfluxDB
-                    influxDBService.writeSensorData(receivedTopic, payload);
-                });
+    @PreDestroy
+    public void cleanup() {
+        if (client != null && client.isConnected()) {
+            try {
+                client.disconnect();
+                LOGGER.info("Disconnected from MQTT broker.");
+            } catch (MqttException e) {
+                LOGGER.warning("Error while disconnecting from MQTT: " + e.getMessage());
             }
-        } catch (MqttException e) {
-            System.err.println("MQTT Error: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
