@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensor Details</title>
+    <link rel="icon" type="image/x-icon" href="icons/sensoron.png">
+    <script src="js/websocket.js"></script>
     <style>
         :root {
             --primary-color: #FF7F6F;
@@ -261,24 +263,7 @@
         
         document.getElementById('locationTitle').textContent = `Sensor Details - ${sensorLocation.toUpperCase()}`;
         
-        const ws = new WebSocket("ws://localhost:3000");
-
-        ws.onmessage = (event) => {
-            console.log('WebSocket Nachricht empfangen:', event.data);
-            
-            let data;
-            try {
-                data = JSON.parse(event.data);
-                console.log('Geparste Daten:', data);
-            } catch (e) {
-                console.error("Fehler beim Parsen der WebSocket-Nachricht:", e);
-                return;
-            }
-
-            if (!data.topic) {
-                return;
-            }
-
+        function updateUI(data) {
             const topic = data.topic;
             const valueData = data.message;
             
@@ -382,19 +367,17 @@
                     }, 5000);
                 }
             }
-        };
+        }
 
-        ws.onopen = () => {
-            console.log('WebSocket Verbindung hergestellt');
-        };
+        // Registriere den Update-Callback beim WebSocket-Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            wsHandler.subscribe(updateUI);
+        });
 
-        ws.onerror = (error) => {
-            console.error('WebSocket Fehler:', error);
-        };
-
-        ws.onclose = () => {
-            console.log('WebSocket Verbindung geschlossen');
-        };
+        // Aufräumen beim Verlassen der Seite
+        window.addEventListener('beforeunload', function() {
+            wsHandler.unsubscribe(updateUI);
+        });
     </script>
 </body>
 </html>

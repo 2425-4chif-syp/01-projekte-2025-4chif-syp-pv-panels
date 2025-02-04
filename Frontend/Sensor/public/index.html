@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sensor Dashboard</title>
+    <link rel="icon" type="image/x-icon" href="icons/sensoron.png">
+    <script src="js/websocket.js"></script>
     <style>
         :root {
             --primary-color: #FF7F6F;
@@ -78,6 +80,7 @@
         .threshold-button {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 0.5rem;
             padding: 0.75rem 1.5rem;
             background-color: white;
@@ -85,7 +88,8 @@
             border: none;
             border-radius: var(--border-radius);
             cursor: pointer;
-            font-weight: bold;
+            font-family: Arial, sans-serif;
+            font-size: 1rem;
             transition: all 0.3s ease;
         }
 
@@ -97,6 +101,7 @@
         .threshold-button img {
             width: 20px;
             height: 20px;
+            margin-bottom: 1px; /* Slight adjustment to align with text */
         }
 
         @keyframes pulse {
@@ -258,7 +263,8 @@
             padding: 1rem 2rem;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            font-size: 1.2rem;
             font-weight: bold;
             box-shadow: var(--shadow);
             transition: all 0.3s ease;
@@ -465,7 +471,7 @@
     </div>
 
     <button class="settings-button" onclick="openModal()">
-        <img src="icons/filter.png" alt="Filter" style="width: 24px; height: 24px; margin-right: 8px;">
+        <img src="icons/filter.png" alt="Filter" style="width: 24px; height: 24px; margin-right: 8px; vertical-align: middle;">
         Schwellenwerte bearbeiten
     </button>
 
@@ -531,6 +537,70 @@
 
         let thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || defaultThresholds;
 
+        function updateUI(data) {
+            if (!data || !data.topic) return;
+
+            const topic = data.topic.toLowerCase();
+            const value = data.message?.value;
+            if (value === undefined) return;
+
+            // Bestimme den Raumtyp und die Nummer aus dem Topic
+            const topicParts = topic.split('/');
+            if (topicParts.length < 2) return;
+
+            const floor = topicParts[0]; // 'eg' oder 'ug'
+            const room = topicParts[1]; // 'e72', 'u86', etc.
+            
+            // Konvertiere das Topic-Format in unser Room-ID-Format
+            let roomId = '';
+            if (floor === 'eg') {
+                roomId = 'eg' + room.substring(1); // 'eg72'
+            } else if (floor === 'ug') {
+                roomId = 'ug' + room.substring(1); // 'ug86'
+            }
+
+            // Finde den Sensor-Typ aus dem Topic
+            let sensorType = '';
+            if (topic.includes('/temp')) sensorType = 'temperature';
+            else if (topic.includes('/hum')) sensorType = 'humidity';
+            else if (topic.includes('/co2')) sensorType = 'co2';
+
+            if (!sensorType) return;
+
+            // Aktualisiere den Sensor-Status
+            const statusIcon = document.getElementById(`sensor-status-${roomId}`);
+            if (statusIcon) {
+                statusIcon.src = 'icons/sensoron.png';
+                statusIcon.classList.add('sensor-active');
+                
+                clearTimeout(window.sensorTimeouts?.[roomId]);
+                window.sensorTimeouts = window.sensorTimeouts || {};
+                window.sensorTimeouts[roomId] = setTimeout(() => {
+                    statusIcon.src = 'icons/sensoroff.png';
+                    statusIcon.classList.remove('sensor-active');
+                }, 300000);
+
+                // Aktualisiere die Sensor-Vorschau
+                const previewItems = document.querySelectorAll(`#sensor-status-${roomId} + .sensor-preview .sensor-preview-item`);
+                if (previewItems.length > 0) {
+                    const status = getColorForValue(sensorType, parseFloat(value));
+                    const previewIndex = {
+                        'temperature': 0,
+                        'humidity': 1,
+                        'co2': 2
+                    }[sensorType];
+
+                    if (previewIndex !== undefined && previewItems[previewIndex]) {
+                        previewItems[previewIndex].style.backgroundColor = {
+                            'optimal': '#4CAF50',
+                            'akzeptabel': '#FFA726',
+                            'kritisch': '#EF5350'
+                        }[status] || 'gray';
+                    }
+                }
+            }
+        }
+
         function openModal() {
             document.getElementById('settingsModal').style.display = 'flex';
             document.getElementById('co2Good').value = thresholds.co2.good;
@@ -587,57 +657,11 @@
             return card;
         }
 
-        const ws = new WebSocket('ws://localhost:3000');
-
-        ws.onmessage = (event) => {
-            let data;
-            try {
-                data = JSON.parse(event.data);
-            } catch (e) {
-                console.error("Fehler beim Parsen der WebSocket-Nachricht:", e);
-                return;
-            }
-
-            if (!data.topic) return;
-
-            const topic = data.topic.toLowerCase();
-            
-            const rooms = ['eg72', 'ug86', 'ug90', 'ug82', 'ug82_', 'ug08'];
-            rooms.forEach(room => {
-                let formattedRoom = room.toLowerCase();
-                let expectedTopic = '';
-                
-                if (formattedRoom.startsWith('eg')) {
-                    expectedTopic = `eg/e${formattedRoom.substring(2)}`;
-                } else if (formattedRoom.startsWith('ug')) {
-                    const roomNumber = formattedRoom.substring(2).replace('_', '');
-                    expectedTopic = `ug/U${roomNumber}`;
-                }
-
-                if (topic.startsWith(expectedTopic.toLowerCase())) {
-                    const statusIcon = document.getElementById(`sensor-status-${room}`);
-                    if (statusIcon) {
-                        statusIcon.src = 'icons/sensoron.png';
-                        statusIcon.classList.add('sensor-active');
-                        
-                        clearTimeout(window.sensorTimeouts?.[room]);
-                        window.sensorTimeouts = window.sensorTimeouts || {};
-                        window.sensorTimeouts[room] = setTimeout(() => {
-                            statusIcon.src = 'icons/sensoroff.png';
-                            statusIcon.classList.remove('sensor-active');
-                        }, 300000); // 300000ms = 5 minutes
-                    }
-                }
-            });
-        };
-
         function getColorForValue(sensor, value) {
-            const thresholds = JSON.parse(localStorage.getItem('sensorThresholds')) || {
-                co2: { good: 800, bad: 1200 },
-                temperature: { good: 20, bad: 22 },
-                humidity: { good: 40, bad: 60 }
-            };
+            return thresholds ? getColorBasedOnThresholds(sensor, value, thresholds) : '';
+        }
 
+        function getColorBasedOnThresholds(sensor, value, thresholds) {
             let sensorThresholds;
             if (sensor === 'temperature') {
                 sensorThresholds = thresholds.temperature;
@@ -657,9 +681,18 @@
                 else if (value <= sensorThresholds.bad) return 'akzeptabel';
                 else return 'kritisch';
             }
-            
             return '';
         }
+
+        // Registriere den Update-Callback beim WebSocket-Handler
+        document.addEventListener('DOMContentLoaded', function() {
+            wsHandler.subscribe(updateUI);
+        });
+
+        // Aufräumen beim Verlassen der Seite
+        window.addEventListener('beforeunload', function() {
+            wsHandler.unsubscribe(updateUI);
+        });
     </script>
 </body>
 </html>
