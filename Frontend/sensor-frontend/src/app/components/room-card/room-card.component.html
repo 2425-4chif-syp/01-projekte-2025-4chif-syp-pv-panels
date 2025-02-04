@@ -1,0 +1,19 @@
+<div class="room-card" [routerLink]="['/details']" [queryParams]="{location: room.id}">
+  <div class="room-header">
+    <h2>{{ room.name }}</h2>
+  </div>
+  <div class="sensor-grid">
+    <div class="sensor-item">
+      <span class="sensor-icon">🌡️</span>
+      <span class="sensor-value">{{ getTemperature() }}</span>
+    </div>
+    <div class="sensor-item">
+      <span class="sensor-icon">💧</span>
+      <span class="sensor-value">{{ getHumidity() }}</span>
+    </div>
+    <div class="sensor-item">
+      <span class="sensor-icon">🌬️</span>
+      <span class="sensor-value">{{ getCO2() }}</span>
+    </div>
+  </div>
+</div>

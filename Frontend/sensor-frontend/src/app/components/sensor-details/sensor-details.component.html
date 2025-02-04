@@ -1,0 +1,26 @@
+<div class="details-container">
+  <div class="header">
+    <button class="back-button" routerLink="/">← Zurück zur Übersicht</button>
+    <h1>Sensor Details - {{ getRoomName() }}</h1>
+  </div>
+
+  <div class="sensor-grid">
+    <div class="sensor-card temperature">
+      <div class="sensor-icon">🌡️</div>
+      <div class="sensor-value">{{ getTemperature() | number:'1.1-1' }}°C</div>
+      <div class="sensor-label">Temperatur</div>
+    </div>
+
+    <div class="sensor-card humidity">
+      <div class="sensor-icon">💧</div>
+      <div class="sensor-value">{{ getHumidity() | number:'1.1-1' }}%</div>
+      <div class="sensor-label">Luftfeuchtigkeit</div>
+    </div>
+
+    <div class="sensor-card co2">
+      <div class="sensor-icon">🌬️</div>
+      <div class="sensor-value">{{ getCO2() | number:'1.0-0' }} ppm</div>
+      <div class="sensor-label">CO₂</div>
+    </div>
+  </div>
+</div>

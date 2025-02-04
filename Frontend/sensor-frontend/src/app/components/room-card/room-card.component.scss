@@ -1,0 +1,49 @@
+.room-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  margin: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+}
+
+.room-header {
+  margin-bottom: 15px;
+  
+  h2 {
+    margin: 0;
+    color: #333;
+    font-size: 1.5em;
+  }
+}
+
+.sensor-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.sensor-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background: #f5f5f5;
+
+  .sensor-icon {
+    font-size: 1.5em;
+    margin-bottom: 5px;
+  }
+
+  .sensor-value {
+    font-weight: bold;
+    color: #333;
+  }
+}
