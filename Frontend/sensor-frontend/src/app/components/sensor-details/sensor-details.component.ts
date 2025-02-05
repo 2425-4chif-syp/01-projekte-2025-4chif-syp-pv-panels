@@ -59,4 +59,22 @@ export class SensorDetailsComponent implements OnInit, OnDestroy {
   getRoomName(): string {
     return this.room?.name || 'Unbekannter Raum';
   }
+
+  getTemperatureStatus(temp: number): string {
+    if (temp < 15 || temp > 28) return 'critical';
+    if (temp < 18 || temp > 25) return 'acceptable';
+    return 'comfortable';
+  }
+
+  getHumidityStatus(humidity: number): string {
+    if (humidity < 30 || humidity > 70) return 'critical';
+    if (humidity < 40 || humidity > 60) return 'acceptable';
+    return 'comfortable';
+  }
+
+  getCO2Status(co2: number): string {
+    if (co2 > 1400) return 'critical';
+    if (co2 > 1000) return 'acceptable';
+    return 'comfortable';
+  }
 }

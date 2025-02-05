@@ -1,5 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 
+:root {
+  --primary-color: #FF8B7C;
+  --primary-color-light: #FFB5A9;
+  --primary-color-dark: #E57A6D;
+  --text-on-primary: #ffffff;
+}
+
 /* Reset */
 * {
   margin: 0;
@@ -26,6 +33,44 @@ h1, h2, h3, h4, h5, h6 {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+}
+
+/* Primary color utility classes */
+.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.text-primary {
+  color: var(--primary-color) !important;
+}
+
+.border-primary {
+  border-color: var(--primary-color) !important;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--primary-color-dark);
+}
+
+/* Link styles */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-color-dark);
 }
 
 /* Animations */
