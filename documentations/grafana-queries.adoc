@@ -1,0 +1,144 @@
+= Grafana Queries Guide
+:toc:
+:icons: font
+:source-highlighter: highlight.js
+
+== Einführung
+Dieser Guide erklärt, wie man Queries in Grafana erstellt, um Daten aus verschiedenen Datenquellen (wie InfluxDB oder PostgreSQL) abzufragen und zu visualisieren.
+
+== Grundlegende Konzepte
+
+=== Was ist eine Query?
+Eine Query ist eine Abfrage, die bestimmt, welche Daten in einem Panel angezeigt werden sollen. In Grafana können Queries je nach Datenquelle unterschiedlich aussehen.
+
+== InfluxDB Queries
+
+=== Flux Query Basics
+[source,sql]
+----
+from(bucket: "your_bucket")
+  |> range(start: -1h)  // Zeitbereich der letzten Stunde
+  |> filter(fn: (r) => r["_measurement"] == "temperature")
+  |> yield()
+----
+
+=== Beispiel: Temperatur-Query
+[source,sql]
+----
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r["_measurement"] == "room_temperature")
+  |> filter(fn: (r) => r["room"] == "E37")
+  |> aggregateWindow(every: 5m, fn: mean)
+----
+
+== PostgreSQL Queries
+
+=== SQL Query Basics
+[source,sql]
+----
+SELECT 
+  time_column as time,
+  value_column as value,
+  room_id
+FROM sensor_data
+WHERE $__timeFilter(time_column)
+----
+
+=== Beispiel: Raum-Sensor Query
+[source,sql]
+----
+SELECT 
+  timestamp as time,
+  temperature as value,
+  room_id,
+  sensor_id
+FROM sensor_measurements
+WHERE 
+  $__timeFilter(timestamp) AND
+  room_id = 'E37'
+ORDER BY timestamp
+----
+
+== Best Practices
+
+=== Performance Optimierung
+* Zeitbereich sinnvoll einschränken
+* Aggregationen verwenden, um Datenmenge zu reduzieren
+* Indexe auf häufig abgefragte Spalten setzen
+
+=== Variablen Verwendung
+[source,sql]
+----
+// Mit Grafana Variable für den Raum
+from(bucket: "sensors")
+  |> range(start: v.timeRange)
+  |> filter(fn: (r) => r["room"] == "${room}")
+----
+
+== Troubleshooting
+
+=== Häufige Probleme
+* *Keine Daten sichtbar*: Überprüfen Sie den Zeitbereich
+* *Performance Probleme*: Query optimieren, Aggregationen verwenden
+* *Fehlerhafte Werte*: Datentypen und Einheiten überprüfen
+
+=== Debugging Tips
+. Query im Query Editor testen
+. Zeitbereich anpassen
+. Filterkriterien überprüfen
+. Raw data in der Tabellen-Ansicht prüfen
+
+== Template Variablen
+
+=== Variablen erstellen
+[source,sql]
+----
+// Query für Raum-Liste
+SELECT DISTINCT room_id FROM rooms
+----
+
+=== Variablen verwenden
+[source,sql]
+----
+// Verwendung in Query
+WHERE room_id IN ($room)
+----
+
+== Beispiel Dashboard Setup
+
+=== Temperatur Dashboard
+[source,sql]
+----
+// Panel 1: Aktuelle Temperatur
+from(bucket: "sensors")
+  |> range(start: -5m)
+  |> filter(fn: (r) => r["_measurement"] == "temperature")
+  |> last()
+
+// Panel 2: Temperaturverlauf
+from(bucket: "sensors")
+  |> range(start: -24h)
+  |> filter(fn: (r) => r["_measurement"] == "temperature")
+  |> aggregateWindow(every: 15m, fn: mean)
+----
+
+== Alerts einrichten
+
+=== Alert Rule Beispiel
+[source,sql]
+----
+// Alert wenn Temperatur zu hoch
+from(bucket: "sensors")
+  |> range(start: -5m)
+  |> filter(fn: (r) => r["_measurement"] == "temperature")
+  |> filter(fn: (r) => r["room"] == "E37")
+  |> last()
+  |> filter(fn: (r) => r["_value"] > 25)
+----
+
+== Weiterführende Ressourcen
+
+* link:https://grafana.com/docs/grafana/latest/[Offizielle Grafana Dokumentation]
+* link:https://docs.influxdata.com/flux/[Flux Query Sprache Dokumentation]
+* link:https://grafana.com/tutorials/[Grafana Tutorials] 
