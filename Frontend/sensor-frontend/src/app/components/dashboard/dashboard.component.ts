@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { RoomData } from '../../models/room-data';
 import { SensorDataService } from '../../services/sensor-data.service';
 import { RoomCardComponent } from '../room-card/room-card.component';
@@ -8,7 +9,7 @@ import { RoomCardComponent } from '../room-card/room-card.component';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [CommonModule, RoomCardComponent],
+  imports: [CommonModule, RoomCardComponent, RouterModule],
   standalone: true
 })
 export class DashboardComponent implements OnInit {
