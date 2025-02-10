@@ -1,10 +1,12 @@
 package org.sensorapp.infrastructure.mqtt;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.quarkus.arc.Unremovable;
-import jakarta.inject.Inject;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import org.eclipse.paho.client.mqttv3.*;
-import org.sensorapp.infrastructure.influxdb.InfluxDBService;
+import org.sensorapp.infrastructure.influxdb.InfluxDBWriteService;
 
 import javax.net.ssl.SSLSocketFactory;
 import java.nio.charset.StandardCharsets;
@@ -23,17 +25,12 @@ public class MQTTListener {
     private static final String USERNAME = "leo-student";
     private static final String PASSWORD = "sTuD@w0rck";
 
-    // Abonniert alle Themen im Format 'floor/sensor/type' (Dynamisch für Stockwerke, Sensoren und Typen)
-    private static final String[] TOPICS = {"+/+/+"}; // Alle Stockwerke und Sensoren abonnieren
+    private static final String[] TOPICS = {"+/+/+/+", "+/+/+"}; // Alle Stockwerke und Sensoren abonnieren
 
     private MqttClient client;
 
     @Inject
-    InfluxDBService influxDBService;
-
-    public MQTTListener() {
-        System.out.println("🔍 MQTTListener Konstruktor wurde aufgerufen!");
-    }
+    InfluxDBWriteService influxDBWriteService;
 
     public void start() {
         LOGGER.info("🚀 MQTTListener wird gestartet...");
@@ -43,25 +40,26 @@ public class MQTTListener {
     private void connectMQTT() {
         while (true) {
             try {
-                LOGGER.info("🔌 Versuche Verbindung zum MQTT-Broker: " + BROKER_URL);
-                client = new MqttClient(BROKER_URL, CLIENT_ID);
+                if (client == null || !client.isConnected()) {
+                    LOGGER.info("🔌 Versuche Verbindung zum MQTT-Broker: " + BROKER_URL);
+                    client = new MqttClient(BROKER_URL, CLIENT_ID, null);
 
-                MqttConnectOptions options = new MqttConnectOptions();
-                options.setUserName(USERNAME);
-                options.setPassword(PASSWORD.toCharArray());
-                options.setSocketFactory(SSLSocketFactory.getDefault());
-                options.setCleanSession(true);
-                options.setAutomaticReconnect(true);
+                    MqttConnectOptions options = new MqttConnectOptions();
+                    options.setUserName(USERNAME);
+                    options.setPassword(PASSWORD.toCharArray());
+                    options.setSocketFactory(SSLSocketFactory.getDefault());
+                    options.setCleanSession(true);
+                    options.setAutomaticReconnect(true);
 
-                client.connect(options);
-                LOGGER.info("✅ Erfolgreich mit MQTT verbunden.");
+                    client.connect(options);
+                    LOGGER.info("✅ Erfolgreich mit MQTT verbunden.");
 
-                // Themen abonnieren
-                for (String topic : TOPICS) {
-                    LOGGER.info("📡 Abonniere Topic: " + topic);
-                    client.subscribe(topic, this::handleMessage);
+                    // Themen abonnieren
+                    for (String topic : TOPICS) {
+                        LOGGER.info("📡 Abonniere Topic: " + topic);
+                        client.subscribe(topic, this::handleMessage);
+                    }
                 }
-
                 break;
             } catch (MqttException e) {
                 LOGGER.warning("❌ MQTT-Verbindung fehlgeschlagen, erneuter Versuch in 5 Sekunden: " + e.getMessage());
@@ -87,25 +85,36 @@ public class MQTTListener {
         String sensorId = topicParts[1]; // Sensor ID (z.B. U08, U90)
         String sensorType = topicParts[2]; // Sensor-Typ (z.B. CO2, HUM, TEMP)
 
-        // Prüfen, ob für das Stockwerk Daten vorhanden sind
-        LOGGER.info("📡 Stockwerk: " + floor + ", Sensor: " + sensorId + ", Typ: " + sensorType);
-
-        // Erstelle eine Map für die Sensordaten
         Map<String, Double> sensorData = new HashMap<>();
 
-        // Versuche den Wert als Double zu parsen und in die Map hinzuzufügen
+        // JSON-Parsing oder einfacher Wert
         try {
-            double sensorValue = Double.parseDouble(payload.trim());
-            sensorData.put(sensorType, sensorValue);  // Wert für den Sensor-Typ speichern
+            if (payload.startsWith("{") && payload.endsWith("}")) {
+                // JSON-Payload parsen
+                JsonObject jsonObject = JsonParser.parseString(payload).getAsJsonObject();
+                if (jsonObject.has("value")) {
+                    double sensorValue = jsonObject.get("value").getAsDouble();
+                    sensorData.put(sensorType, sensorValue);
+                    LOGGER.info("✅ JSON-Wert für " + sensorType + " gespeichert: " + sensorValue);
+                } else {
+                    LOGGER.warning("⚠️ Kein 'value'-Feld im JSON-Payload gefunden: " + payload);
+                }
+            } else {
+                // Einfache Zahl
+                double sensorValue = Double.parseDouble(payload.trim());
+                sensorData.put(sensorType, sensorValue);
+                LOGGER.info("✅ Einfacher Wert für " + sensorType + " gespeichert: " + sensorValue);
+            }
 
-            // Logge, was gespeichert wurde
-            LOGGER.info("✅ Sensorwert gespeichert: " + sensorValue + " für " + sensorType);
-
-            // Schreibe die Sensordaten in die InfluxDB (dynamisch)
-            influxDBService.writeSensorData(floor, sensorId, sensorData);
-
-        } catch (NumberFormatException e) {
-            LOGGER.warning("❌ Ungültiger Sensorwert: " + payload);
+            // Daten in InfluxDB speichern
+            if (!sensorData.isEmpty()) {
+                influxDBWriteService.writeSensorData(floor, sensorId, sensorData);
+                LOGGER.info("✅ Daten gespeichert für Floor: " + floor + ", Sensor: " + sensorId + ", Type: " + sensorType);
+            } else {
+                LOGGER.warning("⚠️ Keine Daten zum Speichern gefunden: " + payload);
+            }
+        } catch (Exception e) {
+            LOGGER.warning("❌ Fehler beim Verarbeiten des Payloads: " + e.getMessage());
         }
     }
 }

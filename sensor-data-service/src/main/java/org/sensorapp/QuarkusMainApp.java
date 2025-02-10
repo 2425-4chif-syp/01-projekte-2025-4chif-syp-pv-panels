@@ -23,14 +23,18 @@ public class QuarkusMainApp {
         public int run(String... args) {
             LOGGER.info("✅ Quarkus Main-App gestartet!");
 
-            // Beans manuell abrufen
-            MQTTListener mqttListener = CDI.current().select(MQTTListener.class).get();
+            try {
+                // Beans manuell abrufen
+                MQTTListener mqttListener = CDI.current().select(MQTTListener.class).get();
 
-            if (mqttListener != null) {
-                LOGGER.info("✅ MQTTListener erfolgreich geladen!");
-                mqttListener.start();
-            } else {
-                LOGGER.error("❌ MQTTListener konnte NICHT geladen werden!");
+                if (mqttListener != null) {
+                    LOGGER.info("✅ MQTTListener erfolgreich geladen!");
+                    mqttListener.start();
+                } else {
+                    LOGGER.error("❌ MQTTListener konnte NICHT geladen werden!");
+                }
+            } catch (Exception e) {
+                LOGGER.error("❌ Fehler beim Initialisieren des MQTTListeners: " + e.getMessage());
             }
 
             // Quarkus laufen lassen
