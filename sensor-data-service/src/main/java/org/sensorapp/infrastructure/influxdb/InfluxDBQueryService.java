@@ -4,8 +4,11 @@ import com.influxdb.client.InfluxDBClient;
 import com.influxdb.client.QueryApi;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import org.sensorapp.infrastructure.influxdb.DTOs.SensorValueDTO;
 import org.sensorapp.infrastructure.influxdb.DTOs.SensorDataDTO;
 
+import java.time.Instant;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -115,9 +118,15 @@ public class InfluxDBQueryService {
         timeRange = (timeRange == null || timeRange.isEmpty()) ? "-30d" : timeRange;
 
         QueryApi queryApi = influxDBClient.getQueryApi();
-        // Abfrage: Hole das neueste Feld
+        // Abfrage: Hole eindeutige Feldnamen für die Sensor/Floor-Kombination
         String query = String.format(
-                "from(bucket: \"sensor_bucket\") |> range(start: %s) |> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") |> filter(fn: (r) => r[\"floor\"] == \"%s\") |> filter(fn: (r) => r[\"sensor\"] == \"%s\") |> last()",
+                "from(bucket: \"sensor_bucket\") " +
+                        "|> range(start: %s) " +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
+                        "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
+                        "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
+                        "|> keep(columns: [\"_field\"]) " +   // Behalte nur die Feld-Spalte
+                        "|> distinct(column: \"_field\")",    // Hole eindeutige Feldnamen
                 timeRange, floor, sensorId
         );
 
@@ -134,18 +143,32 @@ public class InfluxDBQueryService {
 
             System.out.println("Raw Response: " + rawResponse);
 
-            // Set für die Felder
             Set<String> fields = new HashSet<>();
-
-            // Verarbeite die Rückgabe
             String[] lines = rawResponse.split("\n");
-            for (String line : lines) {
-                // Trenne die Zeile in Spalten
-                String[] columns = line.split(",");
+            int fieldIndex = -1;
 
-                // Füge den Feldnamen hinzu (hier wird angenommen, dass der Feldname in der ersten Spalte steht)
-                if (columns.length > 0) {
-                    String fieldName = columns[0].trim();
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) continue;
+
+                // Header-Zeile verarbeiten
+                if (i == 0) {
+                    String[] headers = line.split(",");
+                    for (int j = 0; j < headers.length; j++) {
+                        if ("_field".equals(headers[j].trim())) {
+                            fieldIndex = j;
+                            break;
+                        }
+                    }
+                    continue;
+                }
+
+                // Datenzeilen verarbeiten
+                if (fieldIndex == -1) continue; // Header nicht gefunden
+
+                String[] columns = line.split(",");
+                if (columns.length > fieldIndex) {
+                    String fieldName = columns[fieldIndex].trim();
                     if (!fieldName.isEmpty()) {
                         fields.add(fieldName);
                     }
@@ -162,13 +185,175 @@ public class InfluxDBQueryService {
     }
 
     /**
-     * Gibt einen spezifischen Wert eines Sensors zurück
+     * Gibt alle spezifischen Werte eines Sensors mit Zeitstempel zurück.
      */
-    public Double getSpecificSensorValue(String floor, String sensorId, String sensorType, String timeRange) {
-        timeRange = (timeRange == null || timeRange.isEmpty()) ? "-30d" : timeRange;
+    public List<SensorValueDTO> getSpecificSensorValues(String floor, String sensorId, String sensorType, String timeRange) {
+        // Standardwert auf 6 Stunden setzen, falls kein Zeitbereich angegeben wurde
+        timeRange = (timeRange == null || timeRange.isEmpty()) ? "-6h" : timeRange;
+
         QueryApi queryApi = influxDBClient.getQueryApi();
-        String query = String.format("from(bucket: \"sensor_bucket\") |> range(start: %s) |> filter(fn: (r) => r.floor == \"%s\" and r.sensorId == \"%s\" and r._field == \"%s\") |> last()", timeRange, floor, sensorId, sensorType);
-        List<Double> results = queryApi.query(query, Double.class);
-        return results.isEmpty() ? null : results.get(0);
+
+        // InfluxDB Flux Query (mit _time und _value)
+        String query = String.format(
+                "from(bucket: \"sensor_bucket\") " +
+                        "|> range(start: %s) " +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
+                        "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
+                        "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
+                        "|> filter(fn: (r) => r[\"_field\"] == \"%s\") " +
+                        "|> keep(columns: [\"_time\", \"_value\"])", // Behalte Zeitstempel und Wert
+                timeRange, floor, sensorId, sensorType
+        );
+
+        System.out.println("Executing Query: " + query);
+
+        try {
+            // Abrufen der Rohdaten
+            String rawResponse = queryApi.queryRaw(query);
+
+            if (rawResponse == null || rawResponse.isEmpty()) {
+                System.err.println("No data found for floor: " + floor + ", sensorId: " + sensorId + ", and sensorType: " + sensorType);
+                return Collections.emptyList();
+            }
+
+            System.out.println("Raw Response: " + rawResponse);
+
+            List<SensorValueDTO> sensorValues = new ArrayList<>();
+            String[] lines = rawResponse.split("\n");
+            int valueIndex = -1;
+            int timeIndex = -1;
+
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) continue;
+
+                // Header-Zeile verarbeiten
+                if (i == 0) {
+                    String[] headers = line.split(",");
+                    for (int j = 0; j < headers.length; j++) {
+                        if ("_value".equals(headers[j].trim())) valueIndex = j;
+                        if ("_time".equals(headers[j].trim())) timeIndex = j;
+                    }
+                    continue;
+                }
+
+                // Datenzeilen verarbeiten
+                if (valueIndex == -1 || timeIndex == -1) continue; // Header nicht gefunden
+
+                String[] columns = line.split(",");
+                if (columns.length > valueIndex && columns.length > timeIndex) {
+                    String valueStr = columns[valueIndex].trim();
+                    String timeStr = columns[timeIndex].trim();
+                    if (!valueStr.isEmpty()) {
+                        try {
+                            double sensorValue = Double.parseDouble(valueStr);
+                            Instant timestamp = Instant.parse(timeStr); // String zu Instant konvertieren
+                            sensorValues.add(new SensorValueDTO(timestamp, sensorValue));
+                        } catch (NumberFormatException e) {
+                            System.err.println("Failed to parse value: " + valueStr);
+                        } catch (DateTimeParseException e) {
+                            System.err.println("Failed to parse timestamp: " + timeStr);
+                        }
+                    }
+                }
+            }
+
+            if (sensorValues.isEmpty()) {
+                System.err.println("No valid values found for floor: " + floor + ", sensorId: " + sensorId + ", and sensorType: " + sensorType);
+            }
+
+            return sensorValues;
+
+        } catch (Exception e) {
+            System.err.println("Error while fetching sensor data for floor: " + floor + ", sensorId: " + sensorId + ", and sensorType: " + sensorType);
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
+
+    /**
+     * Gibt alle Werte eines Sensors mit Bezeichnung und Zeitstempel zurück.
+     * Liefert ALLE Werte für ALLE Sensor-Typen (_field).
+     */
+    public List<SensorDataDTO> getAllSensorValues(String floor, String sensorId, String timeRange) {
+        // Standardwert auf 6 Stunden setzen, falls kein Zeitbereich angegeben wurde
+        timeRange = (timeRange == null || timeRange.isEmpty()) ? "-6h" : timeRange;
+
+        QueryApi queryApi = influxDBClient.getQueryApi();
+
+        // InfluxDB Flux Query, um alle Werte mit _time, _field (Sensortyp) und _value zu erhalten
+        String query = String.format(
+                "from(bucket: \"sensor_bucket\") " +
+                        "|> range(start: %s) " +
+                        "|> filter(fn: (r) => r[\"_measurement\"] == \"sensor_data\") " +
+                        "|> filter(fn: (r) => r[\"floor\"] == \"%s\") " +
+                        "|> filter(fn: (r) => r[\"sensor\"] == \"%s\") " +
+                        "|> keep(columns: [\"_time\", \"_field\", \"_value\"])", // Behalte Zeitstempel, Sensortyp und Wert
+                timeRange, floor, sensorId
+        );
+
+        try {
+            String rawResponse = queryApi.queryRaw(query);
+
+            if (rawResponse.isEmpty()) {
+                System.err.println("No data found for floor: " + floor + ", sensorId: " + sensorId);
+                return Collections.emptyList();
+            }
+
+            List<SensorDataDTO> sensorValues = new ArrayList<>();
+            String[] lines = rawResponse.split("\n");
+            int valueIndex = -1;
+            int timeIndex = -1;
+            int fieldIndex = -1;
+
+            for (int i = 0; i < lines.length; i++) {
+                String line = lines[i].trim();
+                if (line.isEmpty()) continue;
+
+                // Header-Zeile verarbeiten
+                if (i == 0) {
+                    String[] headers = line.split(",");
+                    for (int j = 0; j < headers.length; j++) {
+                        if ("_value".equals(headers[j].trim())) valueIndex = j;
+                        if ("_time".equals(headers[j].trim())) timeIndex = j;
+                        if ("_field".equals(headers[j].trim())) fieldIndex = j;
+                    }
+                    continue;
+                }
+
+                // Datenzeilen verarbeiten
+                if (valueIndex == -1 || timeIndex == -1 || fieldIndex == -1) continue; // Header nicht gefunden
+
+                String[] columns = line.split(",");
+                if (columns.length > valueIndex && columns.length > timeIndex && columns.length > fieldIndex) {
+                    String valueStr = columns[valueIndex].trim();
+                    String timeStr = columns[timeIndex].trim();
+                    String fieldStr = columns[fieldIndex].trim(); // Sensortyp (z. B. CO2, Temperatur)
+
+                    if (!valueStr.isEmpty()) {
+                        try {
+                            double sensorValue = Double.parseDouble(valueStr);
+                            Instant timestamp = Instant.parse(timeStr); // Zeitstempel als Instant speichern
+                            sensorValues.add(new SensorDataDTO(timestamp, fieldStr, sensorValue));
+                        } catch (NumberFormatException e) {
+                            System.err.println("Failed to parse value: " + valueStr);
+                        } catch (DateTimeParseException e) {
+                            System.err.println("Failed to parse timestamp: " + timeStr);
+                        }
+                    }
+                }
+            }
+
+            if (sensorValues.isEmpty()) {
+                System.err.println("No valid values found for floor: " + floor + ", sensorId: " + sensorId);
+            }
+
+            return sensorValues;
+
+        } catch (Exception e) {
+            System.err.println("Error while fetching sensor data for floor: " + floor + ", sensorId: " + sensorId);
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
     }
 }
