@@ -57,7 +57,8 @@ export class SensorDetailsComponent implements OnInit, OnDestroy {
   }
 
   getRoomName(): string {
-    return this.room?.name || 'Unbekannter Raum';
+    const name = this.room?.name || 'Unbekannter Raum';
+    return name.replace('Raum ', '');
   }
 
   getTemperatureStatus(temp: number): string {

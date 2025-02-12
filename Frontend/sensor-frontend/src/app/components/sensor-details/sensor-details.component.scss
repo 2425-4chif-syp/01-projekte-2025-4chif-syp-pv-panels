@@ -63,11 +63,6 @@
     transform: translateY(-3px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     outline-color: #FF8B7C;
-
-    .sensor-value, .sensor-unit {
-      opacity: 1;
-      transform: translateY(0);
-    }
   }
 
   .sensor-icon {
@@ -80,9 +75,6 @@
     font-size: 2rem;
     font-weight: bold;
     margin: 5px 0;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
 
     &.critical {
       color: #f44336;  // Rot
@@ -106,9 +98,6 @@
   .sensor-unit {
     font-size: 0.9rem;
     color: #999;
-    opacity: 0;
-    transform: translateY(-10px);
-    transition: opacity 0.3s ease, transform 0.3s ease;
   }
 
   .status-dot {
