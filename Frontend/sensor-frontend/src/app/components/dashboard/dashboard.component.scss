@@ -78,8 +78,6 @@
 
 .threshold-button {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
   background-color: #FF8B7C;
   color: white;
   border: none;
@@ -91,6 +89,8 @@
   gap: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: background-color 0.3s;
+  bottom: 80px;
+  right: 20px;
 
   &:hover {
     background-color: #E57A6D;
@@ -99,4 +99,8 @@
   i {
     font-size: 1.2rem;
   }
+}
+
+.grafana-button {
+  bottom: 20px;
 }

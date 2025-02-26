@@ -4,6 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { SensorDataService } from '../../services/sensor-data.service';
 import { RoomData } from '../../models/room-data';
 import { Subscription } from 'rxjs';
+import { ThresholdService } from '../../services/threshold.service';
 
 @Component({
   selector: 'app-sensor-details',
@@ -19,7 +20,8 @@ export class SensorDetailsComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private sensorDataService: SensorDataService
+    private sensorDataService: SensorDataService,
+    private thresholdService: ThresholdService
   ) {}
 
   ngOnInit(): void {
@@ -62,20 +64,14 @@ export class SensorDetailsComponent implements OnInit, OnDestroy {
   }
 
   getTemperatureStatus(temp: number): string {
-    if (temp < 15 || temp > 28) return 'critical';
-    if (temp < 18 || temp > 25) return 'acceptable';
-    return 'comfortable';
+    return this.thresholdService.getTemperatureStatus(temp);
   }
 
   getHumidityStatus(humidity: number): string {
-    if (humidity < 30 || humidity > 70) return 'critical';
-    if (humidity < 40 || humidity > 60) return 'acceptable';
-    return 'comfortable';
+    return this.thresholdService.getHumidityStatus(humidity);
   }
 
   getCO2Status(co2: number): string {
-    if (co2 > 1400) return 'critical';
-    if (co2 > 1000) return 'acceptable';
-    return 'comfortable';
+    return this.thresholdService.getCO2Status(co2);
   }
 }

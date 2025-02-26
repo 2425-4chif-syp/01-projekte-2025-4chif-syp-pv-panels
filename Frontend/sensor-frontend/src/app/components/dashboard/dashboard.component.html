@@ -1,7 +1,7 @@
 <div class="dashboard">
   <header>
     <div class="logo">
-      <img src="assets/images/new_htl_logo_name.png" alt="HTL Leonding">
+      <img src="assets/images/htl-leonding-next-level.png" alt="HTL Leonding">
       <h1>HTL Leonding</h1>
       <span class="subtitle">next level</span>
     </div>
@@ -23,8 +23,16 @@
       </div>
     </section>
   </main>
-  <button class="threshold-button" routerLink="/grafana">
+  
+  <button class="threshold-button" (click)="openThresholdSettings()">
+    <i>⚙️</i>
+    Schwellenwerte
+  </button>
+  
+  <button class="threshold-button grafana-button" routerLink="/grafana">
     <i>📊</i>
     Grafana Dashboard
   </button>
+  
+  <app-threshold-modal></app-threshold-modal>
 </div>

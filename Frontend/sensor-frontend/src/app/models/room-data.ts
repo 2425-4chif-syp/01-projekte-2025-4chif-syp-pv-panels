@@ -2,7 +2,7 @@ export interface RoomData {
   id: string;
   name: string;
   floor: 'eg' | 'ug';
-  sensors: {
+  sensors?: {
     temperature?: number;
     humidity?: number;
     co2?: number;
