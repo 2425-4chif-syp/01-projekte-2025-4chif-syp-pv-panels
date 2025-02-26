@@ -33,23 +33,23 @@ services:
     volumes:
       - grafana_data:/var/lib/grafana
 
- # #postgres:
- #   image: postgres:15
- #   container_name: postgres
- #   restart: always
- #   ports:
- #     - "5432:5432"
- #   environment:
- #     - POSTGRES_USER=${POSTGRES_USER}
- #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
- #     - POSTGRES_DB=${POSTGRES_DB}
- #   volumes:
- #     - postgres_data:/var/lib/postgresql/data
- #   healthcheck:
- #     test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
- #     interval: 10s
- #     retries: 5
- #     start_period: 10s
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
 
   quarkus-app:
     build:
@@ -60,14 +60,14 @@ services:
     depends_on:
       influxdb:
         condition: service_healthy
-    #  postgres:
-    #    condition: service_healthy
+      postgres:
+        condition: service_healthy
     env_file:
       - .env
     environment:
-   #   - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/room_db
-   #   - QUARKUS_DATASOURCE_USERNAME=${POSTGRES_USER}
-   #   - QUARKUS_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/room_db
+      - QUARKUS_DATASOURCE_USERNAME=${POSTGRES_USER}
+      - QUARKUS_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
       - INFLUXDB_URL=http://influxdb:8086
       - INFLUXDB_TOKEN=${INFLUXDB_TOKEN}
       - MQTT_BROKER_URL=mqtt://mqtt-broker:1883
@@ -77,4 +77,4 @@ services:
 volumes:
   influxdb_data:
   grafana_data:
-  #postgres_data:
+  postgres_data:
