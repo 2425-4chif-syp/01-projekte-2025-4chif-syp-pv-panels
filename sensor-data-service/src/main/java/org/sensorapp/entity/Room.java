@@ -11,6 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@Table(name = "room")
 public class Room {
 
     @Id
@@ -18,7 +19,7 @@ public class Room {
     @Column(name = "RoomId")
     int roomId;
 
-    @Column(name = "RoomLabel")
+    @Column(name = "RoomLabel", nullable = true)
     String roomLabel;
 
     @Column(name = "RoomName")
@@ -27,18 +28,18 @@ public class Room {
     @Column(name = "RoomType")
     String roomType;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "Corridor", referencedColumnName = "RoomId", nullable = true)
     private Room corridor; // Der Korridor dieses Raums
 
-    @OneToOne
-    @JoinColumn(name = "NeighboursInside", referencedColumnName = "RoomId", nullable = true)
+    @ManyToOne
+    @JoinColumn(name = "NeighbourInside", referencedColumnName = "RoomId", nullable = true)
     private Room neighbourInside; // Raum, der sich auf der Innenseite befindet
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "NeighbourOutside", referencedColumnName = "RoomId", nullable = true)
     private Room neighbourOutside; // Raum, der sich auf der Außenseite befindet
 
-    @Column(name = "Direction")
+    @Column(name = "Direction", nullable = true)
     String direction;
 }
