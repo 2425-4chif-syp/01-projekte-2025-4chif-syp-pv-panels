@@ -1,0 +1,180 @@
+RoomId;RoomLabel;RoomName;RoomType;Corridor;NeighboursInside;NeighbourOutside;Direction
+1;;U01;Hall (Basement);;;3;
+2;;U02;Hallway (Left);;;;
+183;;U02;Hallway (Up);;;;West
+3;;U03;Storage Room;2;1;4;North
+4;BioLab;U04;Laboratory;2;3;5;North
+5;BioLab;U04B;Laboratory;2;4;6;
+6;;U05;Storage;183;5;41;
+7;;U07;Plastics;183;;40;East
+8;;U08;Telecommunications;2;11;9;West
+9;;U08A;Computer Network Technology;2;8;10;
+10;;U08B;Network Technology;2;9;;
+11;;U10;IT Room;2;12;8;
+12;;U11;Teachers Restroom;2;13;11;
+13;;U14;Womens Restroom;2;14;12;
+14;;U16;Disabled Restroom;2;15;13;
+15;;U26;Shelter;2;1;14;
+16;;U39;Hallway (Up);;;;South
+184;;U39;Hallway (Left);;;;North
+17;;U41;Shelter;16;1;19;West
+18;;U58;Changing Room;16;1;25;East
+19;;U66;Womens Restroom;16;17;20;West
+20;;U64;Mens Restroom;16;19;21;
+21;;U70;Radio Station;16;20;21;
+22;;U71;High Frequency;16;21;22;
+23;;U72;Technical Informatics;16;22;;
+24;;U73;Control Technology;184;29;;
+25;;U74;Electrical Device Manufacturing;184;18;26;North
+26;;U77;HF Technology;184;27;25;South
+27;;U78;Print Manufacturing;184;28;26;
+28;;U79;Welding;184;;27;
+29;;U81;Control Engineering;184;30;24;
+30;;U82A;Computer Room1;184;31;29;
+31;;U82B;Computer Room2;184;32;30;
+32;;U83;Low-Frequency Technology;184;33;31;
+33;;U84A;Electrical Installation;184;34;32;
+34;;U84B;Basic Electrical Training;184;35;33;
+35;;U85;Electronics B;184;36;34;
+36;;U86A;Work Preparation;184;37;35;
+37;;U86B;Programming;184;38;36;
+38;;U87;Precision Engineering;183;;39;
+39;;U88;Mechanics;183;38;40;
+40;;U89;Basic Mechanical Training;183;39;7;
+41;;U90;Magazine;183;42;6;
+42;;U91;Workshop Manager;183;43;41;
+43;;U92;Teachers Lounge;183;;42;
+46;;E02;Hall (Ground Floor);;;49;
+47;;E03;School Caretaker;;;46;
+48;;E04;Hallway (Left);;;;
+185;;E04;Hallway (Down);;;;
+49;;E05;Teachers Lounge;48;46;50;West
+50;;E06;Teachers Lounge;48;49;51;South
+51;Marie Curie;E07;Chemistry Room;48;50;52;North
+52;;E08;Teachers Lounge;48;51;53;
+53;Lise Meitner;E09;Physics Room;48;52;;
+54;;E10;Classroom;48;;55;
+55;;E11;Classroom;48;54;56;
+56;;E13;Mens Restroom;48;55;57;
+57;;E16;Teachers Restroom;48;56;58;
+58;;E18;Disabled Restroom;48;57;;
+59;;E19;Cleaning Closet;185;;60;
+60;;E20;Womens Restroom;185;59;61;South
+61;;E22;Classroom;185;60;61;West
+62;;E23;Classroom;185;60;94;
+63;;E24;Classroom;185;64;91;
+64;;E25;Classroom;185;65;62;
+65;;E26;Classroom;185;;63;
+66;;E30;Hallway (Up);;;;
+186;;E30;Hallway (right);;;;East
+67;;E31;Teachers Lounge;66;46;68;North
+68;;E32;Teachers Lounge;66;67;69;East
+69;;E33;Recreation Room;66;68;70;West
+70;;E35;Administration Office;66;69;71;
+71;;E36;Administration Office;66;70;72;
+72;;E37;Principal;66;71;73;
+73;Johannes Kepler;E38+39;Administration Office;66;72;;
+77;;E43;Teachers Restroom;66;;78;
+78;;E45+46;Disabled Restroom;66;77;79;
+79;;E50;Teachers Lounge;66;78;80;East
+80;;E51;Teachers Lounge;66;79;81;
+81;;E52;Department Head (IT);66;80;82;
+82;;E53+54;Teachers Lounge;66;81;83;
+83;;E55;Department Head (ET);66;82;;
+84;;E56;Storage Room;186;;85;
+85;;E57;Canteen;186;84;86;
+86;Edsger Dijkstra;E58-1;IT Room 11;186;85;87;South
+87;;E58-2;Classroom;186;86;;
+88;;E59;Classroom;186;89;;
+89;;E60;Mens Restroom;186;90;88;
+90;;E62;Womens Restroom;186;;89;
+91;;E71;Classroom;48;63;92;
+92;;E72;Classroom;48;91;;North
+93;Margaret Hamilton;E73-a;IT Room 7;48;94;;
+94;;E74;Teachers Lounge;48;62;93;
+95;;T1;Hallway (Gyms);;;;
+96;;T2;School Doctor;95;;97;
+97;;T05;Old HTL Gym;95;96;98;East
+98;;T10;New HTL Gym;95;97;;North
+99;;T18;Storage;95;;100;
+100;;T21;Storage;95;99;;
+102;;101;Hall (1st Floor);;139;104;South
+103;;102;Hallway (left);;;;
+104;;103;Teachers Lounge;103;102;105;
+105;;104;Classroom;103;104;106;
+106;;105;Classroom;103;105;107;
+107;;106;Classroom;103;106;108;
+108;;107;Classroom;103;107;;
+109;Ada Lovelace;108-a;IT Room 2;103;110;;
+110;Don Knuth;109-a;IT Room 1;103;111;109;
+111;;110;Mens Restroom;103;112;110;
+112;;114;Teachers Restroom;103;113;111;
+113;;115;Disabled Restroom;103;;112;
+114;;116;Cleaning Closet;103;;115;
+115;;118;Womens Restroom;103;114;116;
+116;;119;Classroom;103;115;117;
+117;;120;Classroom;103;116;143;
+118;Niklaus Wirth;121;IT Room3;103;119;140;
+119;Grace Hopper;122;IT Room 4;103;120;118;
+120;Brian Kernighan;123;IT Room 5;103;121;119;
+121;;124;System Administration;103;102;120;
+122;;130;Hallway (right);;;;
+123;;131;Sound Room;122;102;124;
+124;;132;Classroom;122;123;125;
+125;;133;Classroom;122;124;126;
+126;;134;Classroom;122;125;;
+127;Barbara Liskov;135;IT Room 10;122;128;;
+128;;136;Mens Restroom;122;129;127;
+129;;138;Cleaning Closet;122;;128;
+130;;139;Teachers Restroom;122;;131;
+131;;140;Womens Restroom;122;130;132;
+132;;142;Teachers Lounge;122;131;133;
+133;;143a;IT Room;122;132;134;
+134;;143b;IT Room;122;133;;
+135;;144;IT Room;122;136;;
+136;;145;Classroom;122;137;135;
+137;;146;Classroom;122;138;136;
+138;;147;Classroom;122;139;137;
+139;;148;Teachers Lounge;122;102;138;
+140;;151;Classroom;103;118;141;
+141;;152;Classroom;103;140;;
+142;;153;Classroom;103;143;;
+143;;154;Classroom;103;117;142;
+145;;201;Hall (2nd Floor);;;147;
+146;;202;Hallway (left);;;;
+147;;203;Teachers Lounge;146;145;148;
+148;;204;Classroom;146;147;149;
+149;;205;Teachers Lounge;146;148;;
+150;;206;Teachers Lounge;146;148;151;
+151;;208;Teachers Restroom;146;150;;
+152;;209;Mens Restroom;146;;153;
+153;;212;Womens Restroom;146;152;154;
+154;;213;Classroom;146;153;155;
+155;;214;Classroom;146;154;182;
+156;;215;Classroom;146;157;179;
+157;;216;Classroom;146;158;156;
+158;;217;Classroom;146;159;157;
+159;;218;Teachers Lounge;146;160;158;
+160;;220;Teachers Lounge;145;161;159;
+161;;221;Teachers Lounge;145;162;160;
+162;;222;Teachers Lounge;145;163;161;
+163;;223;Teachers Lounge;145;162;164;
+164;;224;Teachers Lounge;145;163;166;
+165;;225;Hallway (right);;;;
+166;;226;Teachers Lounge;165;164;167;
+167;;227;Classroom;165;166;168;
+168;;228;Classroom;165;167;169;
+169;;229;Classroom;165;168;;
+170;;230;Classroom;165;171;;
+171;;231;Classroom;165;172;170;
+172;;232;Mens Restroom;165;173;171;
+173;;236;Womens Restroom;165;;172;
+174;;237;Teachers Lounge;165;175;;
+175;;238;Classroom;165;176;174;
+176;;239;Study Group Room;165;177;175;
+177;;240;Small Chamber;165;178;176;
+178;;241;Teachers Lounge;165;145;177;
+179;;251;Classroom;146;156;180;
+180;;252;Classroom;146;179;;
+181;Steve Wozniak;253-a;IT Room 8;146;182;;
+182;;254;Teachers Lounge;146;155;181;
