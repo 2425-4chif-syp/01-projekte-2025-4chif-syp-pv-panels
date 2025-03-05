@@ -9,19 +9,46 @@
   </header>
 
   <main>
-    <section class="floor-section">
-      <h3>Erdgeschoss</h3>
-      <div class="room-grid">
-        <app-room-card *ngFor="let room of egRooms" [room]="room"></app-room-card>
-      </div>
-    </section>
+    <div class="sensors-container">
+      <section class="sensor-section">
+        <h3>
+          <span class="icon">🌡️</span>
+          Temperatur
+        </h3>
+        <div class="sensor-grid">
+          <app-room-card *ngFor="let room of allRooms" 
+                        [room]="room"
+                        [displayMode]="'temperature'">
+          </app-room-card>
+        </div>
+      </section>
 
-    <section class="floor-section">
-      <h3>Untergeschoss</h3>
-      <div class="room-grid">
-        <app-room-card *ngFor="let room of ugRooms" [room]="room"></app-room-card>
-      </div>
-    </section>
+      <section class="sensor-section">
+        <h3>
+          <span class="icon">💧</span>
+          Luftfeuchtigkeit
+        </h3>
+        <div class="sensor-grid">
+          <app-room-card *ngFor="let room of allRooms" 
+                        [room]="room"
+                        [displayMode]="'humidity'">
+          </app-room-card>
+        </div>
+      </section>
+
+      <section class="sensor-section">
+        <h3>
+          <span class="icon">☁️</span>
+          CO2
+        </h3>
+        <div class="sensor-grid">
+          <app-room-card *ngFor="let room of allRooms" 
+                        [room]="room"
+                        [displayMode]="'co2'">
+          </app-room-card>
+        </div>
+      </section>
+    </div>
   </main>
   
   <button class="threshold-button" (click)="openThresholdSettings()">

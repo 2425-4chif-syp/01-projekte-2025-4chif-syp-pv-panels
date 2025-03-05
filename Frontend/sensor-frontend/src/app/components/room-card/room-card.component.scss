@@ -1,27 +1,63 @@
 .room-card {
   background: white;
   border-radius: 8px;
-  padding: 20px;
+  padding: 15px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  position: relative;
-  overflow: hidden;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
 
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
   }
 
   .room-header {
-    background-color: #FF8B7C;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 6px;
-    margin: -20px -20px 20px -20px;
+    flex: 0 0 150px;
     
     h2 {
       margin: 0;
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #333;
+    }
+  }
+
+  .sensor-value {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px 15px;
+    border-radius: 6px;
+    
+    &.good {
+      background-color: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+    }
+    
+    &.warning {
+      background-color: rgba(255, 152, 0, 0.1);
+      color: #ef6c00;
+    }
+    
+    &.critical {
+      background-color: rgba(244, 67, 54, 0.1);
+      color: #c62828;
+    }
+    
+    &.neutral {
+      background-color: rgba(158, 158, 158, 0.1);
+      color: #616161;
+    }
+
+    .sensor-icon {
+      font-size: 1.5rem;
+    }
+
+    .value {
       font-size: 1.2rem;
       font-weight: 500;
     }

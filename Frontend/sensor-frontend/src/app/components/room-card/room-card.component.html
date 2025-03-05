@@ -2,15 +2,7 @@
   <div class="room-header">
     <h2>{{ formatRoomName(room.name) }}</h2>
   </div>
-  <div class="sensor-grid">
-    <div class="sensor-item" [ngClass]="getTemperatureStatus(room.sensors?.temperature)">
-      <div class="sensor-icon">🌡️</div>
-    </div>
-    <div class="sensor-item" [ngClass]="getHumidityStatus(room.sensors?.humidity)">
-      <div class="sensor-icon">💧</div>
-    </div>
-    <div class="sensor-item" [ngClass]="getCO2Status(room.sensors?.co2)">
-      <div class="sensor-icon">☁️</div>
-    </div>
+  <div class="sensor-value" [ngClass]="getStatus()">
+    <div class="value">{{ getValue() }}</div>
   </div>
 </div>

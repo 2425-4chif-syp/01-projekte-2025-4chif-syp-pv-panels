@@ -13,8 +13,35 @@ import { ThresholdService } from '../../services/threshold.service';
 })
 export class RoomCardComponent {
   @Input() room!: RoomData;
+  @Input() displayMode: 'temperature' | 'humidity' | 'co2' = 'temperature';
 
   constructor(private thresholdService: ThresholdService) {}
+
+  getValue(): string {
+    switch (this.displayMode) {
+      case 'temperature':
+        return this.getTemperature();
+      case 'humidity':
+        return this.getHumidity();
+      case 'co2':
+        return this.getCO2();
+      default:
+        return '--';
+    }
+  }
+
+  getStatus(): string {
+    switch (this.displayMode) {
+      case 'temperature':
+        return this.getTemperatureStatus(this.room.sensors?.temperature);
+      case 'humidity':
+        return this.getHumidityStatus(this.room.sensors?.humidity);
+      case 'co2':
+        return this.getCO2Status(this.room.sensors?.co2);
+      default:
+        return 'neutral';
+    }
+  }
 
   getTemperature(): string {
     return this.room.sensors?.temperature !== undefined 

@@ -14,8 +14,7 @@ import { ThresholdModalComponent } from '../threshold-modal/threshold-modal.comp
   standalone: true
 })
 export class DashboardComponent implements OnInit {
-  egRooms: RoomData[] = [];
-  ugRooms: RoomData[] = [];
+  allRooms: RoomData[] = [];
   
   @ViewChild(ThresholdModalComponent) thresholdModal!: ThresholdModalComponent;
 
@@ -23,8 +22,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.sensorDataService.getRooms().subscribe(rooms => {
-      this.egRooms = rooms.filter(room => room.floor === 'eg');
-      this.ugRooms = rooms.filter(room => room.floor === 'ug');
+      this.allRooms = rooms;
     });
   }
   
