@@ -12,13 +12,27 @@
     <div class="sensors-container">
       <section class="sensor-section">
         <h3>
+          <span class="icon">📍</span>
+          Sensoren
+        </h3>
+        <div class="sensor-grid">
+          <app-room-card *ngFor="let room of allRooms" 
+                        [room]="room"
+                        [displayMode]="'name'">
+          </app-room-card>
+        </div>
+      </section>
+
+      <section class="sensor-section">
+        <h3>
           <span class="icon">🌡️</span>
           Temperatur
         </h3>
         <div class="sensor-grid">
           <app-room-card *ngFor="let room of allRooms" 
                         [room]="room"
-                        [displayMode]="'temperature'">
+                        [displayMode]="'temperature'"
+                        [hideRoomName]="true">
           </app-room-card>
         </div>
       </section>
@@ -31,7 +45,8 @@
         <div class="sensor-grid">
           <app-room-card *ngFor="let room of allRooms" 
                         [room]="room"
-                        [displayMode]="'humidity'">
+                        [displayMode]="'humidity'"
+                        [hideRoomName]="true">
           </app-room-card>
         </div>
       </section>
@@ -44,7 +59,8 @@
         <div class="sensor-grid">
           <app-room-card *ngFor="let room of allRooms" 
                         [room]="room"
-                        [displayMode]="'co2'">
+                        [displayMode]="'co2'"
+                        [hideRoomName]="true">
           </app-room-card>
         </div>
       </section>

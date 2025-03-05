@@ -10,8 +10,13 @@ import { ThresholdModalComponent } from '../threshold-modal/threshold-modal.comp
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
-  imports: [CommonModule, RoomCardComponent, RouterModule, ThresholdModalComponent],
-  standalone: true
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    RoomCardComponent,
+    ThresholdModalComponent
+  ]
 })
 export class DashboardComponent implements OnInit {
   allRooms: RoomData[] = [];

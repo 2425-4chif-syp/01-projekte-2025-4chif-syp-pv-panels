@@ -1,7 +1,4 @@
 <div class="room-card" [routerLink]="['/details']" [queryParams]="{location: room.id}">
-  <div class="room-header">
-    <h2>{{ formatRoomName(room.name) }}</h2>
-  </div>
   <div class="sensor-value" [ngClass]="getStatus()">
     <div class="value">{{ getValue() }}</div>
   </div>
