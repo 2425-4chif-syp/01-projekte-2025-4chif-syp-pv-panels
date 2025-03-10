@@ -20,7 +20,7 @@ public class RoomRepository {
     }
 
     public Room getRoom(int id) {
-        TypedQuery<Room> query = em.createQuery("SELECT r FROM Room r WHERE r.id = :id", Room.class);
+        TypedQuery<Room> query = em.createQuery("SELECT r FROM Room r WHERE r.roomId = :id", Room.class);
         return query.setParameter("id", id).getSingleResult();
     }
 }

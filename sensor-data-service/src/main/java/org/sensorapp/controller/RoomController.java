@@ -6,11 +6,14 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.sensorapp.entity.Room;
+import org.sensorapp.infrastructure.postgres.DTOs.RoomDTO;
 import org.sensorapp.infrastructure.postgres.RoomRepository;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @Path("/room")
@@ -38,10 +41,26 @@ public class RoomController {
     public Response getAllRooms() {
         try {
             List<Room> rooms = roomRepository.getRooms();
-            if (rooms.isEmpty()) {
+
+            List<RoomDTO> roomDTOs = rooms.stream()
+                    .sorted(Comparator.comparing(Room::getRoomId))
+                    .map(room -> new RoomDTO(
+                            room.getRoomId(),
+                            room.getRoomLabel(),
+                            room.getRoomName(),
+                            room.getRoomType(),
+                            room.getCorridor() != null ? room.getCorridor().getRoomId() : null,
+                            room.getNeighbourInside() != null ? room.getNeighbourInside().getRoomId() : null,
+                            room.getNeighbourOutside() != null ? room.getNeighbourOutside().getRoomId() : null,
+                            room.getDirection()
+                    ))
+                    .collect(Collectors.toList());
+
+            if (roomDTOs.isEmpty()) {
                 return Response.status(Response.Status.NOT_FOUND).entity("Keine Räume gefunden.").build();
             }
-            return Response.ok(rooms).build();
+
+            return Response.ok(roomDTOs).build();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Fehler beim Abrufen der Räume", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
@@ -65,11 +84,21 @@ public class RoomController {
     public Response getRoomById(@PathParam("id") int id) {
         try {
             Room room = roomRepository.getRoom(id);
+            RoomDTO roomDTO = new RoomDTO(
+                            room.getRoomId(),
+                            room.getRoomLabel(),
+                            room.getRoomName(),
+                            room.getRoomType(),
+                            room.getCorridor() != null ? room.getCorridor().getRoomId() : null,
+                            room.getNeighbourInside() != null ? room.getNeighbourInside().getRoomId() : null,
+                            room.getNeighbourOutside() != null ? room.getNeighbourOutside().getRoomId() : null,
+                            room.getDirection()
+                    );
             if (room == null) {
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("Kein Raum mit dieser ID gefunden.").build();
             }
-            return Response.ok(room).build();
+            return Response.ok(roomDTO).build();
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Fehler beim Abrufen des Raumes nach ID", e);
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

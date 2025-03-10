@@ -6,7 +6,6 @@ import lombok.*;
 import java.util.List;
 
 @Entity
-@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,7 +14,6 @@ import java.util.List;
 public class Room {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "RoomId")
     int roomId;
 
@@ -42,4 +40,37 @@ public class Room {
 
     @Column(name = "Direction", nullable = true)
     String direction;
+
+    public int getRoomId() {
+        return roomId;
+    }
+
+    public String getRoomLabel() {
+        return roomLabel;
+    }
+
+    public String getRoomName() {
+        return RoomName;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+
+    public String getDirection() {
+        return direction;
+    }
+
+    public Room getCorridor() {
+        return corridor;
+    }
+
+    public Room getNeighbourInside() {
+        return neighbourInside;
+    }
+
+    public Room getNeighbourOutside() {
+        return neighbourOutside;
+    }
+
 }
