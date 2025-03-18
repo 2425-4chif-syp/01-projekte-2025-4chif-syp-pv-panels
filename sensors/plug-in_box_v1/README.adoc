@@ -1,0 +1,114 @@
+= Plug-in Box Sensor Array
+:toc:
+:icons: font
+
+== Overview
+
+This document describes the components used in the Plug-in Box sensor project. This project uses an ESP32 microcontroller with multiple environmental sensors to monitor room conditions and communicate data via MQTT. The device features automated LED indicators that respond to CO2 levels with different colors.
+
+== Hardware Components
+
+=== ESP32 Development Board
+The ESP32 serves as the main microcontroller for this project, handling all sensor connections, WiFi communication, and MQTT messaging.
+
+=== Sensors
+
+==== BME280 Temperature, Pressure, and Humidity Sensor
+The BME280 is an integrated environmental sensor that measures temperature, barometric pressure, and relative humidity.
+
+* **Measurements**: Temperature, Atmospheric Pressure, Relative Humidity
+* **Interface**: I2C (connected to bus_a, SDA: 21, SCL: 22, Address: 0x76)
+* **Update Interval**: 10 seconds
+* **Purchase Link**: https://de.aliexpress.com/item/1005003017199372.html
+
+==== MH-Z19B CO2 Sensor
+The MH-Z19B is a carbon dioxide gas sensor that utilizes non-dispersive infrared (NDIR) technology.
+
+* **Measurement**: Carbon Dioxide (CO2) concentration
+* **Interface**: UART (RX: GPIO13, TX: GPIO12, 9600 baud)
+* **Update Interval**: 10 seconds
+* **Range**: 0-5000ppm CO2
+* **Purchase Link**: https://www.aliexpress.us/item/3256801418331405.html
+
+==== LDR Light Sensor
+A simple analog light-dependent resistor used to measure ambient light levels.
+
+* **Measurement**: Light intensity
+* **Interface**: Analog (GPIO32)
+* **Update Interval**: 10 seconds
+
+==== PIR Motion Sensor
+Passive infrared sensor for motion detection.
+
+* **Measurement**: Motion (binary)
+* **Interface**: Digital (GPIO25)
+* **Purchase Link**: https://de.aliexpress.com/w/wholesale-pir.html
+
+=== Indicators
+
+==== WS2812B NeoPixel LED
+A programmable RGB LED that changes color based on CO2 levels:
+- Green: Low CO2 levels
+- Blue: Medium CO2 levels
+- Red: High CO2 levels
+
+* **Interface**: Digital (GPIO27)
+* **Purchase Link**: https://de.aliexpress.com/item/1005001880452182.html
+
+== Software Features
+
+=== MQTT Integration
+
+* **Discovery Mode**: Enabled for automatic integration with compatible systems
+* **Subscriptions**: Listens to topics for CO2 threshold configuration
+  - `co2/threshold/high`: Defines the upper CO2 threshold (default: 1200ppm)
+  - `co2/threshold/middle`: Defines the middle CO2 threshold (default: 600ppm)
+* **Publications**: Publishes sensor readings to specific topics
+  - `plug-in-box/temperature`: Temperature readings
+  - `plug-in-box/pressure`: Pressure readings
+  - `plug-in-box/humidity`: Humidity readings
+  - `plug-in-box/co2`: CO2 concentration readings
+
+=== Adaptive LED Brightness
+The NeoPixel LED automatically adjusts its brightness based on ambient light levels measured by the LDR sensor.
+
+=== CO2 Monitoring
+The system monitors CO2 levels and provides visual feedback through the RGB LED:
+
+* Green: CO2 below middle threshold (default: 600ppm)
+* Blue: CO2 between middle and high threshold (default: 600-1200ppm)
+* Red: CO2 above high threshold (default: 1200ppm)
+
+=== Over-the-Air Updates
+The firmware can be updated remotely via ESPHome's OTA functionality.
+
+== Configuration
+
+The main configuration file for this project is `plug-in_v1.yaml`. It defines all sensor configurations, MQTT settings, and automation routines.
+
+=== WiFi Configuration
+The device connects to WiFi using credentials stored in the `secrets.yaml` file. It also creates a fallback access point named "new_sensor_box" if WiFi connection fails.
+
+=== Web Interface
+A simple web server runs on port 80, allowing for basic status monitoring and control via web browser.
+
+== Installation Instructions
+
+1. Install ESPHome if not already installed:
+   ```
+   pip install esphome
+   ```
+
+2. Create a `secrets.yaml` file with the following content (replace with your actual credentials):
+   ```yaml
+   wifi_ssid: "YourWiFiName"
+   wifi_password: "YourWiFiPassword"
+   mqtt_broker: "192.168.1.x"
+   mqtt_user: "mqtt_username"
+   mqtt_password: "mqtt_password"
+   ```
+
+3. Compile and upload the configuration:
+   ```
+   esphome run plug-in_v1.yaml
+   ```
