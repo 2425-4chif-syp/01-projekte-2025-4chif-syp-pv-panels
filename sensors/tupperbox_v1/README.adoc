@@ -1,0 +1,93 @@
+= Tupperbox Sensor Array
+:toc:
+:icons: font
+
+== Overview
+
+This document describes the components used in the Tupperbox sensor project, which utilizes an ESP32 microcontroller with various environmental sensors to monitor room conditions. The setup communicates via MQTT to send sensor data and receive threshold configurations.
+
+== Hardware Components
+
+=== ESP32 Development Board
+ESP32 serves as the main microcontroller for this project, handling all sensor connections, WiFi communication, and MQTT messaging.
+
+=== Sensors
+
+==== BME280 Temperature, Pressure, and Humidity Sensor
+The BME280 is an integrated environmental sensor that measures temperature, barometric pressure, and relative humidity.
+
+* **Measurements**: Temperature, Atmospheric Pressure, Relative Humidity
+* **Interface**: I2C (connected to bus_a, SDA: 21, SCL: 22, Address: 0x76)
+* **Update Interval**: 10 seconds
+* **Purchase Link**: https://de.aliexpress.com/item/1005003017199372.html
+
+==== MH-Z19B CO2 Sensor
+The MH-Z19B is a carbon dioxide gas sensor that utilizes non-dispersive infrared (NDIR) technology.
+
+* **Measurement**: Carbon Dioxide (CO2) concentration
+* **Interface**: UART (RX: GPIO13, TX: GPIO12, 9600 baud)
+* **Update Interval**: 10 seconds
+* **Range**: 0-5000ppm CO2
+* **Purchase Link**: https://www.aliexpress.us/item/3256801418331405.html
+
+==== MAX4466 Sound Level Sensor
+An analog microphone amplifier module used to measure sound levels.
+
+* **Measurement**: Sound level (converted to approximate dB)
+* **Interface**: Analog (GPIO33)
+* **Update Interval**: 1 second with smoothing (sliding window average)
+* **Purchase Link**: https://de.aliexpress.com/item/32728170812.html
+
+==== LDR Light Sensor
+A simple analog light-dependent resistor used to measure ambient light levels.
+
+* **Measurement**: Light intensity
+* **Interface**: Analog (GPIO32)
+* **Update Interval**: 10 seconds
+* **Notes**: Used instead of TSL2561 digital sensor
+
+==== PIR Motion Sensor
+Passive infrared sensor for motion detection.
+
+* **Measurement**: Motion (binary)
+* **Interface**: Digital (GPIO25)
+* **Purchase Link**: https://de.aliexpress.com/w/wholesale-pir.html
+
+==== TSL2561 Light Sensor (Disabled)
+A digital light sensor that was replaced by the analog LDR. Configuration remains in the code but is commented out.
+
+* **Purchase Link**: https://www.aliexpress.us/item/3256805861069007.html
+
+=== Indicators
+
+==== WS2812B NeoPixel LED
+A programmable RGB LED that changes color based on CO2 levels:
+- Green: Low CO2 levels
+- Blue: Medium CO2 levels
+- Red: High CO2 levels
+
+* **Interface**: Digital (GPIO27)
+* **Purchase Link**: https://de.aliexpress.com/item/1005001880452182.html
+
+== Software Features
+
+=== MQTT Integration
+* Subscribes to topics for CO2 threshold configuration
+* Publishes sensor readings
+
+=== Adaptive LED Brightness
+The NeoPixel LED automatically adjusts its brightness based on ambient light levels measured by the LDR sensor.
+
+=== CO2 Monitoring
+The system monitors CO2 levels and provides visual feedback through the RGB LED:
+
+* Green: CO2 below middle threshold (default: 600ppm)
+* Blue: CO2 between middle and high threshold (default: 600-1200ppm)
+* Red: CO2 above high threshold (default: 1200ppm)
+
+=== Over-the-Air Updates
+The firmware can be updated remotely via ESPHome's OTA functionality.
+
+== Configuration
+
+The main configuration file for this project is `nili-ldr.yaml`. It defines all sensor configurations, MQTT settings, and automation routines.
