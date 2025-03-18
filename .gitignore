@@ -1,4 +1,3 @@
-
 # Created by https://www.toptal.com/developers/gitignore/api/macos
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos
 
@@ -36,3 +35,14 @@ Temporary Items
 dist/
 docs/slides/revealjs
 .idea/
+
+# ESPHome secrets
+**/secrets.yaml
+**/.esphome/
+**/esphome/.esphome/
+**/*.pem
+**/*.key
+**/esp-idf.json
+**/.pioenvs/
+**/.piolibdeps/
+**/.pio/
