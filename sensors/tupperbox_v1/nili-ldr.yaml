@@ -247,16 +247,6 @@ binary_sensor:
     name: ${name}_Motion
     id: motion
     device_class: motion
-    filters:
-      - delayed_on: 500ms
-      - delayed_off: 5s
-    on_press:
-      then:
-        - logger.log: "Motion detected"
-    on_release:
-      then:
-        - logger.log: "Motion stopped"
-    publish_initial_state: true
 
 light:
   - platform: neopixelbus
