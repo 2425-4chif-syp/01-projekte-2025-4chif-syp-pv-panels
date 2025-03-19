@@ -1,0 +1,83 @@
+<div class="building-container">
+  <div class="filter-buttons">
+    <mat-button-toggle-group>
+      <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
+        Temperature
+      </mat-button-toggle>
+      <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
+        Humidity
+      </mat-button-toggle>
+      <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
+        CO2
+      </mat-button-toggle>
+    </mat-button-toggle-group>
+  </div>
+
+  <div class="floor" *ngIf="secondFloorRooms.length > 0">
+    <h2>Second Floor</h2>
+    <div class="rooms-grid">
+      <div *ngFor="let room of secondFloorRooms" class="room" [class]="getColorClass(room)">
+        <div class="room-name">{{ room.roomName }}</div>
+        <div class="sensor-data" *ngIf="room.sensor">
+          <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+            <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+              {{ room.sensor.latestValues[type].value }}
+              {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floor" *ngIf="firstFloorRooms.length > 0">
+    <h2>First Floor</h2>
+    <div class="rooms-grid">
+      <div *ngFor="let room of firstFloorRooms" class="room" [class]="getColorClass(room)">
+        <div class="room-name">{{ room.roomName }}</div>
+        <div class="sensor-data" *ngIf="room.sensor">
+          <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+            <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+              {{ room.sensor.latestValues[type].value }}
+              {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floor" *ngIf="groundFloorRooms.length > 0">
+    <h2>Ground Floor</h2>
+    <div class="rooms-grid">
+      <div *ngFor="let room of groundFloorRooms" class="room" [class]="getColorClass(room)">
+        <div class="room-name">{{ room.roomName }}</div>
+        <div class="sensor-data" *ngIf="room.sensor">
+          <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+            <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+              {{ room.sensor.latestValues[type].value }}
+              {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="floor" *ngIf="basementRooms.length > 0">
+    <h2>Basement</h2>
+    <div class="rooms-grid">
+      <div *ngFor="let room of basementRooms" class="room" [class]="getColorClass(room)">
+        <div class="room-name">{{ room.roomName }}</div>
+        <div class="sensor-data" *ngIf="room.sensor">
+          <div class="sensor-value" *ngFor="let type of room.sensor.sensorTypes">
+            <ng-container *ngIf="shouldShowSensorType(type) && room.sensor.latestValues[type]">
+              {{ room.sensor.latestValues[type].value }}
+              {{ type === 'temperature' ? '°C' : type === 'humidity' ? '%' : 'ppm' }}
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

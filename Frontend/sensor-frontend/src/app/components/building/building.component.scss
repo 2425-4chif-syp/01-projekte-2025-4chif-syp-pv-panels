@@ -1,0 +1,164 @@
+.building-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.filter-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+
+  .mat-button-toggle-group {
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .mat-button-toggle {
+    padding: 8px 16px;
+    font-weight: 500;
+    font-size: 1.1rem;
+    
+    &.mat-button-toggle-checked {
+      background-color: #FF8B7C;
+      color: white;
+      font-weight: 600;
+    }
+  }
+}
+
+.floor {
+  margin-bottom: 30px;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+
+  &:nth-child(1) {
+    background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  }
+  &:nth-child(2) {
+    background: linear-gradient(to right, #f3f5f7, #e3e6e9);
+  }
+  &:nth-child(3) {
+    background: linear-gradient(to right, #eef1f3, #dde0e3);
+  }
+  &:nth-child(4) {
+    background: linear-gradient(to right, #e9ecef, #d8dbdd);
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  h2 {
+    color: #FF8B7C;
+    margin-bottom: 15px;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid rgba(255, 139, 124, 0.2);
+    font-size: 1.4rem;
+    font-weight: 600;
+  }
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  padding: 0.5rem;
+}
+
+.room {
+  aspect-ratio: 1;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 45px;
+  user-select: none;
+  padding: 10px;
+  min-height: 100px;
+
+  // Temperature ranges
+  &.temp-optimal {
+    background-color: rgba(75, 181, 67, 0.2);  // Green
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+  
+  &.temp-warning {
+    background-color: rgba(255, 165, 0, 0.2);  // Orange
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+  
+  &.temp-danger {
+    background-color: rgba(255, 69, 58, 0.2);  // Red
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  // Humidity ranges
+  &.humidity-optimal {
+    background-color: rgba(75, 181, 67, 0.2);
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+  
+  &.humidity-warning {
+    background-color: rgba(255, 165, 0, 0.2);
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+  
+  &.humidity-danger {
+    background-color: rgba(255, 69, 58, 0.2);
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  // CO2 ranges
+  &.co2-optimal {
+    background-color: rgba(75, 181, 67, 0.2);
+    border-color: rgba(75, 181, 67, 0.4);
+  }
+  
+  &.co2-warning {
+    background-color: rgba(255, 165, 0, 0.2);
+    border-color: rgba(255, 165, 0, 0.4);
+  }
+  
+  &.co2-danger {
+    background-color: rgba(255, 69, 58, 0.2);
+    border-color: rgba(255, 69, 58, 0.4);
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  .room-name {
+    font-weight: 600;
+    margin-bottom: 8px;
+    font-size: 1.2em;
+  }
+
+  .sensor-data {
+    font-size: 1.1em;
+    font-weight: 500;
+    
+    .sensor-value {
+      background-color: rgba(255, 139, 124, 0.1);
+      padding: 4px 8px;
+      margin: 2px 0;
+      border-radius: 3px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  }
+}
