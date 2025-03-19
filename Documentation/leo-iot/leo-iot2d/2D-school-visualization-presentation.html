@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D-Visualisierung des Schulgebäudes</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js/dist/theme/white.css">
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <section>
+            <h1>2D-Visualisierung des Schulgebäudes</h1>
+            <p>HTL Leonding Raumvisualisierung</p>
+        </section>
+
+        <section>
+            <h2>Übersicht</h2>
+            <ul>
+                <li>Interaktiver 2D-Grundriss der HTL Leonding</li>
+                <li>Implementiert als statische SVG-Komponente</li>
+                <li>Angular-basierte Interaktivität</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Technische Umsetzung</h2>
+            <h3>SVG-Implementierung</h3>
+            <ul>
+                <li>Hardcodierte SVG-Definitionen im HTML</li>
+                <li>Separate SVGs pro Stockwerk</li>
+                <li>ViewBox-basierte Skalierung</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Raumdarstellung</h2>
+            <ul>
+                <li>Rechteckige Räume: &lt;rect&gt; Elemente</li>
+                <li>Komplexe Formen: &lt;polygon&gt; Elemente</li>
+                <li>Strukturierte Gruppierung mit &lt;g&gt; Tags</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Angular Integration</h2>
+            <ul>
+                <li>ngSwitch für Stockwerksauswahl</li>
+                <li>Event Emitter für Rauminteraktionen</li>
+                <li>Dynamische CSS-Klassen für Hervorhebungen</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Interaktive Features</h2>
+            <ul>
+                <li>svg-pan-zoom Bibliothek Integration</li>
+                <li>CSS-basierte Hover-Effekte</li>
+                <li>Click-Events für Raumauswahl</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Code-Struktur</h2>
+            <pre><code class="html">
+&lt;div class="svg-viewer"&gt;
+  &lt;span [ngSwitch]="displayArea?.name"&gt;
+    &lt;svg *ngSwitchCase="'firstfloor'"&gt;
+      &lt;g class="room-box"&gt;
+        &lt;rect id="room1" (click)="emitSection($event)"&gt;
+      &lt;/g&gt;
+    &lt;/svg&gt;
+  &lt;/span&gt;
+&lt;/div&gt;
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>Komponentenstruktur</h2>
+            <pre><code class="typescript">
+@Component({
+  selector: 'app-svg-viewer'
+})
+export class SvgViewerComponent {
+  @Input() displayArea: Area;
+  @Output() sectionClicked = new EventEmitter();
+}
+            </code></pre>
+        </section>
+
+        <section>
+            <h2>CSS & Styling</h2>
+            <ul>
+                <li>Transparente Grundflächen</li>
+                <li>Hover-Highlights für Räume</li>
+                <li>Dynamische Selektionshervorhebung</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Performance-Optimierungen</h2>
+            <ul>
+                <li>Statische SVG-Definition</li>
+                <li>Effiziente Stockwerksumschaltung</li>
+                <li>CSS-Transformationen</li>
+            </ul>
+        </section>
+        
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/reveal.js/dist/reveal.js"></script>
+<script>
+    Reveal.initialize();
+</script>
+</body>
+</html>
