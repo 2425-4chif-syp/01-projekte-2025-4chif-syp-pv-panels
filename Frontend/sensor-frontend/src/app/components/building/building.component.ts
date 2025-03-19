@@ -119,6 +119,7 @@ export class BuildingComponent implements OnInit {
     loadSensorDataForRooms(this.secondFloorRooms, '2og');
   }
 
+  //Sort rooms in their respective floors
   private sortRooms(rooms: Room[]) {
     for (const room of rooms) {
       if (room.roomName.startsWith('U')) {
@@ -190,9 +191,9 @@ export class BuildingComponent implements OnInit {
 
   private getCO2Class(co2: number | undefined): string {
     if (co2 === undefined) return '';
-    if (co2 >= 0 && co2 <= 1000) {
+    if (co2 >= 0 && co2 <= 600) {
       return 'co2-optimal';
-    } else if (co2 > 1000 && co2 <= 2000) {
+    } else if (co2 > 600 && co2 <= 1000) {
       return 'co2-warning';
     } else {
       return 'co2-danger';
