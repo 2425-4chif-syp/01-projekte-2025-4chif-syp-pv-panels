@@ -12,9 +12,10 @@ nav {
 }
 
 .content {
-  padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 0;
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
   min-height: calc(100vh - 64px);
   background-color: #f5f5f5;
 }
@@ -43,24 +44,4 @@ mat-toolbar {
     font-weight: 500;
     color: white;
   }
-}
-
-.toolbar {
-  display: flex;
-  align-items: center; /* Vertikal zentrieren */
-}
-
-.header-image {
-  width: 200px; /* Passe die Breite des Bildes an */
-  height: auto; /* Erhalte das Seitenverhältnis */
-  margin-right: 16px; /* Füge Abstand zwischen Bild und Titel hinzu */
-}
-
-.mat-toolbar span {
-  font-size: 1.8rem;
-  font-weight: 500;
-  color: white;
-  text-align: center;
-  margin-left: auto; /* Verschiebt den Titel nach rechts, um Platz für das Logo zu machen */
-  margin-right: auto; /* Zentriert den Titel horizontal */
 }

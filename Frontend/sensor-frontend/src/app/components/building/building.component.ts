@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../services/room.service';
@@ -18,23 +18,31 @@ import { catchError, switchMap } from 'rxjs/operators';
   templateUrl: './building.component.html',
   styleUrls: ['./building.component.scss']
 })
-export class BuildingComponent implements OnInit {
+export class BuildingComponent implements OnInit, OnDestroy {
   secondFloorRooms: Room[] = [];
   firstFloorRooms: Room[] = [];
   groundFloorRooms: Room[] = [];
   basementRooms: Room[] = [];
   selectedSensorType: string = 'temperature'; // Default selected type
+  private autoSwitchInterval: any;
+  private sensorTypes = ['temperature', 'humidity', 'co2'];
 
   constructor(
     private roomService: RoomService,
     private sensorService: SensorService
-  ) {}
+  ) {
+    this.startAutoSwitch();
+  }
 
   ngOnInit() {
     this.roomService.getAllRooms().subscribe(rooms => {
       this.sortRooms(rooms);
       this.loadSensorData();
     });
+  }
+
+  ngOnDestroy() {
+    this.stopAutoSwitch();
   }
 
   private normalizeSensorType(type: string): string {
@@ -119,7 +127,6 @@ export class BuildingComponent implements OnInit {
     loadSensorDataForRooms(this.secondFloorRooms, '2og');
   }
 
-  //Sort rooms in their respective floors
   private sortRooms(rooms: Room[]) {
     for (const room of rooms) {
       if (room.roomName.startsWith('U')) {
@@ -191,12 +198,26 @@ export class BuildingComponent implements OnInit {
 
   private getCO2Class(co2: number | undefined): string {
     if (co2 === undefined) return '';
-    if (co2 >= 0 && co2 <= 600) {
+    if (co2 >= 0 && co2 <= 1000) {
       return 'co2-optimal';
-    } else if (co2 > 600 && co2 <= 1000) {
+    } else if (co2 > 1000 && co2 <= 2000) {
       return 'co2-warning';
     } else {
       return 'co2-danger';
+    }
+  }
+
+  private startAutoSwitch() {
+    this.autoSwitchInterval = setInterval(() => {
+      const currentIndex = this.sensorTypes.indexOf(this.selectedSensorType);
+      const nextIndex = (currentIndex + 1) % this.sensorTypes.length;
+      this.setSelectedType(this.sensorTypes[nextIndex]);
+    }, 15000); // Switch every 15 seconds
+  }
+
+  private stopAutoSwitch() {
+    if (this.autoSwitchInterval) {
+      clearInterval(this.autoSwitchInterval);
     }
   }
 }

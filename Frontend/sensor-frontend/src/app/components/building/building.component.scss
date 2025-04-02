@@ -1,37 +1,60 @@
+/* Allgemeine Container-Einstellungen */
 .building-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  overflow-x: hidden;
 }
 
-.filter-buttons {
+/* Header-Styling */
+.header {
+  background-color: #FF8B7C; /* Rosa-Farbton */
+  color: white;
   display: flex;
-  justify-content: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-  .mat-button-toggle-group {
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
+.header .title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+}
 
-  .mat-button-toggle {
-    padding: 8px 16px;
-    font-weight: 500;
-    font-size: 1.1rem;
-    
-    &.mat-button-toggle-checked {
-      background-color: #FF8B7C;
-      color: white;
-      font-weight: 600;
-    }
+.header .filter-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-buttons .mat-button-toggle-group {
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.filter-buttons .mat-button-toggle {
+  padding: 4px 10px;
+  font-weight: 500;
+  font-size: 0.85rem;
+
+  &.mat-button-toggle-checked {
+    background-color: #FF8B7C; /* Aktiver Button hat gleiche Farbe wie Header */
+    color: white;
+    font-weight: 600;
   }
 }
 
+/* Rest des bestehenden Stils bleibt unverändert */
 .floor {
-  margin-bottom: 30px;
-  padding: 1rem;
+  margin-bottom: 15px;
+  padding: 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
   border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  margin-left: 0;
 
   &:nth-child(1) {
     background: linear-gradient(to right, #f8f9fa, #e9ecef);
@@ -52,19 +75,23 @@
 
   h2 {
     color: #FF8B7C;
-    margin-bottom: 15px;
-    padding-bottom: 0.25rem;
+    margin-bottom: 10px;
+    padding-bottom: 0.15rem;
     border-bottom: 2px solid rgba(255, 139, 124, 0.2);
-    font-size: 1.4rem;
+    font-size: 1rem;
     font-weight: 600;
+    margin-left: 5px;
   }
 }
 
 .rooms-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: 15px;
-  padding: 0.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+  gap: 5px;
+  padding: 0 5px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-left: 0;
 }
 
 .room {
@@ -76,25 +103,25 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 1rem;
+  font-size: 0.65rem;
   cursor: pointer;
   transition: all 0.15s ease;
-  min-width: 45px;
+  min-width: 20px;
   user-select: none;
-  padding: 10px;
-  min-height: 100px;
+  padding: 2px;
+  min-height: 40px;
 
   // Temperature ranges
   &.temp-optimal {
     background-color: rgba(75, 181, 67, 0.2);  // Green
     border-color: rgba(75, 181, 67, 0.4);
   }
-  
+
   &.temp-warning {
     background-color: rgba(255, 165, 0, 0.2);  // Orange
     border-color: rgba(255, 165, 0, 0.4);
   }
-  
+
   &.temp-danger {
     background-color: rgba(255, 69, 58, 0.2);  // Red
     border-color: rgba(255, 69, 58, 0.4);
@@ -105,12 +132,12 @@
     background-color: rgba(75, 181, 67, 0.2);
     border-color: rgba(75, 181, 67, 0.4);
   }
-  
+
   &.humidity-warning {
     background-color: rgba(255, 165, 0, 0.2);
     border-color: rgba(255, 165, 0, 0.4);
   }
-  
+
   &.humidity-danger {
     background-color: rgba(255, 69, 58, 0.2);
     border-color: rgba(255, 69, 58, 0.4);
@@ -121,12 +148,12 @@
     background-color: rgba(75, 181, 67, 0.2);
     border-color: rgba(75, 181, 67, 0.4);
   }
-  
+
   &.co2-warning {
     background-color: rgba(255, 165, 0, 0.2);
     border-color: rgba(255, 165, 0, 0.4);
   }
-  
+
   &.co2-danger {
     background-color: rgba(255, 69, 58, 0.2);
     border-color: rgba(255, 69, 58, 0.4);
@@ -134,7 +161,7 @@
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
 
   &:active {
@@ -143,18 +170,19 @@
 
   .room-name {
     font-weight: 600;
-    margin-bottom: 8px;
-    font-size: 1.2em;
+    margin-bottom: 1px;
+    font-size: 0.75em;
+    text-align: center;
   }
 
   .sensor-data {
-    font-size: 1.1em;
+    font-size: 0.65em;
     font-weight: 500;
-    
+
     .sensor-value {
       background-color: rgba(255, 139, 124, 0.1);
-      padding: 4px 8px;
-      margin: 2px 0;
+      padding: 1px 2px;
+      margin: 1px 0;
       border-radius: 3px;
       display: flex;
       justify-content: space-between;

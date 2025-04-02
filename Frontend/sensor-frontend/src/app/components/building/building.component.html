@@ -1,18 +1,25 @@
 <div class="building-container">
-  <div class="filter-buttons">
-    <mat-button-toggle-group>
-      <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
-        Temperature
-      </mat-button-toggle>
-      <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
-        Humidity
-      </mat-button-toggle>
-      <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
-        CO2
-      </mat-button-toggle>
-    </mat-button-toggle-group>
-  </div>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <h1 class="title">Sensor-Dashboard</h1>
+      <div class="filter-buttons">
+        <mat-button-toggle-group>
+          <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
+            Temperature
+          </mat-button-toggle>
+          <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
+            Humidity
+          </mat-button-toggle>
+          <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
+            CO2
+          </mat-button-toggle>
+        </mat-button-toggle-group>
+      </div>
+    </div>
+  </header>
 
+  <!-- Floors -->
   <div class="floor" *ngIf="secondFloorRooms.length > 0">
     <h2>Second Floor</h2>
     <div class="rooms-grid">
