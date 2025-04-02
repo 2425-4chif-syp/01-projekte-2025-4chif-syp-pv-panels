@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+@use 'sass:map';
+@use 'src/assets/sass/typography' as typography;
+
+// Include the core Material styles
+@include mat.core();
+
+// Import prebuilt themes
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+// Define custom classes for app notification and light themes
+.app-notification-theme {
+  // Notification theme can use accent colors from indigo-pink theme
+  .mat-mdc-card {
+    background-color: #4caf50;
+  }
+  
+  .mat-mdc-card-title {
+    color: white;
+  }
+  
+  .mat-mdc-card-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  
+  .mat-mdc-card-content {
+    color: white;
+  }
+  
+  .mat-mdc-flat-button {
+    background-color: white;
+    color: #4caf50;
+  }
+  
+  color: #000;
+}
+
+.app-light-theme {
+  // Light theme can use the default indigo-pink theme
+  color: #000;
+}

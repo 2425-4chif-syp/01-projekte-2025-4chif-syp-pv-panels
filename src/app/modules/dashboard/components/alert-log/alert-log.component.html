@@ -1,0 +1,150 @@
+<mat-tab-group selectedIndex="0" (selectedTabChange)="tabSwitch($event)">
+  <!--MeasurementType-->
+  <mat-tab [label]="'Current Alerts'">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Room</th>
+          <th>Type</th>
+          <th>Value</th>
+          <th>Unit</th>
+          <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>E59</td>
+          <td>Co2</td>
+          <td>1197.54</td>
+          <td>PPM</td>
+          <td>27-06-2022 08:15</td>
+        </tr>
+        <tr>
+          <td>E26</td>
+          <td>Humidity</td>
+          <td>70</td>
+          <td>%</td>
+          <td>27-06-2022 07:59</td>
+        </tr>
+        <tr>
+          <td>E25</td>
+          <td>Temperature</td>
+          <td>35</td>
+          <td>°C</td>
+          <td>27-06-2022 07:41</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+<!--    <div style="height: 40vh;display: flex; align-items: center; justify-content: center;">-->
+<!--      <h1 style="">HIER CHART.JS</h1>-->
+<!--      </div>-->
+  </mat-tab>
+
+  <!--ChartView-->
+  <mat-tab label="Alert History">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+        <tr>
+          <th>Room</th>
+          <th>Type</th>
+          <th>Value</th>
+          <th>Unit</th>
+          <th>Time</th>
+        </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>E59</td>
+            <td>Co2</td>
+            <td>1197.54</td>
+            <td>PPM</td>
+            <td>25-06-2022 14:07</td>
+          </tr>
+          <tr>
+            <td>E26</td>
+            <td>Humidity</td>
+            <td>70</td>
+            <td>%</td>
+            <td>24-06-2022 10:28</td>
+          </tr>
+          <tr>
+            <td>E25</td>
+            <td>Temperature</td>
+            <td>35</td>
+            <td>°C</td>
+            <td>23-06-2022 09:39</td>
+          </tr>
+          <tr>
+            <td>E24</td>
+            <td>Volume</td>
+            <td>110</td>
+            <td>dB</td>
+            <td>22-06-2022 16:08</td>
+          </tr>
+
+          <tr>
+            <td>E59</td>
+            <td>Co2</td>
+            <td>1197.54</td>
+            <td>PPM</td>
+            <td>21-06-2022 14:07</td>
+          </tr>
+          <tr>
+            <td>E26</td>
+            <td>Humidity</td>
+            <td>70</td>
+            <td>%</td>
+            <td>20-06-2022 10:28</td>
+          </tr>
+          <tr>
+            <td>E25</td>
+            <td>Temperature</td>
+            <td>35</td>
+            <td>°C</td>
+            <td>19-06-2022 09:39</td>
+          </tr>
+          <tr>
+            <td>E24</td>
+            <td>Volume</td>
+            <td>110</td>
+            <td>dB</td>
+            <td>18-06-2022 16:08</td>
+          </tr>
+
+          <tr>
+            <td>E59</td>
+            <td>Co2</td>
+            <td>1197.54</td>
+            <td>PPM</td>
+            <td>17-06-2022 14:07</td>
+          </tr>
+          <tr>
+            <td>E26</td>
+            <td>Humidity</td>
+            <td>70</td>
+            <td>%</td>
+            <td>16-06-2022 10:28</td>
+          </tr>
+          <tr>
+            <td>E25</td>
+            <td>Temperature</td>
+            <td>35</td>
+            <td>°C</td>
+            <td>15-06-2022 09:39</td>
+          </tr>
+          <tr>
+            <td>E24</td>
+            <td>Volume</td>
+            <td>110</td>
+            <td>dB</td>
+            <td>14-06-2022 16:08</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </mat-tab>
+
+</mat-tab-group>

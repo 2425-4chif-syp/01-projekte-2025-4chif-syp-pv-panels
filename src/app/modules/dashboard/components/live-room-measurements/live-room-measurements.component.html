@@ -1,0 +1,28 @@
+<div class="room-view">
+  <!--View if the room is selected and valid-->
+  <div *ngIf="displaySection; else noRoom" class="room-measurements">
+    <div class="header">
+      <h1>{{ displaySection.name | uppercase }}</h1> <span class="header-spacing"></span>
+      <h2>{{ displayArea.displayName | uppercase }}</h2>
+      <div class="flex-spacer"></div>
+    </div>
+    <mat-divider style="border-top-color: #fff"></mat-divider>
+    <!--Measurements Carousel (temperature, co2, ...)-->
+    <tr *ngFor="let measurementTypeAndValue of currentRoom?.getDisplayData()">
+      <td style="padding-right: 20px; padding-top: 10px">{{measurementTypeAndValue?.type | titlecase}}</td>
+      <td><span class="highlight-text">{{(measurementTypeAndValue?.measurement | async)?.value | number : '.2-2'}}</span>
+        {{(measurementTypeAndValue?.measurement | async)?.unit}}</td>
+    </tr>
+  </div>
+  <!--View if the currently selected room is null-->
+  <ng-template #noRoom>
+    <div class="no-room">
+      <h1 i18n="No room header|The header text that is displayed when no room is selected@@dashboard/room-measurements/noRoomHeader" class="title">
+        Please select a room!
+        <div class="line"></div>
+      </h1>
+      <div class="flex-spacer"></div>
+      <div class="end-indicator"></div>
+    </div>
+  </ng-template>
+</div>
