@@ -79,19 +79,7 @@
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   margin-left: 0;
-
-  &:nth-child(1) {
-    background: linear-gradient(to right, #f8f9fa, #e9ecef);
-  }
-  &:nth-child(2) {
-    background: linear-gradient(to right, #f3f5f7, #e3e6e9);
-  }
-  &:nth-child(3) {
-    background: linear-gradient(to right, #eef1f3, #dde0e3);
-  }
-  &:nth-child(4) {
-    background: linear-gradient(to right, #e9ecef, #d8dbdd);
-  }
+  background-color: #ffffff; /* Weißer Hintergrund für alle Stockwerke */
 
   &:last-child {
     margin-bottom: 0;

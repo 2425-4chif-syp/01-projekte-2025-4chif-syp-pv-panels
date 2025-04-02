@@ -3,18 +3,20 @@
   <header class="header">
     <div class="header-content">
       <h1 class="title">Sensor-Dashboard</h1>
-      <div class="filter-buttons">
-        <mat-button-toggle-group>
-          <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
-            Temperature
-          </mat-button-toggle>
-          <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
-            Humidity
-          </mat-button-toggle>
-          <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
-            CO2
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+      <div class="filter-buttons-container">
+        <div class="filter-buttons">
+          <mat-button-toggle-group>
+            <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
+              Temperature
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
+              Humidity
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
+              CO2
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
       </div>
     </div>
   </header>
