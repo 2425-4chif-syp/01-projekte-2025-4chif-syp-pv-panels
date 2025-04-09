@@ -2,19 +2,33 @@
   <!-- Header -->
   <header class="header">
     <div class="header-content">
-      <h1 class="title">Sensor-Dashboard</h1>
-      <div class="filter-buttons">
-        <mat-button-toggle-group>
-          <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
-            Temperature
-          </mat-button-toggle>
-          <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
-            Humidity
-          </mat-button-toggle>
-          <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
-            CO2
-          </mat-button-toggle>
-        </mat-button-toggle-group>
+      <!-- Linke Seite: Titel -->
+      <div class="header-left">
+        <h1 class="title">Sensor-Dashboard</h1>
+      </div>
+      
+      <!-- Mitte: Filter Buttons -->
+      <div class="header-center">
+        <div class="filter-buttons">
+          <mat-button-toggle-group>
+            <mat-button-toggle (click)="setSelectedType('temperature')" [checked]="selectedSensorType === 'temperature'">
+              Temperature
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('humidity')" [checked]="selectedSensorType === 'humidity'">
+              Humidity
+            </mat-button-toggle>
+            <mat-button-toggle (click)="setSelectedType('co2')" [checked]="selectedSensorType === 'co2'">
+              CO2
+            </mat-button-toggle>
+          </mat-button-toggle-group>
+        </div>
+      </div>
+      
+      <!-- Rechte Seite: Sensor zuweisen Button im gleichen Design -->
+      <div class="header-right">
+        <button class="sensor-assign-button" (click)="openSensorMappingDialog()">
+          Sensoren zuweisen
+        </button>
       </div>
     </div>
   </header>

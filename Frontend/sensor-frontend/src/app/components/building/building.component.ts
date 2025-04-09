@@ -3,18 +3,29 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../services/room.service';
 import { SensorService } from '../../services/sensor.service';
+import { SensorMappingService } from '../../services/sensor-mapping.service';
 import { Room } from '../../models/room.interface';
 import { SensorValue } from '../../models/sensor.interface';
+import { SensorRoomMapping } from '../../models/sensor-mapping.interface';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
-import { forkJoin, of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { SensorMappingComponent } from '../sensor-mapping/sensor-mapping.component';
+import { forkJoin, of, Subscription } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-building',
   standalone: true,
-  imports: [CommonModule, FormsModule, MatCardModule, MatButtonModule, MatButtonToggleModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    MatCardModule, 
+    MatButtonModule, 
+    MatButtonToggleModule,
+    MatDialogModule
+  ],
   templateUrl: './building.component.html',
   styleUrls: ['./building.component.scss']
 })
@@ -26,10 +37,13 @@ export class BuildingComponent implements OnInit, OnDestroy {
   selectedSensorType: string = 'temperature'; // Default selected type
   private autoSwitchInterval: any;
   private sensorTypes = ['temperature', 'humidity', 'co2'];
+  private mappingsSubscription: Subscription | null = null;
 
   constructor(
     private roomService: RoomService,
-    private sensorService: SensorService
+    private sensorService: SensorService,
+    private sensorMappingService: SensorMappingService,
+    private dialog: MatDialog
   ) {
     this.startAutoSwitch();
   }
@@ -38,11 +52,36 @@ export class BuildingComponent implements OnInit, OnDestroy {
     this.roomService.getAllRooms().subscribe(rooms => {
       this.sortRooms(rooms);
       this.loadSensorData();
+      
+      // Abonniere Änderungen an den Sensor-Mappings
+      this.mappingsSubscription = this.sensorMappingService.getMappings().subscribe(() => {
+        // Bei Änderungen die Sensor-Daten neu laden
+        this.loadSensorData();
+      });
     });
   }
 
   ngOnDestroy() {
     this.stopAutoSwitch();
+    if (this.mappingsSubscription) {
+      this.mappingsSubscription.unsubscribe();
+    }
+  }
+
+  // Öffnet den Dialog zur Sensor-Raum-Zuweisung
+  openSensorMappingDialog(): void {
+    const dialogRef = this.dialog.open(SensorMappingComponent, {
+      width: '90%',        // Erhöhte Breite auf 90% des Fensters
+      height: '90%',       // Erhöhte Höhe auf 90% des Fensters
+      maxWidth: '800px',  // Maximale Breite festlegen
+      maxHeight: '695px',  // Maximale Höhe festlegen
+      panelClass: 'sensor-mapping-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Wenn Änderungen vorgenommen wurden, Daten neu laden
+      this.loadSensorData();
+    });
   }
 
   private normalizeSensorType(type: string): string {
@@ -64,60 +103,9 @@ export class BuildingComponent implements OnInit, OnDestroy {
   private loadSensorData() {
     const loadSensorDataForRooms = (rooms: Room[], floor: string) => {
       rooms.forEach(room => {
-        const roomNumber = room.roomName.replace(/[^0-9]/g, '');
-        if (roomNumber) {
-          this.sensorService.getSensorsByFloor(floor).pipe(
-            catchError(error => {
-              console.error(`Error fetching sensors for floor ${floor}:`, error);
-              return of([]);
-            }),
-            switchMap(sensors => {
-              const matchingSensor = sensors.find(sensor => sensor.includes(roomNumber));
-              if (matchingSensor) {
-                return forkJoin({
-                  types: this.sensorService.getSensorFields(floor, matchingSensor),
-                  values: this.sensorService.getAllSensorValues(floor, matchingSensor)
-                }).pipe(
-                  catchError(error => {
-                    console.error(`Error fetching sensor data for ${matchingSensor}:`, error);
-                    return of({ types: [], values: [] });
-                  })
-                );
-              }
-              return of({ types: [], values: [] });
-            })
-          ).subscribe(({ types, values }) => {
-            if (types.length > 0) {
-              const latestValues: { [key: string]: SensorValue } = {};
-              
-              values.forEach(value => {
-                const normalizedType = this.normalizeSensorType(value.sensorType);
-                const currentValue = latestValues[normalizedType];
-                const newTimestamp = new Date(value.timestamp);
-                
-                if (!currentValue || newTimestamp > new Date(currentValue.timestamp)) {
-                  latestValues[normalizedType] = {
-                    timestamp: value.timestamp,
-                    value: value.value
-                  };
-                }
-              });
-              
-              const normalizedTypes = types.map(type => this.normalizeSensorType(type));
-              
-              if (room.sensor === undefined) {
-                room.sensor = {
-                  sensorId: roomNumber,
-                  sensorTypes: normalizedTypes,
-                  latestValues: latestValues
-                };
-              } else {
-                room.sensor.sensorTypes = normalizedTypes;
-                room.sensor.latestValues = latestValues;
-              }
-            }
-          });
-        }
+        // Nur noch zugewiesene Sensoren für den Raum laden
+        // Die automatische Zuweisung nach Raumnummer ist entfernt worden
+        this.loadMappedSensors(room);
       });
     };
 
@@ -125,6 +113,80 @@ export class BuildingComponent implements OnInit, OnDestroy {
     loadSensorDataForRooms(this.groundFloorRooms, 'eg');
     loadSensorDataForRooms(this.firstFloorRooms, '1og');
     loadSensorDataForRooms(this.secondFloorRooms, '2og');
+  }
+
+  // Diese Methode wird nicht mehr genutzt, da wir nur noch explizit zugewiesene Sensoren verwenden
+  private loadRegularSensors(room: Room, floor: string): void {
+    // Diese Funktion ist bewusst leer gelassen, da wir keine automatische Zuweisung mehr wollen
+  }
+
+  // Lädt Sensoren, die dem Raum zugeordnet wurden (über das Mapping)
+  private loadMappedSensors(room: Room): void {
+    // Alle Sensoren finden, die diesem Raum zugewiesen sind
+    const mappedSensors = this.sensorMappingService.findSensorsForRoom(room.roomId);
+    
+    mappedSensors.forEach(mapping => {
+      // Für jeden zugewiesenen Sensor die Daten laden
+      this.sensorService.getSensorFields(mapping.floor, mapping.sensorId).pipe(
+        catchError(error => {
+          console.error(`Error fetching sensors for mapped sensor ${mapping.sensorId}:`, error);
+          return of([]);
+        }),
+        switchMap(types => {
+          if (types.length > 0) {
+            return forkJoin({
+              types: of(types),
+              values: this.sensorService.getAllSensorValues(mapping.floor, mapping.sensorId)
+            }).pipe(
+              catchError(error => {
+                console.error(`Error fetching sensor data for ${mapping.sensorId}:`, error);
+                return of({ types: [], values: [] });
+              })
+            );
+          }
+          return of({ types: [], values: [] });
+        })
+      ).subscribe(({ types, values }) => {
+        if (types.length > 0) {
+          this.updateRoomSensorData(room, types, values);
+        }
+      });
+    });
+  }
+
+  // Aktualisiert die Sensordaten für einen Raum
+  private updateRoomSensorData(room: Room, types: string[], values: any[]): void {
+    const latestValues: { [key: string]: SensorValue } = room.sensor?.latestValues || {};
+    
+    values.forEach(value => {
+      const normalizedType = this.normalizeSensorType(value.sensorType);
+      const currentValue = latestValues[normalizedType];
+      const newTimestamp = new Date(value.timestamp);
+      
+      if (!currentValue || newTimestamp > new Date(currentValue.timestamp)) {
+        latestValues[normalizedType] = {
+          timestamp: value.timestamp,
+          value: value.value
+        };
+      }
+    });
+    
+    const normalizedTypes = types.map(type => this.normalizeSensorType(type));
+    const existingSensorTypes = room.sensor?.sensorTypes || [];
+    
+    // Alle eindeutigen Sensortypen zusammenführen
+    const allSensorTypes = Array.from(new Set([...existingSensorTypes, ...normalizedTypes]));
+    
+    if (room.sensor === undefined) {
+      room.sensor = {
+        sensorId: room.roomName,  // Als ID verwenden wir jetzt den Raumnamen
+        sensorTypes: allSensorTypes,
+        latestValues: latestValues
+      };
+    } else {
+      room.sensor.sensorTypes = allSensorTypes;
+      room.sensor.latestValues = {...room.sensor.latestValues, ...latestValues};
+    }
   }
 
   private sortRooms(rooms: Room[]) {
@@ -145,7 +207,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Sort rooms by room number within each floor
     this.secondFloorRooms.sort((a, b) => a.roomName.localeCompare(b.roomName));
     this.firstFloorRooms.sort((a, b) => a.roomName.localeCompare(b.roomName));
     this.groundFloorRooms.sort((a, b) => a.roomName.localeCompare(b.roomName));

@@ -11,6 +11,11 @@ export class SensorService {
 
   constructor(private http: HttpClient) { }
 
+  // Neue Methode zum Abrufen aller Stockwerke
+  getAllFloors(): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/floors`);
+  }
+
   getSensorsByFloor(floor: string): Observable<string[]> {
     return this.http.get<string[]>(`${this.apiUrl}/${floor}`);
   }
