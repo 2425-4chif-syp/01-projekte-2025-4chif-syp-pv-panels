@@ -1,0 +1,143 @@
+= Projektübersicht & Architektur: 2D-Grundriss-Visualisierung mit Indoor-Navigation
+:toc:
+:icons: font
+
+Dieser Leitfaden richtet sich an Lehr­kräfte und Entscheidungsträger. Er vermittelt in verständlicher Form:
+
+- die notwendigen Technologien
+- die zentralen Verarbeitungsschritte
+- das grobe Datenmodell
+- die Struktur von Backend und Frontend
+
+== 1. CAD-Konvertierung (DWG → DXF)
+
+Da DWG ein proprietäres Format ist, erfolgt die Konvertierung ins offene DXF (z. B. Version R2000). Vorteile:
+
+- Offene Spezifikation, einfacher Parser-Zugriff
+- Kompatibilität mit zahlreichen Tools
+
+=== Tools & Aufruf
+*ODA File Converter* (von Open Design Alliance) oder *LibreDWG*::
+
+Ergebnis: `school.dxf`, Basis für alle weiteren Schritte.
+
+== 2. Geometriedaten-Extraktion mit Python
+
+Für das Auslesen der DXF-Daten verwenden wir die Bibliothek *ezdxf*.
+
+=== Installation & Basis-Skript
+----
+pip install ezdxf
+
+import ezdxf
+
+doc = ezdxf.readfile('school.dxf')
+ms = doc.modelspace()
+for layer in doc.layers:
+    print(layer.dxf.name)
+----
+Identifiziere Layer wie:
+- `WÄNDE`
+- `TÜREN`
+- `FENSTER`
+- `TREPPENHAUS`
+- `FAHRSTUHL`
+- `RÄUME`
+
+=== Datenklassen
+Jede Entität wird in Python-Objekte überführt:
+
+----
+class Wall:
+    def __init__(self, floor_id, start, end):
+        self.floor_id = floor_id
+        self.start = start  # (x, y)
+        self.end = end
+
+class Door:
+    def __init__(self, floor_id, polygon):
+        self.floor_id = floor_id
+        self.polygon = polygon  # Liste von Punkten
+
+# Analog: Window, Staircase, Elevator, Room
+----
+Diese Objekte werden in Listen gesammelt und für den Import in die Datenbank vorbereitet.
+
+== 3. Persistenz: PostgreSQL + PostGIS
+
+Wir speichern Geometrie und Routing-Daten in einer räumlich indizierten Datenbank.
+
+=== Tabellen und Datenmodell
+
+[cols="1,1,2",options="header"]
+|===
+|Entity      |Spalte(n)                        |Typ (PostGIS)
+|floor       |id, name                         |–
+|wall        |id, floor_id, geom               |LINESTRING
+|door/window |id, floor_id, geom               |POLYGON
+|staircase   |id, floor_id, geom               |POLYGON
+|elevator    |id, floor_id, geom               |POLYGON
+|room        |id, floor_id, geom, label        |POLYGON + TEXT
+|node        |id, floor_id, x, y, type         |POINT
+|edge        |id, from_node, to_node, weight   |–
+|===
+
+== 4. Backend: Quarkus Service
+
+Das Java-Framework Quarkus sorgt für ein schnelles, leichtgewichtiges REST-Backend.
+
+=== Panache-Entities (Beispiel)
+----
+@Entity
+public class Wall extends PanacheEntity {
+  public Long floorId;
+  public LineString geom;
+}
+// ähnlich für Door, Staircase, etc.
+----
+=== REST-API Endpunkte
+[cols="1,1,2",options="header"]
+|===
+|Methode |Pfad                                |Beschreibung
+|GET     |/api/floors                         |Liste aller Stockwerke
+|GET     |/api/floors/{id}/geometry           |Geometriedaten (Wände, Türen…) pro Etage
+|GET     |/api/navigation?floor=&start=&end   |Berechnet Route (Dijkstra)
+|===
+=== Dijkstra-Algorithmus
+- Knoten: Türöffnungen, Raumzentren, Treppen-/Fahrstuhl-Entry
+- Kanten: Verbindungen mit Gewichten = Distanz
+- Implementierung mit `PriorityQueue<Node>`
+
+== 5. Frontend: Angular + SVG
+
+=== Service zur Datenbeschaffung
+----
+@Injectable({ providedIn: 'root' })
+export class PlanService {
+  getGeometry(floor: number) {
+    return this.http.get<Geometry>(`/api/floors/${floor}/geometry`);
+  }
+  getRoute(floor: number, start: number, end: number) {
+    return this.http.get<Route>(`/api/navigation`, {
+      params: { floor, start, end }
+    });
+  }
+}
+----
+=== SVG-Komponente
+----
+<svg [attr.viewBox]="viewBox">
+  <g *ngFor="let w of geometry.walls">
+    <line [attr.x1]="w.start.x" [attr.y1]="w.start.y"
+          [attr.x2]="w.end.x"   [attr.y2]="w.end.y"
+          stroke="black"/>
+  </g>
+  <polygon *ngFor="let d of geometry.doors"
+           [attr.points]="d.points.map(p=>p.x+','+p.y).join(' ')"
+           fill="lightgrey"/>
+  <!-- Treppenhaus, Fahrstuhl als Polygone -->
+  <polyline *ngIf="route"
+            [attr.points]="route.map(n=>n.x+','+n.y).join(' ')"
+            stroke="red" stroke-width="3"/>
+</svg>
+----

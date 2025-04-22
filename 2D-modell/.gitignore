@@ -1,0 +1,18 @@
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Java/Maven
+target/
+
+# Node/Angular
+node_modules/
+dist/
+
+# Python
+venv/
+__pycache__/
+
+# Betriebssystem
+.DS_Store
+Thumbs.db
