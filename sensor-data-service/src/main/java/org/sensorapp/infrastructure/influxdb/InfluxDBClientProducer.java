@@ -10,7 +10,7 @@ import jakarta.inject.Singleton;
 public class InfluxDBClientProducer {
 
     private static final String INFLUXDB_URL = "http://127.0.0.1:8086";
-    private static final String INFLUXDB_TOKEN = "Nr6fRfvDbW6sBMfL5R3Uuqpc1ckqkLNezsFF1QMpquWXf4r2Uf1iJRp3C-PlthVWRMWF0NHdaiIdKxx30240nA==";
+    private static final String INFLUXDB_TOKEN = "kSVvcPgB5NGbQC2NVo28nR8YyKjTohIZNhfu7AoKoaxrEkt6CtdKG4lZWQY1zDD0o1uKEUezQScLxjDRMBcuNw==";
     private static final String INFLUXDB_ORG = "sensor_org";
     private static final String INFLUXDB_BUCKET = "sensor_bucket";
 

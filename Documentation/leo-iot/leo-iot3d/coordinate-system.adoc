@@ -1,0 +1,76 @@
+= Koordinatensystem in Leo-IoT
+:toc: left
+:icons: font
+:sectnums:
+
+== Koordinatensystem in Stichworten
+
+* **X-Achse**: Tiefe im 3D-Modell
+  * Positive Werte: nach vorne
+  * Negative Werte: nach hinten
+
+* **Y-Achse**: Höhe im 3D-Modell
+  * Positive Werte: nach oben
+  * Negative Werte: nach unten
+  * Verwendet für vertikale Positionierung von Stockwerken und Objekten
+
+* **Z-Achse**: Horizontale Position im 3D-Modell
+  * Positive Werte: nach rechts
+  * Negative Werte: nach links
+  * Verwendet für seitliche Positionierung von Objekten
+
+* **Einheiten und Maßstab**: Einheitenlos, repräsentieren Distanzen im 3D-Modell
+  * Größere Werte = größere Distanzen
+  * Stockwerksbewegungen: 50 Einheiten für vertikale Verschiebungen
+
+* **Typische Wertebereiche**:
+  * Kamerapositionierung: Tausende von Einheiten (z.B. `position.set(8000, 7900, 7000)`)
+  * Stockwerksverschiebungen: 50 Einheiten
+  * Normalisierte Gerätekoordinaten: -1 bis +1
+
+* **Transformationen**:
+  * Bildschirm-X -> Welt-Z
+  * Bildschirm-Y -> Welt-Y
+  * Transformation: X = (Bildschirm_x / Bildschirmbreite) * 2 - 1, Y = -((Bildschirm_y / Bildschirmhöhe) * 2 - 1)
+
+* **Bewegung im 3D-Raum**:
+  * Translate Y: nach oben (+Y) oder unten (-Y)
+  * Translate X: nach vorne (+X) oder hinten (-X)
+  * Translate Z: nach rechts (+Z) oder links (-Z)
+
+* **Praktische Anwendungen**:
+  * Benutzerinteraktion: Bildschirmkoordinaten -> normalisierte Gerätekoordinaten -> Strahl von Kamera -> Objekt im 3D-Raum
+  * Modellvisualisierung: Natürliche Positionierung, logische Anordnung, intuitive Navigation
+
+* **Wichtiges**:
+  * Y-Achse: Höhe
+  * Z-Achse: Links-Rechts
+  * X-Achse: Tiefe
+  * Keine ordentliche Maßeinheit
+
+== Dateien mit Koordinatensystem-Definitionen
+
+* **`/web/src/app/3d/school3d/ModelController/modelController.ts`**:
+  * Hauptdefinition des Koordinatensystems
+  * Enthält den Kommentar: `// top <-> bottom :y 1 <-> -1` und `// left <-> right :z -1 <-> 1`
+  * Definiert Kameraposition und Kontrollen
+  * Verwaltet die Raycasting-Funktionalität für Objekterkennung
+
+* **`/web/src/app/3d/school3d/ModelController/Loader.ts`**:
+  * Lädt das 3D-Modell
+  * Fügt Objekte zur Szene hinzu
+  * Initialisiert Objekte mit ihren Positionen im Raum
+
+* **`/web/src/app/3d/school3d/school3d.component.ts`**:
+  * Erstellt die ModelController-Instanz
+  * Initialisiert den Renderer und die Ansicht
+
+* **Konkrete Verwendungen**:
+  * In `modelController.ts` - `move`-Methode: Verschiebt Objekte entlang der Y-Achse mit `translateY(50)` oder `translateY(-50)`
+  * In `modelController.ts` - `onPointerDown`-Methode: Transformiert Bildschirmkoordinaten für Raycasting
+  * In `modelController.ts` - `showRoomMqtt`-Methode: Setzt Kameraposition mit `camera.position.set(8000, 7900, 7000)`
+
+* **Backend-Integration**:
+  * Backend hat kein explizites Koordinatensystem
+  * `Location`-Entität in `/backend/src/main/java/at/htl/entity/Location.java` speichert nur hierarchische Beziehungen
+  * Die Verknüpfung zwischen Backend-Daten und 3D-Visualisierung erfolgt über Raumnamen und Stockwerksbezeichnungen

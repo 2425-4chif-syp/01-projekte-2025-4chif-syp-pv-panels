@@ -1,0 +1,164 @@
+= 2D-Visualisierung des Schulgebäudes
+:author: Leo IoT Team
+:toc: left
+:icons: font
+
+== Übersicht der 2D-Visualisierung
+
+Die 2D-Visualisierung zeigt einen interaktiven Grundriss der HTL Leonding. Sie ermöglicht es, das gesamte Schulgebäude in einer übersichtlichen 2D-Ansicht darzustellen und zwischen verschiedenen Stockwerken zu navigieren.
+
+== Funktionsweise der Visualisierung
+
+=== Grundriss-Aufbau
+* Das Schulgebäude wird als statisches SVG (Scalable Vector Graphics) im HTML-Code definiert
+* Jedes Stockwerk ist als separates SVG-Element mit eigener viewBox implementiert
+* Die Räume sind als `<rect>` und `<polygon>` SVG-Elemente direkt im Code definiert
+* Navigation zwischen Stockwerken über Angular's ngSwitch Direktive
+
+=== Interaktive Elemente
+* Stockwerksauswahl über Angular's ngSwitch
+* Zoom-Funktion über svg-pan-zoom Bibliothek
+* Pan-Funktion zum Verschieben des sichtbaren Bereichs
+* Hover-Effekte und Raumhervorhebung über CSS-Klassen
+
+== Datentypen und Strukturen
+
+=== Eingabedaten (Input)
+[source]
+----
+RaumDefinition {
+    id: string           // Eindeutige Kennung des Raums
+    nummer: string       // Raumnummer (z.B. "E78")
+    stockwerk: number    // Stockwerknummer (z.B. 0 für EG)
+    position: {          // Position im SVG-Koordinatensystem
+        x: number
+        y: number
+    }
+    dimension: {         // Größe des Raums
+        breite: number
+        hoehe: number
+    }
+    typ: string         // Art des Raums (Klassenraum, Labor, etc.)
+}
+----
+
+=== Ausgabedaten (Output)
+[source]
+----
+VisualisierungsDaten {
+    aktuellesStockwerk: number
+    sichtbarerBereich: {
+        x: number
+        y: number
+        zoom: number
+    }
+    selektierterRaum: string  // ID des ausgewählten Raums
+}
+----
+
+== Technische Implementierung
+
+=== SVG-Struktur
+[source,html]
+----
+<div class="svg-viewer">
+  <span [ngSwitch]="displayArea ? displayArea.name : ''">
+    <!-- Stockwerk SVG -->
+    <svg *ngSwitchCase="'firstfloor'" id="firstfloor" viewBox="0 0 569 692">
+      <!-- Layout-Linien -->
+      <g>
+        <line class="a" ... />
+        <!-- weitere Strukturlinien -->
+      </g>
+      <!-- Raumdefinitionen -->
+      <g class="room-box">
+        <rect id="room1" 
+              (click)="emitSection($event)" 
+              [ngClass]="selectedSection === 'room1' ? 'highlighted' : ''"
+              x="..." y="..." width="..." height="..." />
+        <!-- weitere Räume -->
+      </g>
+    </svg>
+  </span>
+</div>
+----
+
+=== Raumdefinition
+Die Räume sind direkt im HTML-Code als SVG-Elemente definiert:
+
+* Rechteckige Räume verwenden das `<rect>` Element
+* Komplexe Raumformen verwenden das `<polygon>` Element
+* Jeder Raum hat:
+** Eine eindeutige ID
+** Click-Event Handler (emitSection)
+** Dynamische CSS-Klasse für Hervorhebung
+** Feste Position und Größe im SVG-Koordinatensystem
+
+=== Angular Komponenten-Struktur
+[source]
+----
+@Component({
+  selector: 'app-svg-viewer',
+  templateUrl: './svg-viewer.component.html'
+})
+export class SvgViewerComponent {
+  @Input() displayArea: Area;               // Aktuelles Stockwerk
+  @Input() displaySection: Section;         // Ausgewählter Raum
+  @Output() sectionClicked = new EventEmitter<Section>();
+  
+  // Weitere Komponenten-Logik
+}
+----
+
+=== Funktionsablauf
+1. Laden des SVG-Grundrisses
+2. Initialisierung der Stockwerksnavigation
+3. Aktivierung der Interaktionselemente
+4. Rendering der aktuellen Ansicht
+
+== Benutzerinteraktion
+
+=== Navigation
+* Stockwerksauswahl über Dropdown oder Buttons
+* Zoom mit Mausrad oder Buttons
+* Pan durch Drag & Drop der Ansicht
+
+=== Raumauswahl
+* Hover über Räume zeigt Raumnummer
+* Klick auf Raum zeigt Details
+
+== Visualisierungsebenen
+
+=== Basis-Ebene
+* Grundriss des Gebäudes
+* Raumaufteilung
+* Stockwerksgrenzen
+
+=== Interaktive Ebene
+* Klickbare Räume
+* Hover-Effekte
+* Auswahlhervorhebungen
+
+== Best Practices für die Visualisierung
+
+=== Performance
+* Verwendung von SVG für optimale Skalierbarkeit
+* Lazy Loading von Stockwerken
+* Effiziente Render-Zyklen
+
+== Best Practices der Implementierung
+
+=== SVG-Optimierung
+* Strukturierte Gruppierung durch `<g>` Elemente
+* Wiederverwendbare CSS-Klassen für Styling
+* Klare Trennung von Layout und interaktiven Elementen
+
+=== Angular Integration
+* Komponenten-basierte Architektur
+* Reaktive Datenanbindung
+* Event-basierte Kommunikation zwischen Komponenten
+
+=== Performance
+* Statische SVG-Definition vermeidet dynamische Generierung
+* CSS-Transformationen für smooth Animations
+* Effiziente Stockwerks-Umschaltung durch ngSwitch
