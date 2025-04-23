@@ -1,0 +1,30 @@
+== Schnellstart (DXF → PostGIS)
+
+=== 1. Vorbereitungen
+* Docker & Docker Compose v2 installiert
+* Datei `Grundriss_erweitert.dxf` liegt in `./scripts/`
+
+=== 2. Container bauen & ausführen
+[source,bash]
+----
+# Images bauen (nur beim ersten Mal oder nach Änderungen)
+docker compose build
+
+# Container starten
+docker compose up           # <- führt den DXF-Import automatisch aus
+----
+
+**Erfolgreicher Import** ⇒ Konsole zeigt:
+----
+Gefundene Geschosse: 4
+Import abgeschlossen.
+----
+
+=== 3. Container stoppen
+[source,bash]
+----
+# sauber beenden
+docker compose down
+----
+
+*Fertig – PostGIS enthält nun Wände, Türen, Räume, Knoten & Kanten für alle Stockwerke.*
