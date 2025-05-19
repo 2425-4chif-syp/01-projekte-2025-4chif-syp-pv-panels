@@ -11,9 +11,19 @@ import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatIconModule } from '@angular/material/icon';
 import { SensorMappingComponent } from '../sensor-mapping/sensor-mapping.component';
 import { forkJoin, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
+
+// Interface für Sensor mit zusätzlichen Eigenschaften für die UI
+interface SensorUIItem {
+  sensorId: string;
+  floor: string;
+  mappedRoomName?: string;
+  mappedRoomId?: number;
+}
 
 @Component({
   selector: 'app-building',
@@ -24,7 +34,9 @@ import { catchError, switchMap, tap } from 'rxjs/operators';
     MatCardModule, 
     MatButtonModule, 
     MatButtonToggleModule,
-    MatDialogModule
+    MatDialogModule,
+    MatIconModule,
+    DragDropModule
   ],
   templateUrl: './building.component.html',
   styleUrls: ['./building.component.scss']
@@ -34,10 +46,12 @@ export class BuildingComponent implements OnInit, OnDestroy {
   firstFloorRooms: Room[] = [];
   groundFloorRooms: Room[] = [];
   basementRooms: Room[] = [];
+  unassignedSensors: SensorUIItem[] = []; // Neue Liste für nicht zugewiesene Sensoren
   selectedSensorType: string = 'temperature'; // Default selected type
   private autoSwitchInterval: any;
   private sensorTypes = ['temperature', 'humidity', 'co2'];
   private mappingsSubscription: Subscription | null = null;
+  showSidebar: boolean = true; // Standardmäßig die Seitenleiste anzeigen
 
   constructor(
     private roomService: RoomService,
@@ -52,11 +66,13 @@ export class BuildingComponent implements OnInit, OnDestroy {
     this.roomService.getAllRooms().subscribe(rooms => {
       this.sortRooms(rooms);
       this.loadSensorData();
+      this.loadUnassignedSensors(); // Nicht zugewiesene Sensoren laden
       
       // Abonniere Änderungen an den Sensor-Mappings
       this.mappingsSubscription = this.sensorMappingService.getMappings().subscribe(() => {
         // Bei Änderungen die Sensor-Daten neu laden
         this.loadSensorData();
+        this.loadUnassignedSensors(); // Auch die nicht zugewiesenen Sensoren aktualisieren
       });
     });
   }
@@ -68,6 +84,39 @@ export class BuildingComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Lädt alle Sensoren, die noch keinem Raum zugewiesen wurden
+  loadUnassignedSensors(): void {
+    this.unassignedSensors = [];
+    
+    // Für jedes Stockwerk die Sensoren laden
+    this.sensorService.getAllFloors().subscribe(floors => {
+      floors.forEach(floor => {
+        this.sensorService.getSensorsByFloor(floor).subscribe(sensorIds => {
+          // Für jeden Sensor prüfen, ob er bereits einem Raum zugeordnet ist
+          sensorIds.forEach(sensorId => {
+            const roomId = this.sensorMappingService.findRoomForSensor(sensorId, floor);
+            
+            // Wenn der Sensor keinem Raum zugeordnet ist, zur Liste hinzufügen
+            if (!roomId) {
+              // Prüfen, ob der Sensor bereits in der Liste ist
+              const existingSensor = this.unassignedSensors.find(
+                s => s.sensorId === sensorId && s.floor === floor
+              );
+              
+              // Nur hinzufügen, wenn er noch nicht in der Liste ist
+              if (!existingSensor) {
+                this.unassignedSensors.push({
+                  sensorId: sensorId,
+                  floor: floor
+                });
+              }
+            }
+          });
+        });
+      });
+    });
+  }
+  
   // Öffnet den Dialog zur Sensor-Raum-Zuweisung
   openSensorMappingDialog(): void {
     const dialogRef = this.dialog.open(SensorMappingComponent, {
@@ -81,7 +130,53 @@ export class BuildingComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(result => {
       // Wenn Änderungen vorgenommen wurden, Daten neu laden
       this.loadSensorData();
+      this.loadUnassignedSensors(); // Auch die nicht zugewiesenen Sensoren aktualisieren
     });
+  }
+
+  // Neue Methode für Drag-and-Drop eines Sensors auf einen Raum
+  onSensorDrop(event: CdkDragDrop<any>): void {
+    // Prüfen, ob der Drop auf eine Raum-Box stattgefunden hat
+    if (event.container.data && typeof event.container.data === 'object' && 'roomId' in event.container.data) {
+      // ID und Stockwerk des gezogenen Sensors aus den Attributen abrufen
+      const sensorElement = event.item.element.nativeElement;
+      const sensorId = sensorElement.getAttribute('data-sensor-id');
+      const floor = sensorElement.getAttribute('data-floor');
+      const roomId = (event.container.data as Room).roomId;
+      
+      if (sensorId && floor && roomId) {
+        // Mapping erstellen und hinzufügen
+        const mapping: SensorRoomMapping = {
+          sensorId: sensorId,
+          floor: floor,
+          roomId: roomId
+        };
+        
+        this.sensorMappingService.addOrUpdateMapping(mapping);
+        
+        // Sensor aus der unassignedSensors-Liste entfernen
+        this.unassignedSensors = this.unassignedSensors.filter(
+          s => !(s.sensorId === sensorId && s.floor === floor)
+        );
+        
+        // Sensordaten neu laden
+        this.loadSensorData();
+      }
+    }
+  }
+  
+  // Hilfsmethode, um festzustellen, ob ein Raum zugewiesene Sensoren hat
+  getRoomSensors(room: Room): { sensorId: string, floor: string }[] {
+    const mappings = this.sensorMappingService.findSensorsForRoom(room.roomId);
+    return mappings.map(mapping => ({
+      sensorId: mapping.sensorId,
+      floor: mapping.floor
+    }));
+  }
+
+  // Methode zum Umschalten der Seitenleisten-Anzeige
+  toggleSidebar(): void {
+    this.showSidebar = !this.showSidebar;
   }
 
   private normalizeSensorType(type: string): string {
@@ -279,6 +374,39 @@ export class BuildingComponent implements OnInit, OnDestroy {
   private stopAutoSwitch() {
     if (this.autoSwitchInterval) {
       clearInterval(this.autoSwitchInterval);
+    }
+  }
+
+  // Entfernt einen Sensor aus einem Raum und fügt ihn wieder in die Liste der nicht zugewiesenen Sensoren ein
+  removeSensorFromRoom(room: Room, sensorId: string, floor: string): void {
+    // Zuerst die Zuordnung im Service entfernen
+    this.sensorMappingService.removeMapping(sensorId, floor);
+    
+    // Prüfen, ob der Sensor bereits in der Liste der nicht zugewiesenen Sensoren ist
+    const existingSensor = this.unassignedSensors.find(
+      s => s.sensorId === sensorId && s.floor === floor
+    );
+    
+    // Nur hinzufügen, wenn er noch nicht in der Liste ist
+    if (!existingSensor) {
+      this.unassignedSensors.push({
+        sensorId: sensorId,
+        floor: floor
+      });
+    }
+    
+    // Sensordaten direkt aus dem Raum entfernen
+    this.clearRoomSensorData(room);
+    
+    // Sensordaten neu laden
+    this.loadSensorData();
+  }
+  
+  // Hilfsmethode zum Löschen von Sensordaten eines Raums
+  private clearRoomSensorData(room: Room): void {
+    // Sensor-Daten aus dem Raum entfernen
+    if (room.sensor) {
+      room.sensor = undefined;
     }
   }
 }

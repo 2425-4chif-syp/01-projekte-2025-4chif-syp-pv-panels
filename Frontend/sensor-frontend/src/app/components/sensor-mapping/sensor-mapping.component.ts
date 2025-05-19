@@ -12,6 +12,7 @@ import { SensorService } from '../../services/sensor.service';
 import { SensorMappingService } from '../../services/sensor-mapping.service';
 import { Room } from '../../models/room.interface';
 import { SensorRoomMapping } from '../../models/sensor-mapping.interface';
+import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 
 // Interface für Sensor mit zusätzlichen Eigenschaften für die UI
 interface SensorUIItem {
@@ -32,7 +33,8 @@ interface SensorUIItem {
     MatDialogModule,
     MatIconModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    DragDropModule
   ],
   templateUrl: './sensor-mapping.component.html',
   styleUrls: ['./sensor-mapping.component.scss']
@@ -168,5 +170,31 @@ export class SensorMappingComponent implements OnInit {
   // Schließt den Dialog
   closeDialog(): void {
     this.dialogRef.close();
+  }
+
+  // Drag and Drop Functionality
+  onSensorDrop(event: CdkDragDrop<Room>): void {
+    const sensorElement = event.item.element.nativeElement;
+    const sensorId = sensorElement.getAttribute('data-sensor-id');
+    const floor = sensorElement.getAttribute('data-floor');
+    
+    if (sensorId && floor) {
+      // Find the sensor object
+      const sensor = this.availableSensors.find(s => 
+        s.sensorId === sensorId && s.floor === floor
+      );
+      
+      // Find the target room
+      const room = event.container.data;
+      
+      if (sensor && room) {
+        // Set the selected sensor and room (to maintain compatibility with existing code)
+        this.selectedSensor = sensor;
+        this.selectedRoom = room;
+        
+        // Save the mapping
+        this.saveSensorRoomMapping();
+      }
+    }
   }
 }
