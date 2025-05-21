@@ -13,7 +13,7 @@ import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { SensorMappingComponent } from '../sensor-mapping/sensor-mapping.component';
-import { forkJoin, of, Subscription } from 'rxjs';
+import { forkJoin, interval, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 
@@ -51,7 +51,9 @@ export class BuildingComponent implements OnInit, OnDestroy {
   private autoSwitchInterval: any;
   private sensorTypes = ['temperature', 'humidity', 'co2'];
   private mappingsSubscription: Subscription | null = null;
+  private dataRefreshSubscription: Subscription | null = null; // Neue Subscription für Daten-Aktualisierung
   showSidebar: boolean = true; // Standardmäßig die Seitenleiste anzeigen
+  isLoading: boolean = false; // Flag für Ladestatus
 
   constructor(
     private roomService: RoomService,
@@ -63,6 +65,12 @@ export class BuildingComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.initializeData();
+    this.setupDataRefresh();
+  }
+
+  // Neue Methode für die Initialisierung der Daten
+  private initializeData(): void {
     this.roomService.getAllRooms().subscribe(rooms => {
       this.sortRooms(rooms);
       this.loadSensorData();
@@ -77,10 +85,25 @@ export class BuildingComponent implements OnInit, OnDestroy {
     });
   }
 
+  // Neue Methode für regelmäßige Datenaktualisierung
+  private setupDataRefresh(): void {
+    // Alle 30 Sekunden die Sensordaten aktualisieren
+    this.dataRefreshSubscription = interval(30000).subscribe(() => {
+      console.log('Refreshing sensor data automatically');
+      this.loadSensorData();
+      // Optional auch die unassigned sensors aktualisieren
+      // this.loadUnassignedSensors(); 
+    });
+  }
+
   ngOnDestroy() {
     this.stopAutoSwitch();
     if (this.mappingsSubscription) {
       this.mappingsSubscription.unsubscribe();
+    }
+    // Auch die Daten-Aktualisierungs-Subscription aufräumen
+    if (this.dataRefreshSubscription) {
+      this.dataRefreshSubscription.unsubscribe();
     }
   }
 
@@ -172,6 +195,16 @@ export class BuildingComponent implements OnInit, OnDestroy {
       sensorId: mapping.sensorId,
       floor: mapping.floor
     }));
+  }
+
+  // Methode zum manuellen Aktualisieren der Daten
+  refreshData(): void {
+    this.isLoading = true;
+    this.loadSensorData();
+    // Nach einer kurzen Verzögerung den Ladeindikator zurücksetzen
+    setTimeout(() => {
+      this.isLoading = false;
+    }, 1000);
   }
 
   // Methode zum Umschalten der Seitenleisten-Anzeige
