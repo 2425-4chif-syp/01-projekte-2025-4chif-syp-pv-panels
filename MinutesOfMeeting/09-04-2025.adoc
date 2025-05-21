@@ -1,0 +1,61 @@
+= Besprechungsprotokoll 09.04.2025
+Sebastian Radic, Denis Bjelak, Danis Mesildzic, Tobias Kletsch, Luis Schörgendorfer
+1.0, 09.04.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Stütz
+|Prof. Stütz
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Denis Bjelak
+|Denis Bjelak
+
+|Danis Mesildzic
+|Danis Mesildzic
+
+|Tobias Kletsch
+|Tobias Kletsch
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mi. 09.04.2025, 16:10 – offen
+|Dauer
+|ca. 60 Minuten
+|===
+
+== Besprochene Themen
+
+* Sebastian soll zunächst ein Mini-Modell mit 4–5 Wänden erstellen und dieses in der Datenbank speichern. Wenn das funktioniert, wird mit dem Schulmodell weitergearbeitet.
+* Es besteht die Möglichkeit, die Visualisierung der Schule auch mit der Unreal Engine umzusetzen.
+* Offene Aufgaben und geplante Schritte:
+  ** 3D-Modell aktualisieren.
+  ** Speicherung des 3D-Modells – Entscheidung offen: Datenbank, textuell (SVG) oder glTF.
+  ** 2D-Modell aktualisieren.
+  ** Speicherung des 2D-Modells – ggf. direkt aus dem 3D-Modell ableiten (Grundriss-Extraktion).
+  ** Konzeption und Erstellung eines Dashboards für die Sensorbox.
+  ** Visualisierung von Energieerzeugung und -verbrauch (z. B. PV-Anlagen der HTL Leonding).
+  ** Entwicklung eines kleinen Quarkus-Moduls zur Generierung realistischer Fake-Daten für die Sensorboxen (z. B. Ereignisse wie Fenster öffnen → Temperaturschwankungen im Graphen).

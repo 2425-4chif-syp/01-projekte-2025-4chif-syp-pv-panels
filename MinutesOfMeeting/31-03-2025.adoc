@@ -1,0 +1,60 @@
+= Besprechungsprotokoll 31.03.2025
+Sebastian Radic, Luis Schörgendorfer, Tobias Kletsch
+1.0, 31.03.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Stütz
+|Prof. Stütz
+
+|Prof. Palitsch
+|Prof. Palitsch
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+
+|Tobias Kletsch
+|Tobias Kletsch
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mo. 31.03.2025, 08:29 – 09:34
+|Dauer
+|65 Minuten
+|===
+
+== Besprochene Themen
+
+* Das bestehende 3D-Modell ist veraltet und muss überarbeitet werden. Sebastian übernimmt diesen Umbau.
+* Das 2D-Modell sowie das 3D-Modell sollen auf den aktuellen baulichen Gegebenheiten basieren (z. B. Funktionsräume wie Klassen, Lehrerkabinetten, Aula usw.).
+* Beide Modelle sollen dasselbe Datenmodell verwenden, da das 3D-Modell aus dem 2D-Modell generiert wird.
+* Es wird eine zentrale Datenbank benötigt, in der alle relevanten Modelldaten gespeichert werden.
+* Aus dieser Datenbank sollen gITF- oder alternativ SVG-Dateien erzeugt werden, welche dann mit JavaScript visualisiert werden.
+* Für die Visualisierung soll ein Mechanismus implementiert werden, der z. B. bei Klick auf einen Raum spezifische Informationen anzeigt.
+* Tools zur Bearbeitung der Modelle könnten unter anderem die GoDot Engine, Software der Khronos Group oder Microsoft 3D Builder sein.
+* Eine Routendarstellung durch das Gebäude soll implementiert werden. Das Prinzip wurde bereits in einem früheren Projekt ("Elternsprechtag"-Repository) umgesetzt und kann übernommen werden.
+* Erste Testphase: Drei Punkte in der Schule platzieren und überprüfen, ob das Routing und die Darstellung funktionieren.
+* Eine Analyse bisheriger Projekte soll durchgeführt und in Form einer kurzen Präsentation vorgestellt werden.
+* Zusätzlich sollen .ai-Dateien in Blender importiert und überprüft werden, ob sie für das Projekt verwendbar sind.
+

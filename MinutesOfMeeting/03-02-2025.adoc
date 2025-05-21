@@ -1,0 +1,59 @@
+= Besprechungsprotokoll 03.02.2025
+Sebastian Radic, Danis Mesildzic, Denis Bjelak, Tobias Kletsch, Luis Schörgendorfer
+1.0, 03.02.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Stütz
+|Prof. Stütz
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Denis Bjelak
+|Denis Bjelak
+
+|Danis Mesildzic
+|Danis Mesildzic
+
+|Tobias Kletsch
+|Tobias Kletsch
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mo. 03.02.2025, Uhrzeit nicht dokumentiert
+|Dauer
+|nicht dokumentiert
+|===
+
+== Besprochene Themen
+
+* **Frontend-Optimierung**:
+  ** Die Darstellung soll so angepasst werden, dass die gesamte Schule auf einem Bildschirm sichtbar ist.
+  ** Oben im Dashboard wird eine Auswahlmöglichkeit (z. B. CO₂, Temperatur, Luftfeuchtigkeit) hinzugefügt.
+  ** Die Werteanzeige soll farblich codiert werden – z. B. Temperaturbereiche mit Grün/Gelb/Rot.
+
+* **InfluxDB & Grafana**:
+  ** Es muss gelernt werden, wie man mit InfluxDB korrekt und effizient Abfragen (Queries) erstellt.
+  ** Ziel ist es, **InfluxDB mit Grafana zu verbinden** und darauf basierend **aussagekräftige Dashboards** zu gestalten.

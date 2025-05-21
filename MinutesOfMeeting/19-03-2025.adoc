@@ -1,0 +1,61 @@
+= Besprechungsprotokoll 19.03.2025
+Sebastian Radic, Danis Mesildzic, Tobias Kletsch, Luis Schörgendorfer
+1.0, 19.03.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Stütz
+|Prof. Stütz
+
+|Prof. Palitsch
+|Prof. Palitsch
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Danis Mesildzic
+|Danis Mesildzic
+
+|Tobias Kletsch
+|Tobias Kletsch
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mi. 19.03.2025, 14:30 – offen
+|Dauer
+|ca. 60 Minuten
+|===
+
+== Besprochene Themen
+
+* Das Modell der Schule soll mit **Three.js** aufgebaut werden. Es besteht die Möglichkeit, das alte 3D-Modell teilweise wiederzuverwenden.
+* Für die Wegeberechnung in der Schule wird der **Dijkstra-Algorithmus** verwendet:
+  ** An jeder Tür eines Raumes wird ein Punkt gesetzt.
+  ** Diese Punkte werden miteinander verbunden.
+  ** Jeder Punkt bzw. jede Kante bekommt eine Distanz (z. B. 10 Meter).
+  ** Das ermöglicht Wegfindung im Gebäude – z. B. zur nächsten Klasse oder barrierefrei (für Rollstuhlfahrer mit Berücksichtigung des Lifts).
+* Das bestehende **2D-Modell** wird nicht komplett übernommen – es wird nur verwendet, was benötigt wird. Langfristig soll es aus dem 3D-Modell abgeleitet werden.
+* **Frontend-Anpassungen** (Luis):
+  ** Die UI-Felder sollen verkleinert werden, Design ansonsten beibehalten.
+  ** Die Werte für CO₂, Temperatur und Luftfeuchtigkeit sollen im Dashboard automatisch alle 10 Sekunden wechseln – damit immer ein anderer Wert sichtbar ist.
