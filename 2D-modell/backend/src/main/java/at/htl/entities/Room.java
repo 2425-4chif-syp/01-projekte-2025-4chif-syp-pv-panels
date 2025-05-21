@@ -1,0 +1,23 @@
+package at.htl.entities;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import org.locationtech.jts.geom.Polygon;
+
+@Entity
+public class Room {
+
+    @Id
+    public int id;
+
+    @ManyToOne
+    @Cascade(CascadeType.ALL)
+    public Floor floor;
+
+    @Column(columnDefinition = "geometry(Polygon,0)")
+    public Polygon geom;
+}
