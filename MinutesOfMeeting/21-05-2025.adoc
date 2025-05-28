@@ -1,0 +1,58 @@
+= Besprechungsprotokoll 21.05.2025
+Sebastian Radic, Luis Schörgendorfer, Tobias Kletsch
+1.0, 21.05.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o
+icon:github-square
+icon:home
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Palitsch
+|Prof. Palitsch
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Denis Bjelak
+|Denis Bjelak
+
+|Danis Mesildzic
+|Danis Mesildzic
+
+|Tobias Kletsch
+|Tobias Kletsch
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+|===
+
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mi. 21.05.2025, 14:04 – 14:52
+|Dauer
+|48 Minuten
+|===
+
+== Besprochene Themen
+
+    Für die Routenberechnung im 3D-Modell soll beim Setzen des Startpunkts sofort berechnet werden, wie weit dieser Punkt von den drei Treppen entfernt ist (z. B. links 3 m, Haupttreppe 4 m, rechts 12 m). Diese Werte werden gespeichert. Anschließend wird auch die Entfernung der jeweiligen Klasse zu den drei Treppen berechnet. Die Gesamtdistanz ergibt sich dann aus der Summe der Distanzen vom Startpunkt zu den Treppen und von der Klasse zu den Treppen. Der kürzeste Weg wird durch den minimalen Wert bestimmt.
+
+    Im 3D-Modell müssen die Räume jeweils einen Typ (z. B. Klo, Lift, Lehrerzimmer, Klassenzimmer, usw.) zugeordnet bekommen. Fehlende oder falsch definierte Räume sind zu korrigieren.
+
+    Luis übernimmt die Übertragung der Sensordaten und deren Zuordnung zu den Räumen in die zentrale PostgreSQL-Datenbank, damit auf allen Laptops die gleichen Sensoren den gleichen Räumen zugeordnet angezeigt werden.
