@@ -11,6 +11,16 @@ from shapely.ops import linemerge, polygonize
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
+def process(path: str, db_cfg: dict, k_floors: int | None):
+    conn = psycopg2.connect(**db_cfg)
+    cur = conn.cursor()
+
+    cur.execute("SELECT COUNT(*) FROM floor")
+    if cur.fetchone()[0] > 0:
+        print("⚠️  Datenbank bereits befüllt – Import wird übersprungen.")
+        cur.close()
+        conn.close()
+        return
 # ---------------------------------------------------------------------------
 # LAYER →  (DXF‑Query, Geom‑Typ)
 # ---------------------------------------------------------------------------

@@ -1,8 +1,6 @@
 -- Aktiviert PostGIS
 CREATE EXTENSION IF NOT EXISTS postgis;
 
--- ───────────────────── Geometrische Grundtabellen ───────────────────────
-
 CREATE TABLE floor (
                        id   SERIAL PRIMARY KEY,
                        name TEXT NOT NULL
@@ -37,8 +35,6 @@ CREATE TABLE elevator (
                           floor_id  INT REFERENCES floor(id),
                           geom      GEOMETRY(POLYGON, 0)
 );
-
--- ───────────────────── Graph-Struktur für Routing ───────────────────────
 
 CREATE TABLE node (
                       id        SERIAL PRIMARY KEY,
