@@ -1,4 +1,9 @@
 package at.htl.repositories;
 
-public class roomRepository {
+import at.htl.entities.Room;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+
+@ApplicationScoped
+public class RoomRepository implements PanacheRepository<Room> {
 }
