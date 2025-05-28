@@ -11,16 +11,28 @@ from shapely.ops import linemerge, polygonize
 from sklearn.cluster import KMeans
 from sklearn.metrics import silhouette_score
 
-def process(path: str, db_cfg: dict, k_floors: int | None):
-    conn = psycopg2.connect(**db_cfg)
-    cur = conn.cursor()
+import time
+import psycopg2
 
-    cur.execute("SELECT COUNT(*) FROM floor")
-    if cur.fetchone()[0] > 0:
-        print("⚠️  Datenbank bereits befüllt – Import wird übersprungen.")
-        cur.close()
-        conn.close()
-        return
+# Warten auf Datenbank + prüfen ob floor-Tabelle existiert
+def wait_and_check_import_needed(cfg):
+    for _ in range(30):
+        try:
+            with psycopg2.connect(**cfg) as conn:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'floor'")
+                    if cur.fetchone()[0] == 1:
+                        cur.execute("SELECT COUNT(*) FROM floor")
+                        count = cur.fetchone()[0]
+                        if count > 0:
+                            print("⚠️  Datenbank bereits befüllt – Import wird übersprungen.")
+                            return False
+                        else:
+                            return True
+        except Exception:
+            pass
+        time.sleep(1)
+    raise RuntimeError("❌ Postgres-Verbindung oder Tabelle 'floor' nicht erreichbar")
 # ---------------------------------------------------------------------------
 # LAYER →  (DXF‑Query, Geom‑Typ)
 # ---------------------------------------------------------------------------
@@ -213,6 +225,10 @@ def cli():
 
     cfg = dict(host=args.db_host, port=args.db_port, dbname=args.db_name,
                user=args.db_user, password=args.db_pass)
+
+    if not wait_and_check_import_needed(cfg):
+        return
+
     process(args.dxf, cfg, args.floors)
 
 if __name__ == "__main__":

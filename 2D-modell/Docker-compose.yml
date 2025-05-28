@@ -27,6 +27,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./scripts:/work
+    working_dir: /work
+    entrypoint: [ "python", "-u", "import_dxf.py", "Grundriss_erweitert.dxf" ]
     restart: "no"
 
   #importer:
