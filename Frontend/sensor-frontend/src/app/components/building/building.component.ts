@@ -175,15 +175,25 @@ export class BuildingComponent implements OnInit, OnDestroy {
           roomId: roomId
         };
         
-        this.sensorMappingService.addOrUpdateMapping(mapping);
-        
-        // Sensor aus der unassignedSensors-Liste entfernen
-        this.unassignedSensors = this.unassignedSensors.filter(
-          s => !(s.sensorId === sensorId && s.floor === floor)
-        );
-        
-        // Sensordaten neu laden
-        this.loadSensorData();
+        this.sensorMappingService.addOrUpdateMapping(mapping).subscribe({
+          next: () => {
+            console.log('Sensor-Mapping erfolgreich gespeichert');
+            // Sensor aus der unassignedSensors-Liste entfernen
+            this.unassignedSensors = this.unassignedSensors.filter(
+              s => !(s.sensorId === sensorId && s.floor === floor)
+            );
+            // Sensordaten neu laden
+            this.loadSensorData();
+          },
+          error: (error) => {
+            console.error('Fehler beim Speichern des Sensor-Mappings:', error);
+            // Bei Fehlern trotzdem die lokale UI aktualisieren (Fallback)
+            this.unassignedSensors = this.unassignedSensors.filter(
+              s => !(s.sensorId === sensorId && s.floor === floor)
+            );
+            this.loadSensorData();
+          }
+        });
       }
     }
   }
@@ -413,8 +423,25 @@ export class BuildingComponent implements OnInit, OnDestroy {
   // Entfernt einen Sensor aus einem Raum und fügt ihn wieder in die Liste der nicht zugewiesenen Sensoren ein
   removeSensorFromRoom(room: Room, sensorId: string, floor: string): void {
     // Zuerst die Zuordnung im Service entfernen
-    this.sensorMappingService.removeMapping(sensorId, floor);
-    
+    this.sensorMappingService.removeMapping(sensorId, floor).subscribe({
+      next: () => {
+        console.log('Sensor-Mapping erfolgreich entfernt');
+        this.addSensorToUnassignedList(sensorId, floor);
+        this.clearRoomSensorData(room);
+        this.loadSensorData();
+      },
+      error: (error) => {
+        console.error('Fehler beim Entfernen des Sensor-Mappings:', error);
+        // Bei Fehlern trotzdem die lokale UI aktualisieren (Fallback)
+        this.addSensorToUnassignedList(sensorId, floor);
+        this.clearRoomSensorData(room);
+        this.loadSensorData();
+      }
+    });
+  }
+  
+  // Hilfsmethode zum Hinzufügen eines Sensors zur unassigned-Liste
+  private addSensorToUnassignedList(sensorId: string, floor: string): void {
     // Prüfen, ob der Sensor bereits in der Liste der nicht zugewiesenen Sensoren ist
     const existingSensor = this.unassignedSensors.find(
       s => s.sensorId === sensorId && s.floor === floor
@@ -427,12 +454,6 @@ export class BuildingComponent implements OnInit, OnDestroy {
         floor: floor
       });
     }
-    
-    // Sensordaten direkt aus dem Raum entfernen
-    this.clearRoomSensorData(room);
-    
-    // Sensordaten neu laden
-    this.loadSensorData();
   }
   
   // Hilfsmethode zum Löschen von Sensordaten eines Raums

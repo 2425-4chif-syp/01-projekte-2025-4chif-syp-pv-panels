@@ -9,29 +9,53 @@ import { tap, catchError } from 'rxjs/operators';
 })
 export class SensorMappingService {
   
-  // Der lokale Speicher-Key für die Mappings
+  // API Base URL für die Backend-Kommunikation
+  private readonly API_BASE_URL = 'http://localhost:8081/sensors/mappings';
+  
+  // Der lokale Speicher-Key für die Mappings (als Fallback)
   private readonly STORAGE_KEY = 'sensor-room-mappings';
   
   // BehaviorSubject, um Änderungen an Mappings zu überwachen
-  private mappingsSubject = new BehaviorSubject<SensorRoomMapping[]>(this.loadMappingsFromStorage());
+  private mappingsSubject = new BehaviorSubject<SensorRoomMapping[]>([]);
 
-  constructor() {}
+  constructor(private http: HttpClient) {
+    // Beim Start Mappings vom Backend laden
+    this.loadMappingsFromBackend();
+  }
 
-  // Lädt die Mappings aus dem lokalen Speicher
+  // Lädt die Mappings vom Backend
+  private loadMappingsFromBackend(): void {
+    this.http.get<SensorRoomMapping[]>(this.API_BASE_URL)
+      .pipe(
+        tap(mappings => {
+          console.log('Mappings vom Backend geladen:', mappings);
+          this.mappingsSubject.next(mappings);
+        }),
+        catchError(err => {
+          console.error('Fehler beim Laden der Mappings vom Backend:', err);
+          // Fallback: Versuche aus localStorage zu laden
+          const localMappings = this.loadMappingsFromStorage();
+          this.mappingsSubject.next(localMappings);
+          return of([]);
+        })
+      ).subscribe();
+  }
+
+  // Lädt die Mappings aus dem lokalen Speicher (Fallback)
   private loadMappingsFromStorage(): SensorRoomMapping[] {
     const mappingsJson = localStorage.getItem(this.STORAGE_KEY);
     if (mappingsJson) {
       try {
         return JSON.parse(mappingsJson);
       } catch (error) {
-        console.error('Fehler beim Laden der Sensor-Mappings:', error);
+        console.error('Fehler beim Laden der Sensor-Mappings aus localStorage:', error);
         return [];
       }
     }
     return [];
   }
 
-  // Speichert Mappings im lokalen Speicher
+  // Speichert Mappings im lokalen Speicher (Fallback)
   private saveMappingsToStorage(mappings: SensorRoomMapping[]): void {
     localStorage.setItem(this.STORAGE_KEY, JSON.stringify(mappings));
   }
@@ -41,8 +65,34 @@ export class SensorMappingService {
     return this.mappingsSubject.asObservable();
   }
 
+  // Lädt die Mappings erneut vom Backend
+  refreshMappings(): void {
+    this.loadMappingsFromBackend();
+  }
+
   // Fügt ein neues Mapping hinzu oder aktualisiert ein bestehendes
-  addOrUpdateMapping(mapping: SensorRoomMapping): void {
+  addOrUpdateMapping(mapping: SensorRoomMapping): Observable<void> {
+    return this.http.post<void>(this.API_BASE_URL, mapping)
+      .pipe(
+        tap(() => {
+          console.log('Mapping erfolgreich gespeichert:', mapping);
+          // Nach erfolgreichem Speichern die lokale Liste aktualisieren
+          this.updateLocalMapping(mapping);
+          // Auch als Fallback im localStorage speichern
+          this.saveMappingsToStorage(this.mappingsSubject.value);
+        }),
+        catchError(err => {
+          console.error('Fehler beim Speichern des Mappings:', err);
+          // Fallback: Nur lokal speichern
+          this.updateLocalMapping(mapping);
+          this.saveMappingsToStorage(this.mappingsSubject.value);
+          throw err;
+        })
+      );
+  }
+
+  // Aktualisiert das Mapping in der lokalen Liste
+  private updateLocalMapping(mapping: SensorRoomMapping): void {
     const mappings = this.mappingsSubject.value;
     
     // Prüfen, ob ein Mapping für diesen Sensor bereits existiert
@@ -58,18 +108,36 @@ export class SensorMappingService {
       mappings.push(mapping);
     }
     
-    // Speichern und den Subject aktualisieren
-    this.saveMappingsToStorage(mappings);
     this.mappingsSubject.next([...mappings]);
   }
 
   // Entfernt ein Mapping
-  removeMapping(sensorId: string, floor: string): void {
+  removeMapping(sensorId: string, floor: string): Observable<void> {
+    const url = `${this.API_BASE_URL}/${encodeURIComponent(floor)}/${encodeURIComponent(sensorId)}`;
+    
+    return this.http.delete<void>(url)
+      .pipe(
+        tap(() => {
+          console.log('Mapping erfolgreich entfernt:', { sensorId, floor });
+          // Nach erfolgreichem Löschen die lokale Liste aktualisieren
+          this.removeLocalMapping(sensorId, floor);
+          // Auch als Fallback im localStorage speichern
+          this.saveMappingsToStorage(this.mappingsSubject.value);
+        }),
+        catchError(err => {
+          console.error('Fehler beim Entfernen des Mappings:', err);
+          // Fallback: Nur lokal entfernen
+          this.removeLocalMapping(sensorId, floor);
+          this.saveMappingsToStorage(this.mappingsSubject.value);
+          throw err;
+        })
+      );
+  }
+
+  // Entfernt das Mapping aus der lokalen Liste
+  private removeLocalMapping(sensorId: string, floor: string): void {
     let mappings = this.mappingsSubject.value;
-    
     mappings = mappings.filter(m => !(m.sensorId === sensorId && m.floor === floor));
-    
-    this.saveMappingsToStorage(mappings);
     this.mappingsSubject.next([...mappings]);
   }
 

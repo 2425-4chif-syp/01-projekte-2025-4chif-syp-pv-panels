@@ -144,11 +144,20 @@ export class SensorMappingComponent implements OnInit {
         roomId: this.selectedRoom.roomId
       };
       
-      this.sensorMappingService.addOrUpdateMapping(mapping);
-      
-      // Aktualisiert die UI-Anzeige
-      this.selectedSensor.mappedRoomId = this.selectedRoom.roomId;
-      this.selectedSensor.mappedRoomName = this.selectedRoom.roomName;
+      this.sensorMappingService.addOrUpdateMapping(mapping).subscribe({
+        next: () => {
+          console.log('Sensor-Mapping erfolgreich gespeichert');
+          // Aktualisiert die UI-Anzeige
+          this.selectedSensor!.mappedRoomId = this.selectedRoom!.roomId;
+          this.selectedSensor!.mappedRoomName = this.selectedRoom!.roomName;
+        },
+        error: (error) => {
+          console.error('Fehler beim Speichern des Sensor-Mappings:', error);
+          // Bei Fehlern trotzdem die lokale UI aktualisieren (Fallback)
+          this.selectedSensor!.mappedRoomId = this.selectedRoom!.roomId;
+          this.selectedSensor!.mappedRoomName = this.selectedRoom!.roomName;
+        }
+      });
     }
   }
 
@@ -158,12 +167,22 @@ export class SensorMappingComponent implements OnInit {
       this.sensorMappingService.removeMapping(
         this.selectedSensor.sensorId, 
         this.selectedSensor.floor
-      );
-      
-      // Aktualisiert die UI-Anzeige
-      this.selectedSensor.mappedRoomId = undefined;
-      this.selectedSensor.mappedRoomName = undefined;
-      this.selectedRoom = null;
+      ).subscribe({
+        next: () => {
+          console.log('Sensor-Mapping erfolgreich entfernt');
+          // Aktualisiert die UI-Anzeige
+          this.selectedSensor!.mappedRoomId = undefined;
+          this.selectedSensor!.mappedRoomName = undefined;
+          this.selectedRoom = null;
+        },
+        error: (error) => {
+          console.error('Fehler beim Entfernen des Sensor-Mappings:', error);
+          // Bei Fehlern trotzdem die lokale UI aktualisieren (Fallback)
+          this.selectedSensor!.mappedRoomId = undefined;
+          this.selectedSensor!.mappedRoomName = undefined;
+          this.selectedRoom = null;
+        }
+      });
     }
   }
 
