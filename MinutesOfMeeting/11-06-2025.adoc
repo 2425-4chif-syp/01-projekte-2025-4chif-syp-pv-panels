@@ -42,14 +42,17 @@ endif::backend-html5[]
 |Schule
 
 |von-bis
-|Mi. 11.06.2025, 14:30 – 15:10
+|Mi. 11.06.2025, 14:30 – 15:50
 |Dauer
-|ca. 40 Minuten
+|ca. 80 Minuten
 |===
 
 == Besprochene Themen
 
-* Luis sein Dashboard passt derweil, jetzt soll es auf die VM deployed werden und mit dem Kiosk (Projekt der 5.Klasse) zusammen verbunden werden.
+* Luis sein Dashboard passt derweil, jetzt muss folgendes noch erledigt werden:
+    ** Es soll auf die VM deployed werden und mit dem Kiosk (Projekt der 5.Klasse) zusammen verbunden werden. 
+    ** Es muss noch ein Schwellenwertbutton hinzugefügt werden. 
+    ** Eine Einschränkung zur Benutzung der Schwellenwerte und Bewegung der Sensoren (wie ein Passwort) muss gemacht werden
 * Denis muss folgendes im Kiosk Projekt erledigen: 
     ** es soll beim starten schon ausgwählt werden -> default zb der aktuelle tag ist ausgewählt, dann soll das auch so in der bar stehen
     ** datumsfehler: eine bar zeigt 4.Juni die nächste nicht 5. sondern 11.Juni
