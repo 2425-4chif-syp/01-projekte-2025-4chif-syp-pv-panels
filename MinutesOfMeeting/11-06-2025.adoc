@@ -1,0 +1,61 @@
+= Besprechungsprotokoll 11.06.2025
+Sebastian Radic, Denis Bjelak, Danis Mesildzic, Tobias Kletsch, Luis Schörgendorfer
+1.0, 11.06.2025: Protokoll der Besprechung
+
+ifndef::imagesdir[:imagesdir: images]
+:icons: font
+
+ifdef::backend-html5[]
+
+icon:file-text-o[link=https://raw.githubusercontent.com/htl-leonding-college/asciidoctor-docker-template/master/asciidocs/{docname}.adoc] ‏ ‏ ‎
+icon:github-square[link=https://github.com/htl-leonding-college/asciidoctor-docker-template] ‏ ‏ ‎
+icon:home[link=https://htl-leonding.github.io/]
+endif::backend-html5[]
+
+.Teilnehmer
+|===
+|anwesend |Verteiler
+
+|Prof. Stütz
+|Prof. Stütz
+
+|Sebastian Radic
+|Sebastian Radic
+
+|Denis Bjelak
+|Denis Bjelak
+
+|Danis Mesildzic
+|Danis Mesildzic
+
+|Tobias Kletsch
+|Tobias Kletsch
+
+|Luis Schörgendorfer
+|Luis Schörgendorfer
+|===
+
+.Ort und Zeit
+[cols=2*]
+|===
+|Ort
+|Schule
+
+|von-bis
+|Mi. 11.06.2025, 14:30 – 15:10
+|Dauer
+|ca. 40 Minuten
+|===
+
+== Besprochene Themen
+
+* Luis sein Dashboard passt derweil, jetzt soll es auf die VM deployed werden und mit dem Kiosk (Projekt der 5.Klasse) zusammen verbunden werden.
+* Denis muss folgendes im Kiosk Projekt erledigen: 
+    ** es soll beim starten schon ausgwählt werden -> default zb der aktuelle tag ist ausgewählt, dann soll das auch so in der bar stehen
+    ** datumsfehler: eine bar zeigt 4.Juni die nächste nicht 5. sondern 11.Juni
+    ** jahres, monatsübersicht, wochen, tage, tagesablauf
+    ** wenn man week auswählt bei zahnrad und links oben monat weg sondern welche woche
+    ** sommerferien vergleich mit schuljahr (verbauch)
+    ** man wählt im juni 24 jede 5 MInuten dann kommen keine data, bei month 2024 schon
+* Tobias soll auch sein 2D Modell auf die VM deployen sodass der Herr Prof. immer draufzugreifen kann.
+* Danis muss auch sein 3D Modell auf die VM deployen
