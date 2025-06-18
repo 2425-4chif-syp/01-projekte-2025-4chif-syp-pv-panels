@@ -24,8 +24,12 @@
         </div>
       </div>
       
-      <!-- Rechte Seite: Nur noch Toggle Sidebar Button -->
+      <!-- Rechte Seite: Schwellenwerte-Button und Toggle Sidebar Button -->
       <div class="header-right">
+        <button mat-button class="standard-button" (click)="openThresholdSettingsDialog()">
+          <mat-icon>tune</mat-icon>
+          Schwellenwerte
+        </button>
         <button class="toggle-sidebar-button" (click)="toggleSidebar()">
           <mat-icon>{{ showSidebar ? 'chevron_right' : 'chevron_left' }}</mat-icon>
         </button>

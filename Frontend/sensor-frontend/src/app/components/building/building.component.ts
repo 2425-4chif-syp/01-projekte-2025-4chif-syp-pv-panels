@@ -4,15 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { RoomService } from '../../services/room.service';
 import { SensorService } from '../../services/sensor.service';
 import { SensorMappingService } from '../../services/sensor-mapping.service';
+import { ThresholdService } from '../../services/threshold.service';
 import { Room } from '../../models/room.interface';
 import { SensorValue } from '../../models/sensor.interface';
 import { SensorRoomMapping } from '../../models/sensor-mapping.interface';
+import { SensorThreshold } from '../../models/threshold.interface';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { SensorMappingComponent } from '../sensor-mapping/sensor-mapping.component';
+import { ThresholdSettingsComponent } from '../threshold-settings/threshold-settings.component';
 import { forkJoin, interval, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import { CdkDragDrop, DragDropModule } from '@angular/cdk/drag-drop';
@@ -59,6 +62,7 @@ export class BuildingComponent implements OnInit, OnDestroy {
     private roomService: RoomService,
     private sensorService: SensorService,
     private sensorMappingService: SensorMappingService,
+    private thresholdService: ThresholdService,
     private dialog: MatDialog
   ) {
     this.startAutoSwitch();
@@ -67,6 +71,12 @@ export class BuildingComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.initializeData();
     this.setupDataRefresh();
+    this.loadThresholds();
+  }
+  
+  // Methode zum Laden der Schwellenwerte
+  private loadThresholds(): void {
+    this.thresholdService.getThresholds().subscribe();
   }
 
   // Neue Methode für die Initialisierung der Daten
@@ -154,6 +164,22 @@ export class BuildingComponent implements OnInit, OnDestroy {
       // Wenn Änderungen vorgenommen wurden, Daten neu laden
       this.loadSensorData();
       this.loadUnassignedSensors(); // Auch die nicht zugewiesenen Sensoren aktualisieren
+    });
+  }
+
+  // Öffnet den Dialog für die Schwellenwert-Einstellungen
+  openThresholdSettingsDialog(): void {
+    const dialogRef = this.dialog.open(ThresholdSettingsComponent, {
+      width: '450px',
+      minWidth: '450px',
+      height: '450px',
+      maxHeight: '450px',
+      panelClass: 'threshold-settings-dialog'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      // Sensordaten neu laden, um die aktualisierten Schwellenwerte anzuzeigen
+      this.loadSensorData();
     });
   }
 
@@ -375,33 +401,62 @@ export class BuildingComponent implements OnInit, OnDestroy {
 
   private getTemperatureClass(temp: number | undefined): string {
     if (temp === undefined) return '';
-    if (temp >= 20 && temp <= 25) {
+    
+    // Schwellenwerte dynamisch aus dem Service holen
+    let thresholds = this.thresholdService.thresholdConfig.getValue().temperature;
+    
+    // Optimaler Bereich: zwischen warningLow und warningHigh
+    if (temp >= thresholds.warningLow && temp <= thresholds.warningHigh) {
       return 'temp-optimal';
-    } else if ((temp >= 15 && temp < 20) || (temp > 25 && temp <= 30)) {
+    } 
+    // Warnbereich: zwischen dangerLow und warningLow oder zwischen warningHigh und dangerHigh
+    else if ((temp >= thresholds.dangerLow && temp < thresholds.warningLow) || 
+             (temp > thresholds.warningHigh && temp <= thresholds.dangerHigh)) {
       return 'temp-warning';
-    } else {
+    } 
+    // Gefahrenbereich: unter dangerLow oder über dangerHigh
+    else {
       return 'temp-danger';
     }
   }
 
   private getHumidityClass(humidity: number | undefined): string {
     if (humidity === undefined) return '';
-    if (humidity >= 30 && humidity <= 60) {
+    
+    // Schwellenwerte dynamisch aus dem Service holen
+    let thresholds = this.thresholdService.thresholdConfig.getValue().humidity;
+    
+    // Optimaler Bereich: zwischen warningLow und warningHigh
+    if (humidity >= thresholds.warningLow && humidity <= thresholds.warningHigh) {
       return 'humidity-optimal';
-    } else if ((humidity >= 20 && humidity < 30) || (humidity > 60 && humidity <= 70)) {
+    } 
+    // Warnbereich: zwischen dangerLow und warningLow oder zwischen warningHigh und dangerHigh
+    else if ((humidity >= thresholds.dangerLow && humidity < thresholds.warningLow) || 
+             (humidity > thresholds.warningHigh && humidity <= thresholds.dangerHigh)) {
       return 'humidity-warning';
-    } else {
+    } 
+    // Gefahrenbereich: unter dangerLow oder über dangerHigh
+    else {
       return 'humidity-danger';
     }
   }
 
   private getCO2Class(co2: number | undefined): string {
     if (co2 === undefined) return '';
-    if (co2 >= 0 && co2 <= 1000) {
+    
+    // Schwellenwerte dynamisch aus dem Service holen
+    let thresholds = this.thresholdService.thresholdConfig.getValue().co2;
+    
+    // Optimaler Bereich: zwischen warningLow und warningHigh
+    if (co2 >= thresholds.dangerLow && co2 <= thresholds.warningLow) {
       return 'co2-optimal';
-    } else if (co2 > 1000 && co2 <= 2000) {
+    } 
+    // Warnbereich: zwischen warningLow und warningHigh
+    else if (co2 > thresholds.warningLow && co2 <= thresholds.warningHigh) {
       return 'co2-warning';
-    } else {
+    } 
+    // Gefahrenbereich: über warningHigh oder unter dangerLow (wenngleich das selten sein dürfte)
+    else {
       return 'co2-danger';
     }
   }
