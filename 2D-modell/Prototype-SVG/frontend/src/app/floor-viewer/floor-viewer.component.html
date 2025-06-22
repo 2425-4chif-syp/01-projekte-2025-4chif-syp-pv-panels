@@ -1,0 +1,7 @@
+<div class="menu">
+  <button *ngFor="let floor of floors" (click)="selectFloor(floor)">
+    Stockwerk {{floor}}
+  </button>
+</div>
+
+<div [innerHTML]="currentSvg | safeHtml"></div>
