@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-floor-viewer',
@@ -17,10 +18,12 @@ import { CommonModule } from '@angular/common';
   styles: []
 })
 export class FloorViewerComponent implements OnInit {
-  floors = [1, 2, 3, 4, 5];
-  currentSvg = '';
+  floors = [1, 2, 3, 4];
+  currentSvg: SafeHtml;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private sanitizer: DomSanitizer) {
+    this.currentSvg = this.sanitizer.bypassSecurityTrustHtml('');
+  }
 
   ngOnInit() {
     this.selectFloor(1);
@@ -28,6 +31,8 @@ export class FloorViewerComponent implements OnInit {
 
   selectFloor(floor: number) {
     this.http.get(`assets/svg/geschoss${floor}.svg`, { responseType: 'text' })
-      .subscribe(svg => this.currentSvg = svg);
+      .subscribe(svg => {
+        this.currentSvg = this.sanitizer.bypassSecurityTrustHtml(svg);
+      });
   }
 }
