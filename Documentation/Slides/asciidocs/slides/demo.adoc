@@ -49,19 +49,18 @@ Additionally, modern technologies will be integrated to ensure the project is fu
 
 == Latest Status
 
-During the last sprint, we achieved the following milestones:
+Recent progress includes:
 
-- **3D School Model**: Presentation creation and navigation system updates.
-- **Smarthome System (Sensors)**: Calibration and documentation of sensors, along with MQTT server setup.
-- **2D Model**: SVG rendering improvements and database setup for DXF import.
-- **Sensor Assignment**: Drag-and-drop functionality for assigning sensors to rooms, with random data generation.
-- **PV Dashboard**: Initial dashboard creation for energy monitoring.
+- **3D Model**: Updated the old 3D model for better visualization.
+- **2D Model**: Improved the 2D model.
+- **Sensor Dashboard**: Added drag-and-drop functionality for sensor assignment and implemented random data generation for test-sensors.
+- **Threshold Button**: Added a threshold button for the sensor dashboard.
 
-These components are functional but require integration and testing to ensure seamless operation.
+Note: Danis (no longer part of the team) worked on school navigation, but the feature remains incomplete.
 
 == System Architecture
 
-image::SystemArchitectureGraphic.svg[width=40% ,height=40%]
+image::SystemArchitectureGraphic.svg[width=70% ,height=70%]
 
 == ERD - Diagram
 
