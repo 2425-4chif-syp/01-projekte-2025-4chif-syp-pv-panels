@@ -49,8 +49,6 @@ Additionally, modern technologies will be integrated to ensure the project is fu
 
 == Latest Status
 
-Recent progress includes:
-
 - **3D Model**: Updated the old 3D model.
 - **2D Model**: Improved the 2D model.
 - **Sensor Dashboard**: Added drag-and-drop functionality for sensor assignment and implemented random data generation for test-sensors.
