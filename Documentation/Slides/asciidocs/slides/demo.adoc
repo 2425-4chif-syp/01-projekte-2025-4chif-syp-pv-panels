@@ -36,7 +36,6 @@ endif::[]
 * Sebastian Radic
 * Tobias Kletsch
 * Denis Bjelak
-* Danis Mezildzic
 * Luis Schörgendorfer
 
 //[.stretch]
@@ -50,47 +49,15 @@ Additionally, modern technologies will be integrated to ensure the project is fu
 
 == Latest Status
 
-Sprint 01 - finished
+During the last sprint, we achieved the following milestones:
 
-Sprint 02:
+- **3D School Model**: Presentation creation and navigation system updates.
+- **Smarthome System (Sensors)**: Calibration and documentation of sensors, along with MQTT server setup.
+- **2D Model**: SVG rendering improvements and database setup for DXF import.
+- **Sensor Assignment**: Drag-and-drop functionality for assigning sensors to rooms, with random data generation.
+- **PV Dashboard**: Initial dashboard creation for energy monitoring.
 
-[.highlight]
-=== Environment Setup
-* Docker Setup for Data -- **Done**
-
-[.highlight]
-=== Backend
-* Influx DB and Grafana -- **Not estimated**
-* API Anbindung -- **to verify**
-* Rest client -- **to verify**
-* Data Conversion -- **Done**
-* Influx connection to backend -- **Done**
-* Develop REST API for Data Retrieval -- **Not estimated**
-* Store MQTT-Daten into InfluxDB -- **In progress**
-
-[.highlight]
-=== Frontend
-* Grafana Dashboards -- **In progress**
-* Grafana Influx connection -- **In progress**
-* Display overall sensor status -- **Not estimated**
-* Integrate Hallways into the Frontend -- **Not estimated**
-* Navigate Between Floors Using the Scroll Wheel -- **Not estimated**
-* Display Sensor Data in Rooms -- **Not estimated**
-
-[.highlight]
-=== Database
-* Manage thresholds for all categories -- **Not estimated**
-* Store and manage sensor data -- **Not estimated**
-* Error Handling for MQTT and Database Failures -- **Not estimated**
-* Assign room information to sensors -- **Not estimated**
-* Import Excel Data into PostgreSQL Database -- **Done**
-* Update Room Data and Import into PostgreSQL Database -- **Done**
-* Implement PostgreSQL Database Integration -- **In progress**
-* Improve ERD Diagram for Room and Sensor Data Structure -- **Done**
-
-[.highlight]
-=== VM
-* Run frontend and backend independently of local operation -- **Not estimated**
+These components are functional but require integration and testing to ensure seamless operation.
 
 == System Architecture
 
@@ -102,46 +69,29 @@ image::SystemArchitectureGraphic.svg[width=40% ,height=40%]
 ----
 @startuml
 entity "Room" as Room {
-  + roomId : NUMBER
-  --
-  roomLabel : VARCHAR(255)
-  roomName : VARCHAR(255)
-  roomType : VARCHAR(255)
-  floor : VARCHAR(50)
-  corridor : VARCHAR(50)
-  neighborsInside : NUMBER
-  neighborsOutside : NUMBER
++ roomId : INTEGER
+--
+roomLabel : VARCHAR(255)
+roomName : VARCHAR(255)
+roomType : VARCHAR(255)
+floor : VARCHAR(255)
+corridor : INTEGER
+- neighborsInside : INTEGER
+- neighborsOutside : INTEGER
 }
 
 entity "Sensor" as Sensor {
-  + sensorId : NUMBER
-  --
-  type : VARCHAR(50)
-  status : VARCHAR(50)
-  location : VARCHAR(255)
-  roomId : NUMBER
++ sensorId : INTEGER
+--
+type : VARCHAR(50)
+status : VARCHAR(50)
+location : VARCHAR(255)
+- roomId : INTEGER
 }
 
 Room ||--o{ Sensor : "1 : N"
 @enduml
-----
-
-== Next Steps
-
-* Integrate InfluxDB with Backend  
-* Finalize API connection for sensor data  
-* Store and manage MQTT sensor data  
-* Improve error handling for MQTT and database failures  
-* Dockering the backend and data storage  
-* Connect Grafana to InfluxDB for visualization  
-* Develop and refine Grafana Dashboards  
-* Assign room and location information to sensors  
-* Import and update room data in PostgreSQL  
-* Implement PostgreSQL database integration  
-* Enhance frontend with sensor status display  
-* Implement hallways visualization and navigation  
-* Make frontend and backend independent of local operation  
-* Continue learning Quarkus and VM management  
+---- 
 
 == Final outcome
 
