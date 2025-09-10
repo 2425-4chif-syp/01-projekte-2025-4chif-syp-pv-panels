@@ -60,7 +60,7 @@ Note: Danis (no longer part of the team) worked on school navigation, but the fe
 
 == System Architecture
 
-image::SystemArchitectureGraphic.svg[width=70% ,height=70%]
+image::SystemArchitectureGraphic.svg[width=40% ,height=40%]
 
 == ERD - Diagram
 
